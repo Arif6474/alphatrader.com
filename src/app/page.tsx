@@ -265,7 +265,8 @@ export default function Home() {
   // Open Edit wizard from details modal
   const handleTriggerEdit = useCallback((trade: Trade) => {
     setEditingTrade(trade);
-    setIsEditOpen(true);
+    setIsDetailOpen(false); // Close the view modal
+    setIsEditOpen(true); // Open the edit modal
   }, []);
 
   const handleViewTrade = useCallback((t: Trade) => {
