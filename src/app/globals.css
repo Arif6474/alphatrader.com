@@ -737,6 +737,7 @@ body {
   justify-content: space-between;
   align-items: center;
   background: rgba(17, 26, 46, 0.95);
+  flex-shrink: 0;
 }
 
 .modal-title {
@@ -769,6 +770,7 @@ body {
   border-bottom: 1px solid var(--border-color);
   padding: 0 10px;
   overflow-x: auto;
+  flex-shrink: 0;
 }
 
 .modal-tab {
@@ -1066,6 +1068,7 @@ input:checked + .switch-slider:before {
   justify-content: flex-end;
   gap: 12px;
   background: rgba(17, 26, 46, 0.95);
+  flex-shrink: 0;
 }
 
 .btn {
