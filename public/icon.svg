@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a192f" />
+      <stop offset="100%" stop-color="#020c1b" />
+    </linearGradient>
+    <linearGradient id="bullGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="bearGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#dc2626" />
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="50%" stop-color="#60a5fa" />
+      <stop offset="100%" stop-color="#00f2fe" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  
+  <!-- Outer glowing ring -->
+  <rect x="24" y="24" width="464" height="464" rx="88" fill="none" stroke="url(#lineGrad)" stroke-width="4" stroke-opacity="0.3" />
+
+  <!-- Candlesticks Group -->
+  <g transform="translate(40, 0)">
+    <!-- Bullish Candlestick (Green) -->
+    <!-- Wick -->
+    <line x1="180" y1="120" x2="180" y2="380" stroke="#10b981" stroke-width="6" stroke-linecap="round" />
+    <!-- Real Body -->
+    <rect x="150" y="180" width="60" height="140" rx="8" fill="url(#bullGrad)" stroke="#10b981" stroke-width="2" />
+    
+    <!-- Bearish Candlestick (Red) -->
+    <!-- Wick -->
+    <line x1="290" y1="140" x2="290" y2="400" stroke="#ef4444" stroke-width="6" stroke-linecap="round" />
+    <!-- Real Body -->
+    <rect x="260" y="210" width="60" height="130" rx="8" fill="url(#bearGrad)" stroke="#ef4444" stroke-width="2" />
+  </g>
+  
+  <!-- Glowing Trend Line crossing through -->
+  <path d="M 80 360 C 180 320, 240 220, 330 240 C 390 250, 410 180, 440 140" 
+        fill="none" stroke="url(#lineGrad)" stroke-width="12" stroke-linecap="round" 
+        filter="url(#glow)" />
+        
+  <!-- Sparkle dot at the tip -->
+  <circle cx="440" cy="140" r="10" fill="#00f2fe" filter="url(#glow)" />
+</svg>

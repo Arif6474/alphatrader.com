@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "name": "arif islam",
+      "email": "arifulislam64743@gmail.com",
+      "passwordHash": "$2b$10$fTHk838szeZwfnDmveDp.OvddugM.NDI3UxwjdLWYjyoEv7B1VPmC",
+      "id": "x83qkhzll",
+      "createdAt": "2026-06-16T17:53:52.251Z",
+      "updatedAt": "2026-06-16T17:53:52.251Z"
+    },
+    {
+      "name": "Alice (Demo Google)",
+      "email": "alice@example.com",
+      "googleId": "mock_google_alice",
+      "avatar": "",
+      "id": "49zxkfpcv",
+      "createdAt": "2026-06-16T18:01:54.984Z",
+      "updatedAt": "2026-06-16T18:01:54.984Z"
+    }
+  ]
+}
