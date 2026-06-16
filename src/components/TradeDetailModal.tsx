@@ -266,16 +266,16 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
         </div>
 
         {/* Footer actions */}
-        <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
-          <button className="btn btn-danger" onClick={handleDelete}>
+        <div className="modal-footer" style={{ justifyContent: 'space-between',  }}>
+          {/* <button className="btn btn-danger" onClick={handleDelete}>
             <TrashIcon size={16} />
             Delete
-          </button>
+          </button> */}
           
           <div style={{ display: 'flex', gap: '12px' }}>
-            <button className="btn btn-secondary" onClick={onClose}>
+            {/* <button className="btn btn-secondary" onClick={onClose}>
               Close
-            </button>
+            </button> */}
             <button className="btn btn-primary" onClick={() => onEdit(trade)}>
               <EditIcon size={16} />
               Edit Trade
