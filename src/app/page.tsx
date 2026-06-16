@@ -10,6 +10,7 @@ import TradeModal from '@/components/TradeModal';
 import TradeDetailModal from '@/components/TradeDetailModal';
 import AuthView from '@/components/AuthView';
 import AccountManagerModal, { Account } from '@/components/AccountManagerModal';
+import toast from 'react-hot-toast';
 import { 
   DashboardIcon, 
   TradesIcon, 
@@ -45,17 +46,19 @@ export default function Home() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Toast States
-  const [toasts, setToasts] = useState<Toast[]>([]);
-
+  // Toast wrapper using react-hot-toast
   const showToast = useCallback((message: string, type: 'success' | 'error') => {
-    const id = Math.random().toString(36).substring(2, 9);
-    setToasts((prev) => [...prev, { id, message, type }]);
-    
-    // Auto remove toast after 4s
-    setTimeout(() => {
-      setToasts((prev) => prev.filter(t => t.id !== id));
-    }, 4000);
+    if (type === 'success') {
+      toast.success(message, {
+        style: { background: '#10b981', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#10b981' }
+      });
+    } else {
+      toast.error(message, {
+        style: { background: '#ef4444', color: '#fff' },
+        iconTheme: { primary: '#fff', secondary: '#ef4444' }
+      });
+    }
   }, []);
 
   // Check user session on mount
@@ -315,18 +318,6 @@ export default function Home() {
   if (!user) {
     return (
       <>
-        <div className="toast-container">
-          {toasts.map((toast) => (
-            <div key={toast.id} className={`toast ${toast.type}`}>
-              {toast.type === 'success' ? (
-                <CheckIcon className="toast-icon success" />
-              ) : (
-                <WarningIcon className="toast-icon error" />
-              )}
-              <span>{toast.message}</span>
-            </div>
-          ))}
-        </div>
         <AuthView onAuthSuccess={(usr) => setUser(usr)} />
       </>
     );
@@ -334,19 +325,6 @@ export default function Home() {
 
   return (
     <div className="app-container">
-      {/* Toast Notifications */}
-      <div className="toast-container">
-        {toasts.map((toast) => (
-          <div key={toast.id} className={`toast ${toast.type}`}>
-            {toast.type === 'success' ? (
-              <CheckIcon className="toast-icon success" />
-            ) : (
-              <WarningIcon className="toast-icon error" />
-            )}
-            <span>{toast.message}</span>
-          </div>
-        ))}
-      </div>
 
       {/* Top Header */}
       <header className="app-header">

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { CloseIcon } from './Icons';
+import { confirmAction } from '@/lib/toast';
 
 export interface Account {
   id: string;
@@ -87,16 +88,17 @@ function AccountManagerModal({
     }
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm('Delete this account? Trades will not be deleted.')) return;
-    try {
-      const res = await fetch(`/api/accounts/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Failed to delete');
-      onAccountsChange(accounts.filter(a => a.id !== id));
-      if (editingId === id) cancelEdit();
-    } catch (err: any) {
-      setError(err.message || 'Delete failed');
-    }
+  function handleDelete(id: string) {
+    confirmAction('Delete this account? Trades will not be deleted.', async () => {
+      try {
+        const res = await fetch(`/api/accounts/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Failed to delete');
+        onAccountsChange(accounts.filter(a => a.id !== id));
+        if (editingId === id) cancelEdit();
+      } catch (err: any) {
+        setError(err.message || 'Delete failed');
+      }
+    });
   }
 
   return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trade } from '@/lib/db';
 import { CloseIcon, EditIcon, TrashIcon, CalendarIcon } from './Icons';
+import { confirmAction } from '@/lib/toast';
 
 interface TradeDetailModalProps {
   trade: Trade | null;
@@ -32,9 +33,9 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
   };
 
   const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this trade record? This action is permanent.')) {
+    confirmAction('Are you sure you want to delete this trade record? This action is permanent.', () => {
       onDelete(trade.id);
-    }
+    });
   };
 
   return (

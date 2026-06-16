@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Trade } from '@/lib/db';
 import { DownloadIcon, UploadIcon, TrashIcon, InfoIcon } from './Icons';
+import { confirmAction } from '@/lib/toast';
 
 interface ProfileViewProps {
   trades: Trade[];
@@ -208,9 +209,9 @@ function ProfileView({ trades, user, onSignOut, onResetDb, onClearDb, onImportDb
             <button 
               className="btn btn-secondary" 
               onClick={() => {
-                if (confirm('Are you sure you want to reset the database to sample trades? This will overwrite your current trades.')) {
+                confirmAction('Are you sure you want to reset the database to sample trades? This will overwrite your current trades.', () => {
                   onResetDb();
-                }
+                });
               }}
             >
               Reset to Sample Data
@@ -218,9 +219,9 @@ function ProfileView({ trades, user, onSignOut, onResetDb, onClearDb, onImportDb
             <button 
               className="btn btn-danger" 
               onClick={() => {
-                if (confirm('CRITICAL WARNING: Are you sure you want to delete ALL trades in your database? This action is permanent!')) {
+                confirmAction('CRITICAL WARNING: Are you sure you want to delete ALL trades in your database? This action is permanent!', () => {
                   onClearDb();
-                }
+                });
               }}
             >
               <TrashIcon size={16} />

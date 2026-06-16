@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import { Toaster } from 'react-hot-toast';
 // import PwaRegister from "@/components/PwaRegister";
 
 const geistSans = Geist({
@@ -50,6 +51,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body>
+        <Toaster position="bottom-center" />
         {/* <PwaRegister /> */}
         {children}
         <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
