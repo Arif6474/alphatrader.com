@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Trade } from '@/lib/db';
-import { SearchIcon, TradesIcon } from './Icons';
+import { SearchIcon, TradesIcon, PlusIcon } from './Icons';
 
 interface TradesViewProps {
   trades: Trade[];
@@ -159,9 +159,19 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
 
   return (
     <div>
-      <div className="page-header">
-        <h1 className="page-title">Trade Directory</h1>
-        <p className="page-subtitle">Browse, search, and analyze your individual trades.</p>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
+        <div>
+          <h1 className="page-title" style={{ margin: 0 }}>Trade Directory</h1>
+          <p className="page-subtitle" style={{ margin: '4px 0 0 0' }}>Browse, search, and analyze your individual trades.</p>
+        </div>
+        <button 
+          className="btn btn-primary" 
+          onClick={onOpenNewTrade}
+          style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 18px', fontSize: '0.85rem' }}
+        >
+          <PlusIcon size={16} />
+          <span>Add New Trade</span>
+        </button>
       </div>
 
       {/* Directory Tab Selector */}

@@ -481,7 +481,7 @@ export default function Home() {
           onClick={handleOpenAddModal}
         >
           <PlusIcon size={18} />
-          Log Trade
+          Add New Trade
         </button>
       </aside>
 
