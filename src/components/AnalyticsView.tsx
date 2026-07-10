@@ -250,45 +250,64 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
 
   const pfGrade = getProfitFactorGrade();
 
+  const [periodFilter, setPeriodFilter] = React.useState<'all' | '30d' | '7d' | '3m' | '6m' | '1y'>('all');
+
+  const now = Date.now();
+  const periodMs: Record<string, number> = {
+    '7d': 7 * 86400000, '30d': 30 * 86400000, '3m': 91 * 86400000,
+    '6m': 183 * 86400000, '1y': 365 * 86400000,
+  };
+
+  const periodFilteredTrades = React.useMemo(() => {
+    if (periodFilter === 'all') return trades;
+    const cutoff = now - periodMs[periodFilter];
+    return trades.filter(t => new Date(t.entryDate).getTime() >= cutoff);
+  }, [trades, periodFilter]);
+
   return (
-    <div>
-      <div className="page-header">
-        <h1 className="page-title">Analytics</h1>
-        <p className="page-subtitle">Deep quantitative insights and psychological metrics from your history.</p>
+    <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
+        <div>
+          <h1 className="page-title" style={{ margin: 0, fontSize: '1.9rem', fontWeight: 800 }}>Analytics</h1>
+          <p className="page-subtitle" style={{ margin: '6px 0 0 0' }}>Quantitative insights, performance ratios, and behavioral patterns.</p>
+        </div>
+        {/* Period Selector */}
+        <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '4px' }}>
+          {(['7d', '30d', '3m', '6m', '1y', 'all'] as const).map(p => {
+            const labels: Record<string, string> = { '7d': '7D', '30d': '30D', '3m': '3M', '6m': '6M', '1y': '1Y', 'all': 'All' };
+            return (
+              <button key={p} type="button" onClick={() => setPeriodFilter(p)}
+                style={{
+                  padding: '6px 12px', borderRadius: '6px', border: 'none', cursor: 'pointer',
+                  fontSize: '0.73rem', fontWeight: 700, transition: 'all 0.15s',
+                  background: periodFilter === p ? 'rgba(99,102,241,0.2)' : 'transparent',
+                  color: periodFilter === p ? 'var(--color-primary-hover)' : 'var(--text-muted)',
+                  boxShadow: periodFilter === p ? 'inset 0 0 0 1px rgba(99,102,241,0.3)' : 'none',
+                }}>
+                {labels[p]}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {totalTradesCount > 0 ? (
         <>
-          {/* Tab Navigation */}
-          <div className="directory-tabs" style={{ marginBottom: '24px' }}>
-            <button 
-              type="button"
-              className={`directory-tab ${activeTab === 'overview' ? 'active' : ''}`}
-              onClick={() => setActiveTab('overview')}
-            >
-              📊 Overview
-            </button>
-            <button 
-              type="button"
-              className={`directory-tab ${activeTab === 'strategies' ? 'active' : ''}`}
-              onClick={() => setActiveTab('strategies')}
-            >
-              🎯 Strategies
-            </button>
-            <button 
-              type="button"
-              className={`directory-tab ${activeTab === 'psychology' ? 'active' : ''}`}
-              onClick={() => setActiveTab('psychology')}
-            >
-              🧠 Psychology
-            </button>
-            <button 
-              type="button"
-              className={`directory-tab ${activeTab === 'sessions' ? 'active' : ''}`}
-              onClick={() => setActiveTab('sessions')}
-            >
-              🕒 Sessions &amp; Assets
-            </button>
+          {/* Analytics Tab Navigation */}
+          <div style={{ display: 'flex', gap: '4px', marginBottom: '24px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: '4px', width: 'fit-content' }}>
+            {([['overview', '📊 Overview'], ['strategies', '🎯 Strategies'], ['psychology', '🧠 Psychology'], ['sessions', '🕒 Sessions']] as const).map(([tab, label]) => (
+              <button key={tab} type="button" onClick={() => setActiveTab(tab as typeof activeTab)}
+                style={{
+                  padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                  fontWeight: 600, fontSize: '0.8rem', transition: 'all 0.2s ease', whiteSpace: 'nowrap',
+                  background: activeTab === tab ? 'rgba(99,102,241,0.15)' : 'transparent',
+                  color: activeTab === tab ? 'var(--color-primary-hover)' : 'var(--text-secondary)',
+                  boxShadow: activeTab === tab ? 'inset 0 0 0 1px rgba(99,102,241,0.3)' : 'none',
+                }}>
+                {label}
+              </button>
+            ))}
           </div>
 
           {/* TAB CONTENTS */}
