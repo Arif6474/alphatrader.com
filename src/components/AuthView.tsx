@@ -552,8 +552,8 @@ export default function AuthView({ onAuthSuccess }: AuthViewProps) {
           margin-top: 10px;
           padding: 4px 10px;
           border-radius: 12px;
-          background: rgba(59, 130, 246, 0.1);
-          border: 1px solid rgba(59, 130, 246, 0.15);
+          background: var(--color-primary-glow);
+          border: 1px solid rgba(99, 102, 241, 0.15);
           color: var(--color-primary-hover);
           font-size: 0.68rem;
           font-weight: 600;

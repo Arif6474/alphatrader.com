@@ -1,39 +1,39 @@
 /* App Global Styles & Design System */
 
 :root {
-  --bg-app: #131722;
-  --bg-card: #1c2030;
-  --bg-card-hover: #2a2e3f;
-  --border-color: rgba(255, 255, 255, 0.07);
-  --border-color-glow: rgba(59, 130, 246, 0.3);
+  --bg-app: #07090e;
+  --bg-card: rgba(13, 16, 28, 0.65);
+  --bg-card-hover: rgba(22, 26, 46, 0.85);
+  --border-color: rgba(255, 255, 255, 0.05);
+  --border-color-glow: rgba(124, 58, 237, 0.25);
   
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-muted: #627288;
   
-  --color-primary: #2962ff;
-  --color-primary-glow: rgba(41, 98, 255, 0.15);
-  --color-primary-hover: #4776ff;
+  --color-primary: #6366f1; /* Vibrant Indigo */
+  --color-primary-glow: rgba(99, 102, 241, 0.15);
+  --color-primary-hover: #818cf8;
   
-  --color-success: #089981;
-  --color-success-bg: rgba(8, 153, 129, 0.1);
-  --color-success-hover: #0bb397;
+  --color-success: #10b981; /* Neon Emerald */
+  --color-success-bg: rgba(16, 185, 129, 0.08);
+  --color-success-hover: #34d399;
   
-  --color-danger: #f23645;
-  --color-danger-bg: rgba(242, 54, 69, 0.1);
-  --color-danger-hover: #ff4a58;
+  --color-danger: #ff3366; /* Vivid Coral */
+  --color-danger-bg: rgba(255, 51, 102, 0.08);
+  --color-danger-hover: #ff5c85;
   
   --color-warning: #f59e0b;
-  --color-warning-bg: rgba(245, 158, 11, 0.1);
+  --color-warning-bg: rgba(245, 158, 11, 0.08);
 
   --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
   
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
-  --shadow-glow: 0 0 15px rgba(59, 130, 246, 0.2);
-  --shadow-success-glow: 0 0 15px rgba(16, 185, 129, 0.2);
-  --shadow-danger-glow: 0 0 15px rgba(244, 63, 94, 0.2);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 12px 36px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.2);
+  --shadow-success-glow: 0 0 20px rgba(16, 185, 129, 0.18);
+  --shadow-danger-glow: 0 0 20px rgba(255, 51, 102, 0.18);
   
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -58,6 +58,35 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(80px);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.06) 0%, rgba(6, 182, 212, 0) 70%);
+  z-index: -1;
+  pointer-events: none;
+  filter: blur(80px);
 }
 
 /* Glassmorphism utility */
@@ -397,10 +426,10 @@ body {
   justify-content: center;
 }
 
-.metric-card.primary .metric-icon-container { background: rgba(59, 130, 246, 0.1); color: var(--color-primary-hover); }
-.metric-card.success .metric-icon-container { background: rgba(16, 185, 129, 0.1); color: var(--color-success); }
-.metric-card.danger .metric-icon-container { background: rgba(244, 63, 94, 0.1); color: var(--color-danger); }
-.metric-card.warning .metric-icon-container { background: rgba(245, 158, 11, 0.1); color: var(--color-warning); }
+.metric-card.primary .metric-icon-container { background: var(--color-primary-glow); color: var(--color-primary-hover); }
+.metric-card.success .metric-icon-container { background: var(--color-success-bg); color: var(--color-success); }
+.metric-card.danger .metric-icon-container { background: var(--color-danger-bg); color: var(--color-danger); }
+.metric-card.warning .metric-icon-container { background: var(--color-warning-bg); color: var(--color-warning); }
 
 .metric-value {
   font-size: 1.45rem;
@@ -499,7 +528,7 @@ body {
   stroke-width: 3.5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  filter: drop-shadow(0px 6px 10px rgba(59, 130, 246, 0.25));
+  filter: drop-shadow(0px 6px 10px rgba(99, 102, 241, 0.25));
 }
 
 .chart-area {
@@ -1045,7 +1074,7 @@ input:checked + .switch-slider:before {
   background: var(--color-primary-glow);
   border-color: var(--color-primary);
   color: var(--color-primary-hover);
-  box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 10px var(--color-primary-glow);
 }
 
 .pill-option.selected.positive {
@@ -1102,7 +1131,7 @@ input:checked + .switch-slider:before {
 
 .btn-primary:hover {
   opacity: 0.9;
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 20px var(--color-primary-glow);
 }
 
 .btn-danger {
@@ -1593,12 +1622,12 @@ input:checked + .switch-slider:before {
 
 .account-card:hover {
   background: rgba(255,255,255,0.05);
-  border-color: rgba(96, 165, 250, 0.3);
+  border-color: rgba(99, 102, 241, 0.3);
 }
 
 .account-card--editing {
   border-color: var(--color-primary);
-  background: rgba(59, 130, 246, 0.05);
+  background: var(--color-primary-glow);
 }
 
 .account-card-info {

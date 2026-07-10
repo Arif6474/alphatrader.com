@@ -590,7 +590,7 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
               </div>
 
               {/* Calculated Risk Fields */}
-              <div className="form-row form-row-4" style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(59, 130, 246, 0.1)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+              <div className="form-row form-row-4" style={{ background: 'var(--color-primary-glow)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(99, 102, 241, 0.15)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label" style={{ color: 'var(--color-primary-hover)' }}>Multiplier</label>
                   <input
