@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trade } from '@/lib/db';
 import { CloseIcon, UploadIcon } from './Icons';
 import type { Account } from './AccountManagerModal';
+import toast from 'react-hot-toast';
 
 interface TradeModalProps {
   trade?: Trade | null; // If present, we are editing
@@ -83,9 +84,11 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
   const [psychologyAfter, setPsychologyAfter] = useState<string[]>([]);
   const [psychologyFactors, setPsychologyFactors] = useState<string[]>([]);
 
-  // Charts Form States (base64)
+  // Charts Form States (URLs/keys)
   const [chartBefore, setChartBefore] = useState('');
   const [chartAfter, setChartAfter] = useState('');
+  const [uploadingBefore, setUploadingBefore] = useState(false);
+  const [uploadingAfter, setUploadingAfter] = useState(false);
 
   // Auto Calculations
   const [riskAmount, setRiskAmount] = useState(0);
@@ -171,23 +174,41 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
     }
   }, [isOpen, trade, currentBalance]);
 
-  // Adjust contract size dynamically based on Asset Type
+  // Adjust contract size dynamically based on Asset Type and Ticker/Pair
   useEffect(() => {
     if (!trade) {
+      const p = pair.toUpperCase().trim();
       if (assetType === 'Forex') {
-        setContractSize(100000);
+        if (p.includes('XAU') || p.includes('GOLD')) {
+          setContractSize(100);
+        } else if (p.includes('XAG') || p.includes('SILVER')) {
+          setContractSize(5000);
+        } else if (p.includes('JPY')) {
+          setContractSize(1000);
+        } else {
+          setContractSize(100000);
+        }
       } else if (assetType === 'Crypto' || assetType === 'Stock') {
         setContractSize(1);
       } else if (assetType === 'Futures') {
-        setContractSize(50);
+        if (p.includes('ES') || p.includes('SPY') || p.includes('SPX')) {
+          setContractSize(50);
+        } else if (p.includes('NQ') || p.includes('NDX')) {
+          setContractSize(20);
+        } else if (p.includes('YM') || p.includes('DOW')) {
+          setContractSize(5);
+        } else if (p.includes('GC') || p.includes('GOLD')) {
+          setContractSize(100);
+        } else {
+          setContractSize(50);
+        }
       }
     }
-  }, [assetType, trade]);
+  }, [assetType, pair, trade]);
 
   // Perform Real-Time Calculations
   useEffect(() => {
-    const isJpy = pair.toUpperCase().includes('JPY');
-    const finalMultiplier = assetType === 'Forex' ? (isJpy ? 1000 : 100000) : contractSize;
+    const finalMultiplier = contractSize;
 
     // Risk calculation
     const diff = Math.abs(entryPrice - stopLossPrice);
@@ -214,26 +235,47 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
 
   if (!isOpen) return null;
 
-  // Image to base64 handler
+  // File upload to R2 cloud storage handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'before' | 'after') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (target === 'before') {
+      setUploadingBefore(true);
+    } else {
+      setUploadingAfter(true);
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+
     try {
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = error => reject(error);
-        reader.readAsDataURL(file);
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
       });
-      
-      if (target === 'before') {
-        setChartBefore(base64);
-      } else {
-        setChartAfter(base64);
+
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to upload image');
       }
-    } catch (err) {
+
+      const data = await res.json();
+      if (target === 'before') {
+        setChartBefore(data.url);
+      } else {
+        setChartAfter(data.url);
+      }
+      toast.success(`${target === 'before' ? 'Before' : 'After'} chart uploaded successfully!`);
+    } catch (err: any) {
       console.error('Error uploading image:', err);
+      toast.error(err.message || 'Error uploading image. Please try again.');
+    } finally {
+      if (target === 'before') {
+        setUploadingBefore(false);
+      } else {
+        setUploadingAfter(false);
+      }
     }
   };
 
@@ -556,7 +598,6 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
                     className="input-control"
                     value={contractSize}
                     onChange={(e) => setContractSize(parseFloat(e.target.value) || 1)}
-                    readOnly={assetType === 'Forex'}
                   />
                 </div>
                 <div className="form-group" style={{ marginBottom: 0 }}>
@@ -795,7 +836,12 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
               <div className="form-group">
                 <label className="form-label">Before Entry Chart Screenshot</label>
                 <div className="image-upload-box">
-                  {chartBefore ? (
+                  {uploadingBefore ? (
+                    <div className="image-upload-loading">
+                      <div className="spinner"></div>
+                      <span>Uploading to cloud storage...</span>
+                    </div>
+                  ) : chartBefore ? (
                     <>
                       <img src={chartBefore} alt="Setup Before" className="image-upload-preview" />
                       <button
@@ -825,7 +871,12 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
               <div className="form-group">
                 <label className="form-label">After Exit Chart Screenshot</label>
                 <div className="image-upload-box">
-                  {chartAfter ? (
+                  {uploadingAfter ? (
+                    <div className="image-upload-loading">
+                      <div className="spinner"></div>
+                      <span>Uploading to cloud storage...</span>
+                    </div>
+                  ) : chartAfter ? (
                     <>
                       <img src={chartAfter} alt="Setup After" className="image-upload-preview" />
                       <button
