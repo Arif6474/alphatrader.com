@@ -165,8 +165,8 @@ function ProfileView({ trades, user, onSignOut, onResetDb, onClearDb, onImportDb
             <span className="stat-value">{trades.filter(t => !t.closed).length}</span>
           </div>
 
-          <div style={{ marginTop: '20px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
-            <button className="btn btn-danger" style={{ width: '100%', justifyContent: 'center', padding: '10px' }} onClick={onSignOut}>
+          <div style={{ marginTop: '20px', justifyContent: 'center', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+            <button className="btn btn-danger" style={{ width: '200px', justifyContent: 'center', padding: '10px' }} onClick={onSignOut}>
               Sign Out Account
             </button>
           </div>
