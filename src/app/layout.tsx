@@ -3,7 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import { Toaster } from 'react-hot-toast';
-// import PwaRegister from "@/components/PwaRegister";
+import { AppProvider } from "@/context/AppContext";
+import AppShell from "@/components/AppShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,10 +53,14 @@ export default function RootLayout({
       </head>
       <body>
         <Toaster position="bottom-center" />
-        {/* <PwaRegister /> */}
-        {children}
+        <AppProvider>
+          <AppShell>
+            {children}
+          </AppShell>
+        </AppProvider>
         <Script src="https://accounts.google.com/gsi/client" strategy="afterInteractive" />
       </body>
     </html>
   );
 }
+
