@@ -336,7 +336,7 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <form onSubmit={handleSave} className="glass-panel modal-content">
         {/* Header */}
         <div className="modal-header">

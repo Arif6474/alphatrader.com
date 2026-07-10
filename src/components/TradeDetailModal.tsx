@@ -39,7 +39,7 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div className="glass-panel modal-content" style={{ maxHeight: '85vh' }}>
         {/* Header */}
         <div className="modal-header">
