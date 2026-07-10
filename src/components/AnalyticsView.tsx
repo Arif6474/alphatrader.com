@@ -14,6 +14,8 @@ const formatCurrency = (val: number) => {
 };
 
 function AnalyticsView({ trades }: AnalyticsViewProps) {
+  const [activeTab, setActiveTab] = React.useState<'overview' | 'strategies' | 'psychology' | 'sessions'>('overview');
+
   const {
     closedTrades,
     winTrades,
@@ -34,7 +36,16 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
     maxPairPnl,
     maxFactorPnl,
     maxSessionPnl,
-    maxStrategyPF
+    maxStrategyPF,
+    
+    // New Advanced Stats
+    avgRealizedRR,
+    expectancyVal,
+    kellyPercentage,
+    maxWinStreak,
+    maxLossStreak,
+    maxSingleWin,
+    maxSingleLoss
   } = React.useMemo(() => {
     const closedTrades = trades.filter(t => t.closed);
     const winTrades = closedTrades.filter(t => t.status === 'Win');
@@ -52,7 +63,55 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
     const avgLoss = lossTrades.length > 0 ? totalLoss / lossTrades.length : 0;
     const expectancyRatio = avgLoss > 0 ? (avgWin / avgLoss).toFixed(2) : '0.00';
 
-    // 1. Calculate Strategy Performance (PnL, Win Rate, and Profit Factor)
+    // 1. Calculate Realized R:R (using riskAmount if populated, fallback to avgWin / avgLoss)
+    const tradesWithRR = closedTrades.filter(t => t.riskAmount && t.riskAmount > 0);
+    const avgRealizedRR = tradesWithRR.length > 0 
+      ? tradesWithRR.reduce((sum, t) => sum + ((t.pnl || 0) / t.riskAmount!), 0) / tradesWithRR.length 
+      : (avgLoss > 0 ? (avgWin / avgLoss) : 0);
+
+    // 2. Expected Value per Trade ($)
+    const expectancyVal = totalTradesCount > 0 
+      ? closedTrades.reduce((sum, t) => sum + (t.pnl || 0), 0) / totalTradesCount 
+      : 0;
+
+    // 3. Kelly Criterion allocation (%)
+    let kellyPercentage = 0;
+    if (avgLoss > 0 && avgWin > 0) {
+      const p = winTrades.length / totalTradesCount;
+      const b = avgWin / avgLoss;
+      const f = p - (1 - p) / b;
+      kellyPercentage = Math.max(0, Math.round(f * 100));
+    }
+
+    // 4. Streaks (chronological order)
+    const sortedTrades = [...closedTrades].sort((a, b) => {
+      const dateA = a.exitDate || a.entryDate;
+      const dateB = b.exitDate || b.entryDate;
+      return new Date(dateA).getTime() - new Date(dateB).getTime();
+    });
+    
+    let currentWinStreak = 0;
+    let maxWinStreak = 0;
+    let currentLossStreak = 0;
+    let maxLossStreak = 0;
+    
+    sortedTrades.forEach(t => {
+      if (t.status === 'Win') {
+        currentWinStreak++;
+        if (currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
+        currentLossStreak = 0;
+      } else if (t.status === 'Loss') {
+        currentLossStreak++;
+        if (currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak;
+        currentWinStreak = 0;
+      }
+    });
+
+    // 5. Extreme Trades
+    const maxSingleWin = winTrades.length > 0 ? Math.max(...winTrades.map(t => t.pnl || 0)) : 0;
+    const maxSingleLoss = lossTrades.length > 0 ? Math.max(...lossTrades.map(t => Math.abs(t.pnl || 0))) : 0;
+
+    // 6. Calculate Strategy Performance
     const strategyStats: { [key: string]: { pnl: number; count: number; wins: number; grossProfit: number; grossLoss: number } } = {};
     closedTrades.forEach(t => {
       const strat = t.strategy || 'Other';
@@ -80,7 +139,7 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       };
     }).sort((a, b) => b.pnl - a.pnl);
 
-    // 2. Calculate Pair Performance
+    // 7. Calculate Pair Performance
     const pairStats: { [key: string]: { pnl: number; count: number; wins: number } } = {};
     closedTrades.forEach(t => {
       const pair = t.pair;
@@ -101,7 +160,7 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       count: stats.count
     })).sort((a, b) => b.pnl - a.pnl);
 
-    // 3. Calculate Psychological Factor Impact (PnL per Factor)
+    // 8. Calculate Psychological Factor Impact
     const factorStats: { [key: string]: { pnl: number; count: number } } = {};
     closedTrades.forEach(t => {
       const factors = t.psychologyFactors || [];
@@ -120,7 +179,7 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       count: stats.count
     })).sort((a, b) => a.pnl - b.pnl);
 
-    // 4. Calculate Session Performance
+    // 9. Calculate Session Performance
     const sessionStats: { [key: string]: { pnl: number; count: number; wins: number } } = {};
     closedTrades.forEach(t => {
       const sess = t.session || 'Unknown';
@@ -141,7 +200,7 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       count: stats.count
     })).sort((a, b) => b.pnl - a.pnl);
 
-    // Maximum metrics to scale charts
+    // Scaling bounds
     const maxStrategyPnl = Math.max(...strategyList.map(s => Math.abs(s.pnl)), 1);
     const maxPairPnl = Math.max(...pairList.map(p => Math.abs(p.pnl)), 1);
     const maxFactorPnl = Math.max(...factorList.map(f => Math.abs(f.pnl)), 1);
@@ -168,220 +227,387 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       maxPairPnl,
       maxFactorPnl,
       maxSessionPnl,
-      maxStrategyPF
+      maxStrategyPF,
+      avgRealizedRR,
+      expectancyVal,
+      kellyPercentage,
+      maxWinStreak,
+      maxLossStreak,
+      maxSingleWin,
+      maxSingleLoss
     };
   }, [trades]);
+
+  // Helper to grade Profit Factor
+  const getProfitFactorGrade = () => {
+    const pf = Number(profitFactor);
+    if (isNaN(pf) || pf <= 0) return { label: 'No Trades', color: 'var(--text-muted)' };
+    if (pf >= 2.0) return { label: 'Excellent (A+)', color: 'var(--color-success)' };
+    if (pf >= 1.5) return { label: 'Good (B)', color: '#34d399' };
+    if (pf >= 1.0) return { label: 'Mediocre (C)', color: 'var(--color-warning)' };
+    return { label: 'Unprofitable (F)', color: 'var(--color-danger)' };
+  };
+
+  const pfGrade = getProfitFactorGrade();
 
   return (
     <div>
       <div className="page-header">
         <h1 className="page-title">Analytics</h1>
-        <p className="page-subtitle">Deep insights into your strategies, assets, and trading behavior.</p>
+        <p className="page-subtitle">Deep quantitative insights and psychological metrics from your history.</p>
       </div>
 
       {totalTradesCount > 0 ? (
-        <div className="analytics-grid">
-          {/* Key Stats Card */}
-          <div className="glass-panel analytics-card">
-            <h2 className="detail-section-title">Performance Ratios</h2>
-            
-            <div className="stat-row">
-              <span className="stat-label">Win Rate</span>
-              <span className="stat-value" style={{ color: 'var(--color-primary-hover)' }}>{winRate}%</span>
-            </div>
-            <div className="stat-row">
-              <span className="stat-label">Profit Factor</span>
-              <span className="stat-value" style={{ color: Number(profitFactor) >= 1.5 ? 'var(--color-success)' : 'inherit' }}>{profitFactor}</span>
-            </div>
-            <div className="stat-row">
-              <span className="stat-label">Expectancy Ratio</span>
-              <span className="stat-value">{expectancyRatio}</span>
-            </div>
-            <div className="stat-row">
-              <span className="stat-label">Average Win</span>
-              <span className="stat-value" style={{ color: 'var(--color-success)' }}>{formatCurrency(avgWin)}</span>
-            </div>
-            <div className="stat-row">
-              <span className="stat-label">Average Loss</span>
-              <span className="stat-value" style={{ color: 'var(--color-danger)' }}>{formatCurrency(avgLoss)}</span>
-            </div>
-            <div className="stat-row">
-              <span className="stat-label">Wins / Losses</span>
-              <span className="stat-value">{winTrades.length} W / {lossTrades.length} L</span>
-            </div>
+        <>
+          {/* Tab Navigation */}
+          <div className="directory-tabs" style={{ marginBottom: '24px' }}>
+            <button 
+              type="button"
+              className={`directory-tab ${activeTab === 'overview' ? 'active' : ''}`}
+              onClick={() => setActiveTab('overview')}
+            >
+              📊 Overview
+            </button>
+            <button 
+              type="button"
+              className={`directory-tab ${activeTab === 'strategies' ? 'active' : ''}`}
+              onClick={() => setActiveTab('strategies')}
+            >
+              🎯 Strategies
+            </button>
+            <button 
+              type="button"
+              className={`directory-tab ${activeTab === 'psychology' ? 'active' : ''}`}
+              onClick={() => setActiveTab('psychology')}
+            >
+              🧠 Psychology
+            </button>
+            <button 
+              type="button"
+              className={`directory-tab ${activeTab === 'sessions' ? 'active' : ''}`}
+              onClick={() => setActiveTab('sessions')}
+            >
+              🕒 Sessions &amp; Assets
+            </button>
           </div>
 
-          {/* Psychological Impact Card */}
-          <div className="glass-panel analytics-card">
-            <h2 className="detail-section-title">Psychology &amp; Discipline</h2>
-            <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-              P&amp;L impact of your emotions and discipline factors.
-            </p>
-            
-            <div className="bar-chart">
-              {factorList.length > 0 ? (
-                factorList.map((f) => {
-                  const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(f.pnl) / maxFactorPnl) * 100)));
-                  const isPositive = f.pnl >= 0;
-                  return (
-                    <div key={f.name} className="bar-row">
-                      <span className="bar-label" title={f.name}>{f.name}</span>
-                      <div className="bar-track">
-                        <div
-                          className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
-                          style={{ 
-                            width: `${percentage}%`,
-                            float: isPositive ? 'left' : 'right',
-                            marginLeft: isPositive ? '0' : 'auto' 
-                          }}
-                        />
+          {/* TAB CONTENTS */}
+          
+          {/* 1. OVERVIEW TAB */}
+          {activeTab === 'overview' && (
+            <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+                
+                {/* Circular Win Rate Ring */}
+                <div className="winrate-ring-container">
+                  <svg className="winrate-ring-svg">
+                    <defs>
+                      <linearGradient id="indigo-violet-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#6366f1" />
+                        <stop offset="100%" stopColor="#a855f7" />
+                      </linearGradient>
+                    </defs>
+                    <circle className="winrate-ring-bg" cx="50" cy="50" r="40" />
+                    <circle 
+                      className="winrate-ring-fill" 
+                      cx="50" 
+                      cy="50" 
+                      r="40" 
+                      strokeDasharray="251.2"
+                      strokeDashoffset={251.2 - (251.2 * winRate) / 100}
+                    />
+                  </svg>
+                  <div>
+                    <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--color-primary-hover)' }}>{winRate}%</div>
+                    <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                      Win rate calculated across {totalTradesCount} completed trades
+                    </div>
+                  </div>
+                </div>
+
+                {/* Extreme Records (Big Win / Big Loss) */}
+                <div className="glass-panel" style={{ padding: '20px' }}>
+                  <h3 className="detail-section-title" style={{ marginBottom: '14px' }}>Extreme Metrics</h3>
+                  <div className="extreme-records-grid">
+                    <div className="extreme-record-card win">
+                      <span className="extreme-record-title">Max Single Win</span>
+                      <span className="extreme-record-value win">{formatCurrency(maxSingleWin)}</span>
+                    </div>
+                    <div className="extreme-record-card loss">
+                      <span className="extreme-record-title">Max Single Loss</span>
+                      <span className="extreme-record-value loss">-{formatCurrency(maxSingleLoss)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Three Highlight cards grid */}
+              <div className="analytics-grid-three">
+                
+                {/* Expected Value Card */}
+                <div className="analytics-stat-highlight">
+                  <div className="analytics-stat-glow success" />
+                  <div className="analytics-stat-header">
+                    <span className="analytics-stat-label">Expectancy (EV)</span>
+                    <span style={{ fontSize: '1.2rem' }}>🧮</span>
+                  </div>
+                  <div 
+                    className="analytics-stat-value" 
+                    style={{ color: expectancyVal >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}
+                  >
+                    {expectancyVal >= 0 ? '+' : ''}{formatCurrency(expectancyVal)}
+                  </div>
+                  <div className="analytics-stat-footer">
+                    Expected net return for every trade taken.
+                  </div>
+                </div>
+
+                {/* Kelly Criterion Card */}
+                <div className="analytics-stat-highlight">
+                  <div className="analytics-stat-glow" />
+                  <div className="analytics-stat-header">
+                    <span className="analytics-stat-label">Kelly Sizing Suggestion</span>
+                    <span style={{ fontSize: '1.2rem' }}>📐</span>
+                  </div>
+                  <div className="analytics-stat-value">
+                    {kellyPercentage > 0 ? `${kellyPercentage}%` : '0%'}
+                  </div>
+                  <div className="analytics-stat-footer">
+                    {kellyPercentage > 0 
+                      ? 'Recommended percentage of starting balance to risk per trade.'
+                      : 'Expectancy is negative. Size down or skip setups until stats improve.'}
+                  </div>
+                </div>
+
+                {/* Win / Loss Streaks Card */}
+                <div className="analytics-stat-highlight">
+                  <div className="analytics-stat-glow danger" />
+                  <div className="analytics-stat-header">
+                    <span className="analytics-stat-label">Peak Streaks</span>
+                    <span style={{ fontSize: '1.2rem' }}>🔥</span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-success)' }}>
+                        🔥 {maxWinStreak}
                       </div>
-                      <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
-                        {isPositive ? '+' : ''}{Math.round(f.pnl)}
-                      </span>
+                      <div style={{ fontSize: '0.62rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>Wins</div>
+                    </div>
+                    <div style={{ borderLeft: '1px solid rgba(255,255,255,0.08)', height: '24px' }} />
+                    <div>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-danger)' }}>
+                        🩸 {maxLossStreak}
+                      </div>
+                      <div style={{ fontSize: '0.62rem', textTransform: 'uppercase', color: 'var(--text-muted)', fontWeight: 700 }}>Losses</div>
+                    </div>
+                  </div>
+                  <div className="analytics-stat-footer">
+                    Longest consecutive winning &amp; losing streaks.
+                  </div>
+                </div>
+              </div>
+
+              {/* Ratios Breakdown Card */}
+              <div className="glass-panel" style={{ padding: '24px' }}>
+                <h3 className="detail-section-title" style={{ marginBottom: '18px' }}>Ratios &amp; Profitability Scores</h3>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                  <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>Profit Factor</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{profitFactor}</div>
+                  </div>
+
+                  <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>Efficiency Grade</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: pfGrade.color }}>{pfGrade.label}</div>
+                  </div>
+
+                  <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>Realized Risk-Reward (R:R)</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: avgRealizedRR >= 1.5 ? 'var(--color-success)' : 'inherit' }}>
+                      1 : {avgRealizedRR.toFixed(2)}
+                    </div>
+                  </div>
+
+                  <div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>Average Win / Loss</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      <span style={{ color: 'var(--color-success)', fontSize: '0.95rem' }}>{formatCurrency(avgWin)}</span>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>/</span>
+                      <span style={{ color: 'var(--color-danger)', fontSize: '0.95rem' }}>-{formatCurrency(avgLoss)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2. STRATEGIES TAB */}
+          {activeTab === 'strategies' && (
+            <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
+              <div className="analytics-cards-grid">
+                {strategyList.map((s) => {
+                  const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(s.pnl) / maxStrategyPnl) * 100)));
+                  const isPositive = s.pnl >= 0;
+                  return (
+                    <div 
+                      key={s.name} 
+                      className={`analytics-card-item ${isPositive ? 'profitable' : 'unprofitable'}`}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span className="analytics-card-item-title">{s.name}</span>
+                        <span className={`badge ${isPositive ? 'badge--success' : 'badge--danger'}`}>
+                          {s.count} trades
+                        </span>
+                      </div>
+
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+                          <span>Win Rate</span>
+                          <span>{s.winRate}%</span>
+                        </div>
+                        <div className="bar-track" style={{ height: '6px', borderRadius: '3px' }}>
+                          <div 
+                            className={`bar-fill ${s.winRate >= 50 ? 'win' : 'loss'}`}
+                            style={{ width: `${s.winRate}%`, height: '100%', borderRadius: '3px' }}
+                          />
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '12px' }}>
+                        <div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Net Profit</div>
+                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: isPositive ? 'var(--color-success)' : 'var(--color-danger)' }}>
+                            {isPositive ? '+' : ''}{formatCurrency(s.pnl)}
+                          </div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Profit Factor</div>
+                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: s.profitFactor >= 1.0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+                            {s.profitFactor >= 99 ? '∞' : s.profitFactor.toFixed(2)}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   );
-                })
-              ) : (
-                <div style={{ padding: '20px 0', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                  No psychological factors tagged. Tag factors under the 'Psychology' tab when logging trades.
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* 3. PSYCHOLOGY TAB */}
+          {activeTab === 'psychology' && (
+            <div className="glass-panel" style={{ padding: '24px', animation: 'fadeIn 0.3s ease-out' }}>
+              <h2 className="detail-section-title">Emotion &amp; Discipline Scorecard</h2>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '24px' }}>
+                P&amp;L impact of tagged behaviors. Ensure you log psychological traits when modifying or saving trade entries.
+              </p>
+
+              <div className="bar-chart">
+                {factorList.length > 0 ? (
+                  factorList.map((f) => {
+                    const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(f.pnl) / maxFactorPnl) * 100)));
+                    const isPositive = f.pnl >= 0;
+                    return (
+                      <div key={f.name} className="bar-row">
+                        <span className="bar-label" style={{ minWidth: '150px' }}>
+                          <span style={{ marginRight: '6px' }}>{isPositive ? '🟢' : '🔴'}</span>
+                          {f.name} ({f.count} trades)
+                        </span>
+                        <div className="bar-track">
+                          <div
+                            className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
+                            style={{ 
+                              width: `${percentage}%`,
+                              float: isPositive ? 'left' : 'right',
+                              marginLeft: isPositive ? '0' : 'auto' 
+                            }}
+                          />
+                        </div>
+                        <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
+                          {isPositive ? '+' : ''}{formatCurrency(f.pnl)}
+                        </span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                    No emotional tags found in history. Click on 'Trades Directory' &gt; edit a trade to add Psychological factors.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 4. SESSIONS & ASSETS TAB */}
+          {activeTab === 'sessions' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', animation: 'fadeIn 0.3s ease-out' }}>
+              
+              {/* Asset Tickers Performance */}
+              <div className="glass-panel" style={{ padding: '24px' }}>
+                <h2 className="detail-section-title" style={{ marginBottom: '18px' }}>Asset Performance</h2>
+                <div className="bar-chart">
+                  {pairList.map((p) => {
+                    const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(p.pnl) / maxPairPnl) * 100)));
+                    const isPositive = p.pnl >= 0;
+                    return (
+                      <div key={p.name} className="bar-row">
+                        <span className="bar-label" style={{ minWidth: '150px' }}>{p.name} ({p.winRate}% win rate)</span>
+                        <div className="bar-track">
+                          <div
+                            className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
+                            style={{ 
+                              width: `${percentage}%`,
+                              float: isPositive ? 'left' : 'right',
+                              marginLeft: isPositive ? '0' : 'auto' 
+                            }}
+                          />
+                        </div>
+                        <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
+                          {isPositive ? '+' : ''}{formatCurrency(p.pnl)}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
 
-          {/* Strategy Performance */}
-          <div className="glass-panel analytics-card">
-            <h2 className="detail-section-title">Strategy Performance (P&amp;L)</h2>
-            
-            <div className="bar-chart">
-              {strategyList.map((s) => {
-                const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(s.pnl) / maxStrategyPnl) * 100)));
-                const isPositive = s.pnl >= 0;
-                return (
-                  <div key={s.name} className="bar-row">
-                    <span className="bar-label" title={s.name}>{s.name} ({s.winRate}%)</span>
-                    <div className="bar-track">
-                      <div
-                        className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
-                        style={{ 
-                          width: `${percentage}%`,
-                          float: isPositive ? 'left' : 'right',
-                          marginLeft: isPositive ? '0' : 'auto' 
-                        }}
-                      />
-                    </div>
-                    <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
-                      {isPositive ? '+' : ''}{Math.round(s.pnl)}
-                    </span>
-                  </div>
-                );
-              })}
+              {/* Sessions Performance */}
+              <div className="glass-panel" style={{ padding: '24px' }}>
+                <h2 className="detail-section-title" style={{ marginBottom: '18px' }}>Session Analysis</h2>
+                <div className="bar-chart">
+                  {sessionList.map((s) => {
+                    const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(s.pnl) / maxSessionPnl) * 100)));
+                    const isPositive = s.pnl >= 0;
+                    return (
+                      <div key={s.name} className="bar-row">
+                        <span className="bar-label" style={{ minWidth: '150px' }}>{s.name} session ({s.winRate}% win)</span>
+                        <div className="bar-track">
+                          <div
+                            className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
+                            style={{ 
+                              width: `${percentage}%`,
+                              float: isPositive ? 'left' : 'right',
+                              marginLeft: isPositive ? '0' : 'auto' 
+                            }}
+                          />
+                        </div>
+                        <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
+                          {isPositive ? '+' : ''}{formatCurrency(s.pnl)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
-          </div>
-
-          {/* Strategy Profit Factors */}
-          <div className="glass-panel analytics-card">
-            <h2 className="detail-section-title">Strategy Profit Factor</h2>
-            <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-              Profit Factor (Gross Win / Gross Loss) by strategy. Breakeven is 1.0.
-            </p>
-            
-            <div className="bar-chart">
-              {strategyList.map((s) => {
-                const isInfinity = s.profitFactor >= 99;
-                const valueStr = isInfinity ? '∞' : s.profitFactor.toFixed(2);
-                const percentage = Math.max(10, Math.min(100, Math.round((s.profitFactor / maxStrategyPF) * 100)));
-                const isProfitable = s.profitFactor >= 1.0;
-                return (
-                  <div key={s.name} className="bar-row">
-                    <span className="bar-label" title={s.name}>{s.name} (x{s.count})</span>
-                    <div className="bar-track">
-                      <div
-                        className={`bar-fill ${isProfitable ? 'win' : 'loss'}`}
-                        style={{ 
-                          width: `${percentage}%`,
-                          float: 'left'
-                        }}
-                      />
-                    </div>
-                    <span className={`bar-value ${isProfitable ? 'win' : 'loss'}`}>
-                      {valueStr}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Session Performance */}
-          <div className="glass-panel analytics-card">
-            <h2 className="detail-section-title">Session Performance</h2>
-            <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-              P&amp;L and Win Rate across trading sessions.
-            </p>
-            
-            <div className="bar-chart">
-              {sessionList.map((s) => {
-                const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(s.pnl) / maxSessionPnl) * 100)));
-                const isPositive = s.pnl >= 0;
-                return (
-                  <div key={s.name} className="bar-row">
-                    <span className="bar-label" title={s.name}>{s.name} ({s.winRate}%)</span>
-                    <div className="bar-track">
-                      <div
-                        className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
-                        style={{ 
-                          width: `${percentage}%`,
-                          float: isPositive ? 'left' : 'right',
-                          marginLeft: isPositive ? '0' : 'auto' 
-                        }}
-                      />
-                    </div>
-                    <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
-                      {isPositive ? '+' : ''}{Math.round(s.pnl)}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Asset Tickers Performance */}
-          <div className="glass-panel analytics-card">
-            <h2 className="detail-section-title">Asset Tickers Performance</h2>
-            
-            <div className="bar-chart">
-              {pairList.map((p) => {
-                const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(p.pnl) / maxPairPnl) * 100)));
-                const isPositive = p.pnl >= 0;
-                return (
-                  <div key={p.name} className="bar-row">
-                    <span className="bar-label" title={p.name}>{p.name} ({p.winRate}%)</span>
-                    <div className="bar-track">
-                      <div
-                        className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
-                        style={{ 
-                          width: `${percentage}%`,
-                          float: isPositive ? 'left' : 'right',
-                          marginLeft: isPositive ? '0' : 'auto' 
-                        }}
-                      />
-                    </div>
-                    <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
-                      {isPositive ? '+' : ''}{Math.round(p.pnl)}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+          )}
+        </>
       ) : (
         <div className="glass-panel empty-state" style={{ padding: '60px 20px' }}>
           <AnalyticsIcon className="empty-state-icon" />
-          <p className="empty-state-title">No analytics available</p>
-          <p className="empty-state-desc">You need at least one closed trade record to compile statistics.</p>
+          <p className="empty-state-title">No analytics compiled</p>
+          <p className="empty-state-desc">You need at least one closed trade record to generate statistics.</p>
         </div>
       )}
     </div>
