@@ -1,9 +1,9 @@
 /* App Global Styles & Design System */
 
 :root {
-  --bg-app: #080d16;
-  --bg-card: #111a2e;
-  --bg-card-hover: #16223d;
+  --bg-app: #131722;
+  --bg-card: #1c2030;
+  --bg-card-hover: #2a2e3f;
   --border-color: rgba(255, 255, 255, 0.07);
   --border-color-glow: rgba(59, 130, 246, 0.3);
   
@@ -11,17 +11,17 @@
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   
-  --color-primary: #3b82f6;
-  --color-primary-glow: rgba(59, 130, 246, 0.15);
-  --color-primary-hover: #60a5fa;
+  --color-primary: #2962ff;
+  --color-primary-glow: rgba(41, 98, 255, 0.15);
+  --color-primary-hover: #4776ff;
   
-  --color-success: #10b981;
-  --color-success-bg: rgba(16, 185, 129, 0.1);
-  --color-success-hover: #34d399;
+  --color-success: #089981;
+  --color-success-bg: rgba(8, 153, 129, 0.1);
+  --color-success-hover: #0bb397;
   
-  --color-danger: #f43f5e;
-  --color-danger-bg: rgba(244, 63, 94, 0.1);
-  --color-danger-hover: #fb7185;
+  --color-danger: #f23645;
+  --color-danger-bg: rgba(242, 54, 69, 0.1);
+  --color-danger-hover: #ff4a58;
   
   --color-warning: #f59e0b;
   --color-warning-bg: rgba(245, 158, 11, 0.1);

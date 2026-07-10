@@ -27,6 +27,27 @@ const DISCIPLINE_FACTORS = [
   'Hesitation', 'Anxiety', 'Excitement', 'Boredom', 'Frustration', 'Discipline', 'Patience', 'None'
 ];
 
+
+function calculateDuration(start: string, end: string) {
+  try {
+    const s = new Date(start).getTime();
+    const e = new Date(end).getTime();
+    if (isNaN(s) || isNaN(e)) return '';
+    const diffMs = e - s;
+    if (diffMs <= 0) return '0m';
+    
+    const m = Math.floor(diffMs / 60000);
+    const h = Math.floor(m / 60);
+    const d = Math.floor(h / 24);
+    
+    if (d > 0) return `${d}d ${h % 24}h`;
+    if (h > 0) return `${h}h ${m % 60}m`;
+    return `${m}m`;
+  } catch (err) {
+    return '';
+  }
+}
+
 function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts = [], defaultAccountId = '' }: TradeModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>('basic');
   const [accountId, setAccountId] = useState(defaultAccountId);
@@ -36,6 +57,10 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
   const [direction, setDirection] = useState<'Long' | 'Short'>('Long');
   const [orderType, setOrderType] = useState<'Market' | 'Limit' | 'Stop'>('Market');
   const [strategy, setStrategy] = useState('Trend');
+  const [broker, setBroker] = useState('');
+  const [session, setSession] = useState('');
+  const [tags, setTags] = useState(''); 
+  const [mistakes, setMistakes] = useState('');
   const [entryDate, setEntryDate] = useState('');
   const [lotSize, setLotSize] = useState<number>(1.0);
   const [entryPrice, setEntryPrice] = useState<number>(0);
@@ -65,6 +90,7 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
   // Auto Calculations
   const [riskAmount, setRiskAmount] = useState(0);
   const [riskPercentage, setRiskPercentage] = useState(0);
+  const [plannedRR, setPlannedRR] = useState(0);
   const [pnl, setPnl] = useState(0);
 
   // Initialize/Prefill fields on open or edit change
@@ -77,6 +103,10 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
         setDirection(trade.direction);
         setOrderType(trade.orderType);
         setStrategy(trade.strategy);
+        setBroker(trade.broker || '');
+        setSession(trade.session || '');
+        setTags(trade.tags?.join(', ') || '');
+        setMistakes(trade.mistakes?.join(', ') || '');
         setEntryDate(trade.entryDate);
         setLotSize(trade.lotSize);
         setEntryPrice(trade.entryPrice);
@@ -105,6 +135,10 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
         setDirection('Long');
         setOrderType('Market');
         setStrategy('Trend');
+        setBroker('');
+        setSession('');
+        setTags('');
+        setMistakes('');
         
         // Format current local time for datetime-local input (YYYY-MM-DDTHH:MM)
         const now = new Date();
@@ -163,6 +197,11 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
     const calculatedRiskPercent = accountBalance > 0 ? (calculatedRisk / accountBalance) * 100 : 0;
     setRiskPercentage(Number(calculatedRiskPercent.toFixed(2)));
 
+    // Planned R:R calculation
+    const rewardDiff = Math.abs(takeProfitPrice - entryPrice);
+    const calculatedPlannedRR = diff > 0 ? rewardDiff / diff : 0;
+    setPlannedRR(Number(calculatedPlannedRR.toFixed(2)));
+
     // PnL calculation
     if (closed) {
       const pnlDiff = direction === 'Long' ? (exitPrice - entryPrice) : (entryPrice - exitPrice);
@@ -171,7 +210,7 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
     } else {
       setPnl(0);
     }
-  }, [pair, direction, entryPrice, stopLossPrice, lotSize, accountBalance, assetType, contractSize, closed, exitPrice]);
+  }, [pair, direction, entryPrice, stopLossPrice, takeProfitPrice, lotSize, accountBalance, assetType, contractSize, closed, exitPrice]);
 
   if (!isOpen) return null;
 
@@ -220,6 +259,11 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
       direction,
       orderType,
       strategy,
+      broker,
+      session,
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      mistakes: mistakes.split(',').map(m => m.trim()).filter(Boolean),
+      tradeDuration: closed && entryDate && exitDate ? calculateDuration(entryDate, exitDate) : undefined,
       entryDate,
       exitDate: closed ? exitDate : undefined,
       closed,
@@ -314,6 +358,31 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
                   </select>
                 </div>
               )}
+
+
+              {/* Asset Class & Direction Toggles */}
+              <div className="form-row form-row-2">
+                <div className="form-group">
+                  <label className="form-label">Broker</label>
+                  <input
+                    type="text"
+                    className="input-control"
+                    value={broker}
+                    onChange={(e) => setBroker(e.target.value)}
+                    placeholder="e.g., IC Markets"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Trading Session</label>
+                  <select className="input-control" value={session} onChange={(e) => setSession(e.target.value)}>
+                      <option value="">— Select Session —</option>
+                      <option value="London">London</option>
+                      <option value="New York">New York</option>
+                      <option value="Asia">Asia</option>
+                      <option value="Sydney">Sydney</option>
+                  </select>
+                </div>
+              </div>
 
               {/* Asset Class & Direction Toggles */}
               <div className="form-row form-row-2">
@@ -479,8 +548,8 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
               </div>
 
               {/* Calculated Risk Fields */}
-              <div className="form-row form-row-3" style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
-                <div className="form-group">
+              <div className="form-row form-row-4" style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid rgba(59, 130, 246, 0.1)', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label" style={{ color: 'var(--color-primary-hover)' }}>Multiplier</label>
                   <input
                     type="number"
@@ -490,7 +559,7 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
                     readOnly={assetType === 'Forex'}
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label" style={{ color: 'var(--color-primary-hover)' }}>Risk Amount</label>
                   <input
                     type="text"
@@ -499,7 +568,7 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
                     readOnly
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ marginBottom: 0 }}>
                   <label className="form-label" style={{ color: 'var(--color-primary-hover)' }}>Risk %</label>
                   <input
                     type="text"
@@ -508,6 +577,28 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
                     readOnly
                   />
                 </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label" style={{ color: 'var(--color-primary-hover)' }}>Planned R:R</label>
+                  <input
+                    type="text"
+                    className="input-control"
+                    value={`${plannedRR.toFixed(2)}R`}
+                    readOnly
+                  />
+                </div>
+              </div>
+
+
+              {/* SECTION: Tags */}
+              <div className="form-group">
+                <label className="form-label">Trade Tags (comma separated)</label>
+                <input
+                  type="text"
+                  className="input-control"
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                  placeholder="e.g., A+ Setup, News Event, Reversal"
+                />
               </div>
 
               {/* Entry Reason */}

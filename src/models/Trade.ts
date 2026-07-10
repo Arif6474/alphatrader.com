@@ -7,6 +7,12 @@ export interface ITrade extends Document {
   direction: 'Long' | 'Short';
   orderType: 'Market' | 'Limit' | 'Stop';
   strategy: string;
+  timeframe?: string;
+  broker?: string;
+  session?: string;
+  tags?: string[];
+  mistakes?: string[];
+  tradeDuration?: string;
   entryDate: string;
   exitDate?: string;
   closed: boolean;
@@ -42,6 +48,12 @@ const TradeSchema = new Schema<ITrade>(
     direction: { type: String, enum: ['Long', 'Short'], required: true },
     orderType: { type: String, enum: ['Market', 'Limit', 'Stop'], required: true },
     strategy: { type: String, default: 'Other' },
+    timeframe: { type: String },
+    broker: { type: String, default: '' },
+    session: { type: String, default: '' },
+    tags: [{ type: String }],
+    mistakes: [{ type: String }],
+    tradeDuration: { type: String, default: '' },
     entryDate: { type: String, required: true },
     exitDate: { type: String },
     closed: { type: Boolean, default: false },

@@ -118,6 +118,29 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
 
             <div className="detail-card-row">
               <div className="detail-item">
+                <span className="detail-label">Broker</span>
+                <span className="detail-value">{trade.broker || '—'}</span>
+              </div>
+              <div className="detail-item">
+                <span className="detail-label">Session</span>
+                <span className="detail-value">{trade.session || '—'}</span>
+              </div>
+            </div>
+
+            {trade.closed && trade.tradeDuration && (
+              <div className="detail-card-row">
+                <div className="detail-item">
+                  <span className="detail-label">Trade Duration</span>
+                  <span className="detail-value mono">{trade.tradeDuration}</span>
+                </div>
+                <div className="detail-item">
+                  {/* Empty for grid alignment */}
+                </div>
+              </div>
+            )}
+
+            <div className="detail-card-row">
+              <div className="detail-item">
                 <span className="detail-label">Entry Price</span>
                 <span className="detail-value mono">{trade.entryPrice}</span>
               </div>
@@ -182,6 +205,35 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
               <h3 className="detail-section-title">Lessons &amp; Retrospective</h3>
               <div className="detail-textarea" style={{ borderColor: 'rgba(16, 185, 129, 0.15)', background: 'rgba(16, 185, 129, 0.01)' }}>
                 {trade.lessonsLearned}
+              </div>
+            </div>
+          )}
+
+          {/* Tags & Mistakes */}
+          {((trade.tags && trade.tags.length > 0) || (trade.mistakes && trade.mistakes.length > 0)) && (
+            <div>
+              <h3 className="detail-section-title">Trade Tags &amp; Mistakes</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {trade.tags && trade.tags.length > 0 && (
+                  <div>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>Tags:</span>
+                    <div className="pill-selector">
+                      {trade.tags.map(t => (
+                        <span key={t} className="pill-option selected" style={{ background: 'var(--color-primary-glow)', color: 'var(--color-primary-hover)', borderColor: 'var(--color-primary-glow)' }}>{t}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {trade.mistakes && trade.mistakes.length > 0 && (
+                  <div>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', display: 'block', marginBottom: '6px' }}>Mistakes &amp; Rule Violations:</span>
+                    <div className="pill-selector">
+                      {trade.mistakes.map(m => (
+                        <span key={m} className="pill-option selected negative" style={{ background: 'var(--color-danger-bg)', color: 'var(--color-danger)', borderColor: 'var(--color-danger-bg)' }}>{m}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

@@ -11,6 +11,12 @@ export interface Trade {
   direction: 'Long' | 'Short';
   orderType: 'Market' | 'Limit' | 'Stop';
   strategy: string;
+  timeframe?: string;
+  broker?: string;
+  session?: string;
+  tags?: string[];
+  mistakes?: string[];
+  tradeDuration?: string;
   entryDate: string;
   exitDate?: string;
   closed: boolean;
@@ -115,6 +121,12 @@ function mapTradeDoc(doc: any): Trade {
     direction: doc.direction,
     orderType: doc.orderType,
     strategy: doc.strategy,
+    timeframe: doc.timeframe || undefined,
+    broker: doc.broker || '',
+    session: doc.session || '',
+    tags: doc.tags || [],
+    mistakes: doc.mistakes || [],
+    tradeDuration: doc.tradeDuration || '',
     entryDate: doc.entryDate,
     exitDate: doc.exitDate || undefined,
     closed: doc.closed,

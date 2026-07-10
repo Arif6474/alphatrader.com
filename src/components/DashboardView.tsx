@@ -26,6 +26,9 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
     netPnl,
     winRate,
     avgRR,
+    profitFactor,
+    expectancy,
+    maxDrawdown,
     balanceHistory,
     points,
     linePath,
@@ -38,11 +41,19 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
     // Calculate P&L
     const netPnl = closedTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
     
-    // Calculate Win Rate
+    // Calculate Gross Profit, Gross Loss & Profit Factor
+    const grossProfit = closedTrades.filter(t => (t.pnl || 0) > 0).reduce((sum, t) => sum + (t.pnl || 0), 0);
+    const grossLoss = Math.abs(closedTrades.filter(t => (t.pnl || 0) < 0).reduce((sum, t) => sum + (t.pnl || 0), 0));
+    const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss).toFixed(2) : (grossProfit > 0 ? '∞' : '0.00');
+
+    // Calculate Expectancy
     const winTrades = closedTrades.filter(t => t.status === 'Win');
-    const winRate = closedTrades.length > 0 
-      ? Math.round((winTrades.length / closedTrades.length) * 100) 
-      : 0;
+    const lossTrades = closedTrades.filter(t => t.status === 'Loss');
+    const winRate = closedTrades.length > 0 ? Math.round((winTrades.length / closedTrades.length) * 100) : 0;
+    
+    const avgWin = winTrades.length > 0 ? grossProfit / winTrades.length : 0;
+    const avgLoss = lossTrades.length > 0 ? grossLoss / lossTrades.length : 0;
+    const expectancy = ((winRate / 100) * avgWin) - (((100 - winRate) / 100) * avgLoss);
 
     // Calculate Avg RR (Realized R-Multiple)
     const rMultiples = closedTrades.map(t => (t.pnl || 0) / (t.riskAmount || 1));
@@ -61,8 +72,16 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
     );
 
     let currentBalance = startBalance;
+    let peakBalance = startBalance;
+    let maxDrawdown = 0;
+
     chronoTrades.forEach(t => {
       currentBalance += (t.pnl || 0);
+      if (currentBalance > peakBalance) peakBalance = currentBalance;
+      
+      const currentDrawdown = peakBalance > 0 ? ((peakBalance - currentBalance) / peakBalance) * 100 : 0;
+      if (currentDrawdown > maxDrawdown) maxDrawdown = currentDrawdown;
+
       balanceHistory.push({
         balance: currentBalance,
         date: new Date(t.entryDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
@@ -102,6 +121,9 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
       netPnl,
       winRate,
       avgRR,
+      profitFactor,
+      expectancy,
+      maxDrawdown,
       balanceHistory,
       points,
       linePath,
@@ -129,6 +151,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
 
       {/* Metrics Grid */}
       <div className="metrics-grid">
+        {/* Card 1: Net P&L */}
         <div className="glass-panel metric-card success">
           <div className="metric-header">
             <span className="metric-label">Net Profit &amp; Loss</span>
@@ -146,6 +169,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
           </div>
         </div>
 
+        {/* Card 2: Win Rate */}
         <div className="glass-panel metric-card primary">
           <div className="metric-header">
             <span className="metric-label">Win Rate</span>
@@ -157,10 +181,59 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
             {winRate}%
           </div>
           <div className="metric-trend">
-            <span>{winTrades.length} of {closedTrades.length} trades won</span>
+            <span>{winTrades.length} of {closedTrades.length} won</span>
           </div>
         </div>
 
+        {/* Card 3: Profit Factor */}
+        <div className={`glass-panel metric-card ${Number(profitFactor) >= 1.5 || profitFactor === '∞' ? 'success' : Number(profitFactor) >= 1.0 ? 'primary' : 'danger'}`}>
+          <div className="metric-header">
+            <span className="metric-label">Profit Factor</span>
+            <div className="metric-icon-container">
+              <AnalyticsIcon size={16} />
+            </div>
+          </div>
+          <div className="metric-value" style={{ color: Number(profitFactor) >= 1.5 || profitFactor === '∞' ? 'var(--color-success)' : Number(profitFactor) >= 1.0 ? 'var(--color-primary-hover)' : 'var(--color-danger)' }}>
+            {profitFactor}
+          </div>
+          <div className="metric-trend">
+            <span>Ratio of Gross Win/Loss</span>
+          </div>
+        </div>
+
+        {/* Card 4: Expectancy */}
+        <div className={`glass-panel metric-card ${expectancy >= 0 ? 'success' : 'danger'}`}>
+          <div className="metric-header">
+            <span className="metric-label">Expectancy</span>
+            <div className="metric-icon-container">
+              <AnalyticsIcon size={16} />
+            </div>
+          </div>
+          <div className={`metric-value ${expectancy >= 0 ? 'trend-up' : 'trend-down'}`}>
+            {expectancy >= 0 ? '+' : ''}{formatCurrency(expectancy)}
+          </div>
+          <div className="metric-trend">
+            <span>Expected value per trade</span>
+          </div>
+        </div>
+
+        {/* Card 5: Max Drawdown */}
+        <div className="glass-panel metric-card danger">
+          <div className="metric-header">
+            <span className="metric-label">Max Drawdown</span>
+            <div className="metric-icon-container">
+              <AnalyticsIcon size={16} />
+            </div>
+          </div>
+          <div className="metric-value" style={{ color: 'var(--color-danger)' }}>
+            {maxDrawdown.toFixed(2)}%
+          </div>
+          <div className="metric-trend">
+            <span>Peak-to-valley drawdown</span>
+          </div>
+        </div>
+
+        {/* Card 6: Avg Realized RR */}
         <div className="glass-panel metric-card warning">
           <div className="metric-header">
             <span className="metric-label">Avg Realized RR</span>
@@ -176,6 +249,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
           </div>
         </div>
 
+        {/* Card 7: Total Trades */}
         <div className="glass-panel metric-card">
           <div className="metric-header">
             <span className="metric-label">Total Trades</span>
@@ -187,7 +261,23 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
             {trades.length}
           </div>
           <div className="metric-trend">
-            <span>{activeTrades.length} active trade{activeTrades.length !== 1 ? 's' : ''} currently open</span>
+            <span>Closed &amp; active records</span>
+          </div>
+        </div>
+
+        {/* Card 8: Active Trades */}
+        <div className="glass-panel metric-card">
+          <div className="metric-header">
+            <span className="metric-label">Active Trades</span>
+            <div className="metric-icon-container">
+              <TradesIcon size={16} />
+            </div>
+          </div>
+          <div className="metric-value">
+            {activeTrades.length}
+          </div>
+          <div className="metric-trend">
+            <span>Currently open positions</span>
           </div>
         </div>
       </div>

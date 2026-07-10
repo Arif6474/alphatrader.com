@@ -29,9 +29,12 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
     strategyList,
     pairList,
     factorList,
+    sessionList,
     maxStrategyPnl,
     maxPairPnl,
-    maxFactorPnl
+    maxFactorPnl,
+    maxSessionPnl,
+    maxStrategyPF
   } = React.useMemo(() => {
     const closedTrades = trades.filter(t => t.closed);
     const winTrades = closedTrades.filter(t => t.status === 'Win');
@@ -49,26 +52,33 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
     const avgLoss = lossTrades.length > 0 ? totalLoss / lossTrades.length : 0;
     const expectancyRatio = avgLoss > 0 ? (avgWin / avgLoss).toFixed(2) : '0.00';
 
-    // 1. Calculate Strategy Performance (PnL and Win Rate)
-    const strategyStats: { [key: string]: { pnl: number; count: number; wins: number } } = {};
+    // 1. Calculate Strategy Performance (PnL, Win Rate, and Profit Factor)
+    const strategyStats: { [key: string]: { pnl: number; count: number; wins: number; grossProfit: number; grossLoss: number } } = {};
     closedTrades.forEach(t => {
       const strat = t.strategy || 'Other';
       if (!strategyStats[strat]) {
-        strategyStats[strat] = { pnl: 0, count: 0, wins: 0 };
+        strategyStats[strat] = { pnl: 0, count: 0, wins: 0, grossProfit: 0, grossLoss: 0 };
       }
       strategyStats[strat].pnl += (t.pnl || 0);
       strategyStats[strat].count += 1;
       if (t.status === 'Win') {
         strategyStats[strat].wins += 1;
+        strategyStats[strat].grossProfit += (t.pnl || 0);
+      } else if (t.status === 'Loss') {
+        strategyStats[strat].grossLoss += Math.abs(t.pnl || 0);
       }
     });
 
-    const strategyList = Object.entries(strategyStats).map(([name, stats]) => ({
-      name,
-      pnl: stats.pnl,
-      winRate: stats.count > 0 ? Math.round((stats.wins / stats.count) * 100) : 0,
-      count: stats.count
-    })).sort((a, b) => b.pnl - a.pnl);
+    const strategyList = Object.entries(strategyStats).map(([name, stats]) => {
+      const pfVal = stats.grossLoss > 0 ? (stats.grossProfit / stats.grossLoss) : (stats.grossProfit > 0 ? 99 : 0);
+      return {
+        name,
+        pnl: stats.pnl,
+        winRate: stats.count > 0 ? Math.round((stats.wins / stats.count) * 100) : 0,
+        count: stats.count,
+        profitFactor: pfVal
+      };
+    }).sort((a, b) => b.pnl - a.pnl);
 
     // 2. Calculate Pair Performance
     const pairStats: { [key: string]: { pnl: number; count: number; wins: number } } = {};
@@ -108,12 +118,35 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       name,
       pnl: stats.pnl,
       count: stats.count
-    })).sort((a, b) => a.pnl - b.pnl); // Sort from most negative to positive
+    })).sort((a, b) => a.pnl - b.pnl);
 
-    // Maximum absolute PnL to scale charts
+    // 4. Calculate Session Performance
+    const sessionStats: { [key: string]: { pnl: number; count: number; wins: number } } = {};
+    closedTrades.forEach(t => {
+      const sess = t.session || 'Unknown';
+      if (!sessionStats[sess]) {
+        sessionStats[sess] = { pnl: 0, count: 0, wins: 0 };
+      }
+      sessionStats[sess].pnl += (t.pnl || 0);
+      sessionStats[sess].count += 1;
+      if (t.status === 'Win') {
+        sessionStats[sess].wins += 1;
+      }
+    });
+
+    const sessionList = Object.entries(sessionStats).map(([name, stats]) => ({
+      name,
+      pnl: stats.pnl,
+      winRate: stats.count > 0 ? Math.round((stats.wins / stats.count) * 100) : 0,
+      count: stats.count
+    })).sort((a, b) => b.pnl - a.pnl);
+
+    // Maximum metrics to scale charts
     const maxStrategyPnl = Math.max(...strategyList.map(s => Math.abs(s.pnl)), 1);
     const maxPairPnl = Math.max(...pairList.map(p => Math.abs(p.pnl)), 1);
     const maxFactorPnl = Math.max(...factorList.map(f => Math.abs(f.pnl)), 1);
+    const maxSessionPnl = Math.max(...sessionList.map(s => Math.abs(s.pnl)), 1);
+    const maxStrategyPF = Math.max(...strategyList.map(s => s.profitFactor), 3);
 
     return {
       closedTrades,
@@ -130,9 +163,12 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       strategyList,
       pairList,
       factorList,
+      sessionList,
       maxStrategyPnl,
       maxPairPnl,
-      maxFactorPnl
+      maxFactorPnl,
+      maxSessionPnl,
+      maxStrategyPF
     };
   }, [trades]);
 
@@ -216,11 +252,78 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
 
           {/* Strategy Performance */}
           <div className="glass-panel analytics-card">
-            <h2 className="detail-section-title">Strategy Performance</h2>
+            <h2 className="detail-section-title">Strategy Performance (P&amp;L)</h2>
             
             <div className="bar-chart">
               {strategyList.map((s) => {
                 const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(s.pnl) / maxStrategyPnl) * 100)));
+                const isPositive = s.pnl >= 0;
+                return (
+                  <div key={s.name} className="bar-row">
+                    <span className="bar-label" title={s.name}>{s.name} ({s.winRate}%)</span>
+                    <div className="bar-track">
+                      <div
+                        className={`bar-fill ${isPositive ? 'win' : 'loss'}`}
+                        style={{ 
+                          width: `${percentage}%`,
+                          float: isPositive ? 'left' : 'right',
+                          marginLeft: isPositive ? '0' : 'auto' 
+                        }}
+                      />
+                    </div>
+                    <span className={`bar-value ${isPositive ? 'win' : 'loss'}`}>
+                      {isPositive ? '+' : ''}{Math.round(s.pnl)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Strategy Profit Factors */}
+          <div className="glass-panel analytics-card">
+            <h2 className="detail-section-title">Strategy Profit Factor</h2>
+            <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              Profit Factor (Gross Win / Gross Loss) by strategy. Breakeven is 1.0.
+            </p>
+            
+            <div className="bar-chart">
+              {strategyList.map((s) => {
+                const isInfinity = s.profitFactor >= 99;
+                const valueStr = isInfinity ? '∞' : s.profitFactor.toFixed(2);
+                const percentage = Math.max(10, Math.min(100, Math.round((s.profitFactor / maxStrategyPF) * 100)));
+                const isProfitable = s.profitFactor >= 1.0;
+                return (
+                  <div key={s.name} className="bar-row">
+                    <span className="bar-label" title={s.name}>{s.name} (x{s.count})</span>
+                    <div className="bar-track">
+                      <div
+                        className={`bar-fill ${isProfitable ? 'win' : 'loss'}`}
+                        style={{ 
+                          width: `${percentage}%`,
+                          float: 'left'
+                        }}
+                      />
+                    </div>
+                    <span className={`bar-value ${isProfitable ? 'win' : 'loss'}`}>
+                      {valueStr}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Session Performance */}
+          <div className="glass-panel analytics-card">
+            <h2 className="detail-section-title">Session Performance</h2>
+            <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              P&amp;L and Win Rate across trading sessions.
+            </p>
+            
+            <div className="bar-chart">
+              {sessionList.map((s) => {
+                const percentage = Math.max(10, Math.min(100, Math.round((Math.abs(s.pnl) / maxSessionPnl) * 100)));
                 const isPositive = s.pnl >= 0;
                 return (
                   <div key={s.name} className="bar-row">

@@ -407,7 +407,7 @@ export default function Home() {
         </div>
 
         {/* Sidebar Account Selector */}
-        <div className="sidebar-account-section">
+        {/* <div className="sidebar-account-section">
           <div className="sidebar-account-label">Active Account</div>
           <select
             className="account-select account-select--full"
@@ -427,7 +427,7 @@ export default function Home() {
           >
             <span>⚙️</span> Manage Accounts
           </button>
-        </div>
+        </div> */}
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
           <ul className="nav-links" style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
