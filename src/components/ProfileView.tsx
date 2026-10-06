@@ -226,7 +226,7 @@ function ProfileView({ trades, user, onSignOut, onResetDb, onClearDb, onImportDb
 
           <div style={{ padding: '0 24px 24px' }}>
             {/* Avatar + name row */}
-            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: '-20px', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', marginTop: '-20px', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-end', gap: '14px' }}>
                 {user?.avatar ? (
                   <img src={user.avatar} alt={user.name} style={{ width: '64px', height: '64px', borderRadius: '14px', border: '3px solid rgba(10,12,22,0.9)', objectFit: 'cover', flexShrink: 0 }} />

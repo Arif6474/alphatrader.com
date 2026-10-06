@@ -378,8 +378,14 @@ body::after {
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 400px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (min-width: 768px) {
@@ -1210,6 +1216,47 @@ input:checked+.switch-slider:before {
 }
 
 /* Page Specific styling (Trades Directory filter & Search) */
+.trades-tabs-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 4px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.trades-tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.trades-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 640px) {
+  .trades-toolbar {
+    flex-wrap: nowrap;
+  }
+}
+
+.trades-toolbar .search-wrapper {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 640px) {
+  .trades-toolbar .search-wrapper {
+    flex: 1 1 auto;
+  }
+}
+
 .filter-search-container {
   display: flex;
   flex-direction: column;

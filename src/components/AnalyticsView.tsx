@@ -273,14 +273,14 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
           <p className="page-subtitle" style={{ margin: '6px 0 0 0' }}>Quantitative insights, performance ratios, and behavioral patterns.</p>
         </div>
         {/* Period Selector */}
-        <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '4px' }}>
+        <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '4px', overflowX: 'auto', maxWidth: '100%' }}>
           {(['7d', '30d', '3m', '6m', '1y', 'all'] as const).map(p => {
             const labels: Record<string, string> = { '7d': '7D', '30d': '30D', '3m': '3M', '6m': '6M', '1y': '1Y', 'all': 'All' };
             return (
               <button key={p} type="button" onClick={() => setPeriodFilter(p)}
                 style={{
                   padding: '6px 12px', borderRadius: '6px', border: 'none', cursor: 'pointer',
-                  fontSize: '0.73rem', fontWeight: 700, transition: 'all 0.15s',
+                  fontSize: '0.73rem', fontWeight: 700, transition: 'all 0.15s', whiteSpace: 'nowrap',
                   background: periodFilter === p ? 'rgba(99,102,241,0.2)' : 'transparent',
                   color: periodFilter === p ? 'var(--color-primary-hover)' : 'var(--text-muted)',
                   boxShadow: periodFilter === p ? 'inset 0 0 0 1px rgba(99,102,241,0.3)' : 'none',
@@ -295,11 +295,11 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       {totalTradesCount > 0 ? (
         <>
           {/* Analytics Tab Navigation */}
-          <div style={{ display: 'flex', gap: '4px', marginBottom: '24px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: '4px', width: 'fit-content' }}>
+          <div style={{ display: 'flex', gap: '4px', marginBottom: '24px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: '4px', width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             {([['overview', '📊 Overview'], ['strategies', '🎯 Strategies'], ['psychology', '🧠 Psychology'], ['sessions', '🕒 Sessions']] as const).map(([tab, label]) => (
               <button key={tab} type="button" onClick={() => setActiveTab(tab as typeof activeTab)}
                 style={{
-                  padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                  flex: '1 0 auto', padding: '8px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
                   fontWeight: 600, fontSize: '0.8rem', transition: 'all 0.2s ease', whiteSpace: 'nowrap',
                   background: activeTab === tab ? 'rgba(99,102,241,0.15)' : 'transparent',
                   color: activeTab === tab ? 'var(--color-primary-hover)' : 'var(--text-secondary)',
@@ -315,7 +315,7 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
           {/* 1. OVERVIEW TAB */}
           {activeTab === 'overview' && (
             <div style={{ animation: 'fadeIn 0.3s ease-out' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', gap: '20px', marginBottom: '24px' }}>
                 
                 {/* Circular Win Rate Ring */}
                 <div className="winrate-ring-container">

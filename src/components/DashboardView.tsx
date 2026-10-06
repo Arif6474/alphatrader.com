@@ -216,7 +216,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
       </div>
 
       {/* ── KPI Grid: 4 top + 4 bottom ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+      <div className="metrics-grid">
         <StatCard label="Net P&L" value={`${netPnl >= 0 ? '+' : ''}${formatCurrency(netPnl)}`}
           sub={`${closedTrades.length} closed trades`} icon={<IconPnl />}
           accent={isUp ? '#10b981' : '#ff3366'} />
@@ -230,7 +230,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
           sub="Expected $ per trade" icon={<IconStar />} accent={expectancy >= 0 ? '#10b981' : '#ff3366'} />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+      <div className="metrics-grid">
         <StatCard label="Max Drawdown" value={`${maxDrawdown.toFixed(2)}%`}
           sub="Peak-to-valley decline" icon={<IconAlert />} accent="#ff3366" />
         <StatCard label="Avg R:R" value={`${avgRR}R`}
@@ -242,7 +242,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
       </div>
 
       {/* ── Bottom widgets ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '16px', alignItems: 'start' }}>
+      <div className="dashboard-grid">
 
         {/* Equity Curve */}
         <div style={{

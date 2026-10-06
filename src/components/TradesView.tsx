@@ -118,7 +118,7 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
       </div>
 
       {/* Tab Bar */}
-      <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '12px', padding: '4px' }}>
+      <div className="trades-tabs-bar">
         {(['all', 'active', 'closed', 'gallery'] as TabType[]).map(tab => {
           const labels: Record<TabType, string> = { all: '📋 All', active: '⚡ Active', closed: '🏁 History', gallery: '🖼️ Gallery' };
           const count = tabCounts[tab];
@@ -126,8 +126,8 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
             <button key={tab} type="button"
               onClick={() => setActiveTab(tab)}
               style={{
-                flex: 1, padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                fontWeight: 600, fontSize: '0.8rem', transition: 'all 0.2s ease',
+                flex: '1 0 auto', padding: '8px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                fontWeight: 600, fontSize: '0.8rem', transition: 'all 0.2s ease', whiteSpace: 'nowrap',
                 background: activeTab === tab ? 'rgba(99,102,241,0.15)' : 'transparent',
                 color: activeTab === tab ? 'var(--color-primary-hover)' : 'var(--text-secondary)',
                 boxShadow: activeTab === tab ? 'inset 0 0 0 1px rgba(99,102,241,0.3)' : 'none',
@@ -144,11 +144,9 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
       </div>
 
       {/* Search + Filter Toolbar */}
-      <div style={{
-        display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '12px',
-      }}>
+      <div className="trades-toolbar">
         {/* Search input */}
-        <div className="search-wrapper" style={{ flex: 1 }}>
+        <div className="search-wrapper">
           <SearchIcon className="search-icon" />
           <input type="text" className="input-control search-input"
             placeholder="Search pair, strategy, notes…"
