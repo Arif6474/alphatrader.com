@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Trade } from '@/lib/db';
 import { CloseIcon, UploadIcon } from './Icons';
 import type { Account } from './AccountManagerModal';
+import { evaluateSingleTrade, getStandardContractSize } from '@/lib/calculations';
 import toast from 'react-hot-toast';
 
 interface TradeModalProps {
@@ -76,6 +77,8 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
   const [closed, setClosed] = useState(false);
   const [exitPrice, setExitPrice] = useState<number>(0);
   const [exitDate, setExitDate] = useState('');
+  const [fees, setFees] = useState<number>(0);
+  const [currency, setCurrency] = useState<string>('USD');
   const [lessonsLearned, setLessonsLearned] = useState('');
 
   // Psychology Form States
@@ -123,6 +126,8 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
         setClosed(trade.closed);
         setExitPrice(trade.exitPrice || trade.entryPrice);
         setExitDate(trade.exitDate || '');
+        setFees(trade.fees || 0);
+        setCurrency(trade.currency || 'USD');
         setLessonsLearned(trade.lessonsLearned || '');
         
         setPsychologyBefore(trade.psychologyBefore || []);
@@ -156,11 +161,13 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
         setAccountBalance(currentBalance);
         setAccountId(defaultAccountId);
         setAssetType('Forex');
-        setContractSize(100000);
+        setContractSize(getStandardContractSize('Forex', 'EURUSD'));
         
         setClosed(false);
         setExitPrice(1.0800);
         setExitDate(now.toISOString().slice(0, 16));
+        setFees(0);
+        setCurrency('USD');
         setLessonsLearned('');
         
         setPsychologyBefore([]);
@@ -172,66 +179,42 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
         setChartAfter('');
       }
     }
-  }, [isOpen, trade, currentBalance]);
+  }, [isOpen, trade, currentBalance, defaultAccountId]);
 
   // Adjust contract size dynamically based on Asset Type and Ticker/Pair
   useEffect(() => {
     if (!trade) {
-      const p = pair.toUpperCase().trim();
-      if (assetType === 'Forex') {
-        if (p.includes('XAU') || p.includes('GOLD')) {
-          setContractSize(100);
-        } else if (p.includes('XAG') || p.includes('SILVER')) {
-          setContractSize(5000);
-        } else if (p.includes('JPY')) {
-          setContractSize(1000);
-        } else {
-          setContractSize(100000);
-        }
-      } else if (assetType === 'Crypto' || assetType === 'Stock') {
-        setContractSize(1);
-      } else if (assetType === 'Futures') {
-        if (p.includes('ES') || p.includes('SPY') || p.includes('SPX')) {
-          setContractSize(50);
-        } else if (p.includes('NQ') || p.includes('NDX')) {
-          setContractSize(20);
-        } else if (p.includes('YM') || p.includes('DOW')) {
-          setContractSize(5);
-        } else if (p.includes('GC') || p.includes('GOLD')) {
-          setContractSize(100);
-        } else {
-          setContractSize(50);
-        }
-      }
+      setContractSize(getStandardContractSize(assetType, pair));
     }
   }, [assetType, pair, trade]);
 
-  // Perform Real-Time Calculations
+  // Perform Real-Time Calculations using authoritative engine
   useEffect(() => {
-    const finalMultiplier = contractSize;
+    const finalMultiplier = contractSize > 0 ? contractSize : getStandardContractSize(assetType, pair);
 
-    // Risk calculation
-    const diff = Math.abs(entryPrice - stopLossPrice);
-    const calculatedRisk = diff * lotSize * finalMultiplier;
-    setRiskAmount(Number(calculatedRisk.toFixed(2)));
+    const evaluated = evaluateSingleTrade({
+      pair,
+      direction,
+      lotSize,
+      contractSize: finalMultiplier,
+      entryPrice,
+      exitPrice: closed ? exitPrice : undefined,
+      stopLossPrice,
+      takeProfitPrice,
+      closed,
+      entryDate,
+      exitDate: closed ? exitDate : undefined,
+      fees,
+      accountBalance,
+      currency,
+      assetType
+    });
 
-    const calculatedRiskPercent = accountBalance > 0 ? (calculatedRisk / accountBalance) * 100 : 0;
-    setRiskPercentage(Number(calculatedRiskPercent.toFixed(2)));
-
-    // Planned R:R calculation
-    const rewardDiff = Math.abs(takeProfitPrice - entryPrice);
-    const calculatedPlannedRR = diff > 0 ? rewardDiff / diff : 0;
-    setPlannedRR(Number(calculatedPlannedRR.toFixed(2)));
-
-    // PnL calculation
-    if (closed) {
-      const pnlDiff = direction === 'Long' ? (exitPrice - entryPrice) : (entryPrice - exitPrice);
-      const calculatedPnl = pnlDiff * lotSize * finalMultiplier;
-      setPnl(Number(calculatedPnl.toFixed(2)));
-    } else {
-      setPnl(0);
-    }
-  }, [pair, direction, entryPrice, stopLossPrice, takeProfitPrice, lotSize, accountBalance, assetType, contractSize, closed, exitPrice]);
+    setRiskAmount(evaluated.plannedRiskAmount ?? 0);
+    setRiskPercentage(evaluated.plannedRiskPercent ?? 0);
+    setPlannedRR(evaluated.plannedRR ?? 0);
+    setPnl(evaluated.netPnl ?? 0);
+  }, [pair, direction, entryPrice, stopLossPrice, takeProfitPrice, lotSize, accountBalance, assetType, contractSize, closed, exitPrice, fees, currency, entryDate, exitDate]);
 
   if (!isOpen) return null;
 
@@ -290,11 +273,23 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Determine status
-    let status: 'Win' | 'Loss' | 'Active' = 'Active';
-    if (closed) {
-      status = pnl >= 0 ? 'Win' : 'Loss';
-    }
+    const evaluated = evaluateSingleTrade({
+      pair,
+      direction,
+      lotSize,
+      contractSize,
+      entryPrice,
+      exitPrice: closed ? exitPrice : undefined,
+      stopLossPrice,
+      takeProfitPrice,
+      closed,
+      entryDate,
+      exitDate: closed ? exitDate : undefined,
+      fees,
+      accountBalance,
+      currency,
+      assetType
+    });
 
     const tradeData = {
       pair: pair.toUpperCase().trim(),
@@ -314,13 +309,20 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
       stopLossPrice,
       takeProfitPrice,
       exitPrice: closed ? exitPrice : undefined,
+      fees: Number(fees) || 0,
+      currency,
       entryReason,
       lessonsLearned: closed ? lessonsLearned : '',
-      riskAmount,
-      riskPercentage,
+      riskAmount: evaluated.plannedRiskAmount ?? riskAmount,
+      riskPercentage: evaluated.plannedRiskPercent ?? riskPercentage,
       accountBalance,
-      pnl: closed ? pnl : undefined,
-      status,
+      pnl: closed ? (evaluated.netPnl ?? pnl) : undefined,
+      grossPnl: closed ? (evaluated.grossPnl ?? undefined) : undefined,
+      netPnl: closed ? (evaluated.netPnl ?? undefined) : undefined,
+      status: evaluated.status,
+      plannedRiskAmount: evaluated.plannedRiskAmount ?? undefined,
+      plannedRR: evaluated.plannedRR ?? undefined,
+      realizedRR: evaluated.realizedRR ?? undefined,
       psychologyBefore,
       psychologyDuring,
       psychologyAfter,
@@ -699,31 +701,79 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
                     </div>
                   </div>
 
-                  {/* Calculated Results */}
-                  <div className="form-row form-row-2" style={{ background: pnl >= 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(244, 63, 94, 0.05)', padding: '12px', borderRadius: 'var(--radius-sm)', border: pnl >= 0 ? '1px solid rgba(16, 185, 129, 0.1)' : '1px solid rgba(244, 63, 94, 0.1)' }}>
+                  {/* Fees & Commissions */}
+                  <div className="form-row form-row-2">
                     <div className="form-group">
-                      <label className="form-label" style={{ color: pnl >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
-                        Realized P&amp;L
-                      </label>
+                      <label className="form-label">Trading Fees &amp; Commission ($)</label>
                       <input
-                        type="text"
+                        type="number"
+                        step="any"
+                        min="0"
                         className="input-control"
-                        value={`${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`}
-                        readOnly
+                        value={fees}
+                        onChange={(e) => setFees(Math.max(0, parseFloat(e.target.value) || 0))}
+                        placeholder="0.00"
                       />
                     </div>
                     <div className="form-group">
-                      <label className="form-label" style={{ color: pnl >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
-                        Result
-                      </label>
+                      <label className="form-label">Currency</label>
                       <input
                         type="text"
                         className="input-control"
-                        value={pnl >= 0 ? 'WIN' : 'LOSS'}
-                        readOnly
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value.toUpperCase())}
+                        maxLength={3}
                       />
                     </div>
                   </div>
+
+                  {/* Calculated Results */}
+                  {(() => {
+                    const outcome = pnl > 0.01 ? 'WIN' : pnl < -0.01 ? 'LOSS' : 'BREAKEVEN';
+                    const outcomeColor = outcome === 'WIN' 
+                      ? 'var(--color-success)' 
+                      : outcome === 'LOSS' 
+                        ? 'var(--color-danger)' 
+                        : 'var(--color-primary-hover)';
+                    const outcomeBg = outcome === 'WIN'
+                      ? 'rgba(16, 185, 129, 0.05)'
+                      : outcome === 'LOSS'
+                        ? 'rgba(244, 63, 94, 0.05)'
+                        : 'rgba(99, 102, 241, 0.05)';
+                    const outcomeBorder = outcome === 'WIN'
+                      ? 'rgba(16, 185, 129, 0.15)'
+                      : outcome === 'LOSS'
+                        ? 'rgba(244, 63, 94, 0.15)'
+                        : 'rgba(99, 102, 241, 0.15)';
+
+                    return (
+                      <div className="form-row form-row-2" style={{ background: outcomeBg, padding: '12px', borderRadius: 'var(--radius-sm)', border: `1px solid ${outcomeBorder}` }}>
+                        <div className="form-group">
+                          <label className="form-label" style={{ color: outcomeColor }}>
+                            Net Realized P&amp;L (After Fees)
+                          </label>
+                          <input
+                            type="text"
+                            className="input-control"
+                            value={`${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`}
+                            readOnly
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label" style={{ color: outcomeColor }}>
+                            Result Classification
+                          </label>
+                          <input
+                            type="text"
+                            className="input-control"
+                            value={outcome}
+                            style={{ fontWeight: 800, color: outcomeColor }}
+                            readOnly
+                          />
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   {/* Lessons Learned */}
                   <div className="form-group">

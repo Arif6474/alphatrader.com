@@ -27,13 +27,21 @@ export interface ITrade extends Document {
   riskPercentage: number;
   accountBalance: number;
   pnl?: number;
-  status: 'Win' | 'Loss' | 'Active';
+  grossPnl?: number;
+  netPnl?: number;
+  fees?: number;
+  currency?: string;
+  conversionRate?: number;
+  status: 'Win' | 'Loss' | 'Breakeven' | 'Active' | 'Cancelled';
+  plannedRiskAmount?: number;
+  plannedRR?: number;
+  realizedRR?: number;
   psychologyBefore: string[];
   psychologyDuring: string[];
   psychologyAfter: string[];
   psychologyFactors: string[];
-  chartBefore?: string; // base64
-  chartAfter?: string;  // base64
+  chartBefore?: string; // base64 or URL
+  chartAfter?: string;  // base64 or URL
   assetType: 'Forex' | 'Crypto' | 'Stock' | 'Futures';
   contractSize: number;
   createdAt: Date;
@@ -68,7 +76,15 @@ const TradeSchema = new Schema<ITrade>(
     riskPercentage: { type: Number, required: true },
     accountBalance: { type: Number, required: true },
     pnl: { type: Number },
-    status: { type: String, enum: ['Win', 'Loss', 'Active'], default: 'Active' },
+    grossPnl: { type: Number },
+    netPnl: { type: Number },
+    fees: { type: Number, default: 0 },
+    currency: { type: String, default: 'USD', uppercase: true, trim: true },
+    conversionRate: { type: Number },
+    status: { type: String, enum: ['Win', 'Loss', 'Breakeven', 'Active', 'Cancelled'], default: 'Active' },
+    plannedRiskAmount: { type: Number },
+    plannedRR: { type: Number },
+    realizedRR: { type: Number },
     psychologyBefore: [{ type: String }],
     psychologyDuring: [{ type: String }],
     psychologyAfter: [{ type: String }],

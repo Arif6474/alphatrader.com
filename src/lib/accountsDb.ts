@@ -7,6 +7,11 @@ export interface LocalAccount {
   name: string;
   firmName?: string;
   startingCapital: number;
+  currency?: string;
+  maxDailyLossPercent?: number;
+  maxTotalDrawdownPercent?: number;
+  drawdownType?: 'static' | 'trailing';
+  dailyResetHourUtc?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -89,3 +94,23 @@ export function deleteLocalAccount(id: string): boolean {
   if (filtered.length === all.length) return false;
   return saveLocalAccounts(filtered);
 }
+
+export async function validateAccountOwnership(accountId: string, userId: string): Promise<boolean> {
+  if (!accountId || accountId.trim() === '' || accountId === 'all') return true;
+  const local = getLocalAccountById(accountId);
+  if (local && local.userId === userId) return true;
+
+  try {
+    const AccountModel = (await import('@/models/Account')).default;
+    const { connectToDatabase } = await import('./mongodb');
+    await connectToDatabase();
+    if (accountId.match(/^[0-9a-fA-F]{24}$/)) {
+      const found = await AccountModel.findOne({ _id: accountId, userId });
+      return !!found;
+    }
+  } catch {
+    // Database connection failed
+  }
+  return false;
+}
+

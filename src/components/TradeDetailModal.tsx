@@ -17,7 +17,7 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: trade.currency || 'USD'
     }).format(val);
   };
 
@@ -36,6 +36,16 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
     confirmAction('Are you sure you want to delete this trade record? This action is permanent.', () => {
       onDelete(trade.id);
     });
+  };
+
+  const netPnl = trade.netPnl !== undefined ? trade.netPnl : (trade.pnl || 0);
+
+  const getStatusBadgeStyle = () => {
+    if (trade.status === 'Win') return { background: 'var(--color-success-bg)', color: 'var(--color-success)' };
+    if (trade.status === 'Loss') return { background: 'var(--color-danger-bg)', color: 'var(--color-danger)' };
+    if (trade.status === 'Breakeven') return { background: 'rgba(234, 179, 8, 0.15)', color: '#eab308' };
+    if (trade.status === 'Cancelled') return { background: 'rgba(156, 163, 175, 0.15)', color: '#9ca3af' };
+    return { background: 'var(--color-primary-glow)', color: 'var(--color-primary-hover)' };
   };
 
   return (
@@ -71,20 +81,37 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
               }}>
                 {trade.direction}
               </span>
+              <span style={{ 
+                fontSize: '0.62rem', 
+                fontWeight: 700, 
+                textTransform: 'uppercase', 
+                padding: '3px 8px', 
+                borderRadius: '6px', 
+                marginRight: '8px',
+                ...getStatusBadgeStyle()
+              }}>
+                {trade.status}
+              </span>
               <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, fontSize: '1.2rem' }}>{trade.pair}</span>
             </div>
 
             <div style={{ textAlign: 'right' }}>
               <div className={`trade-pnl ${trade.status.toLowerCase()}`} style={{ fontSize: '1.2rem', fontWeight: 800, fontFamily: 'var(--font-mono)' }}>
                 {trade.closed ? (
-                  `${trade.pnl && trade.pnl >= 0 ? '+' : ''}${formatCurrency(trade.pnl || 0)}`
+                  `${netPnl >= 0 ? '+' : ''}${formatCurrency(netPnl)}`
                 ) : (
                   'Active'
                 )}
               </div>
               {trade.closed && (
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                  Return: {((trade.pnl || 0) / (trade.riskAmount || 1)).toFixed(2)}R
+                  {trade.realizedRR !== undefined && trade.realizedRR !== null ? (
+                    <>Return: <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{trade.realizedRR >= 0 ? '+' : ''}{trade.realizedRR.toFixed(2)}R</span></>
+                  ) : (trade.plannedRiskAmount || trade.riskAmount) && (trade.plannedRiskAmount || trade.riskAmount)! > 0 ? (
+                    <>Return: <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600 }}>{((netPnl / ((trade.plannedRiskAmount || trade.riskAmount)!))).toFixed(2)}R</span></>
+                  ) : (
+                    <>Return: <span style={{ color: 'var(--text-muted)' }}>N/A (No Risk)</span></>
+                  )}
                 </div>
               )}
             </div>
@@ -164,13 +191,26 @@ function TradeDetailModal({ trade, isOpen, onClose, onEdit, onDelete }: TradeDet
             <div className="detail-card-row">
               <div className="detail-item">
                 <span className="detail-label">Risk Amount</span>
-                <span className="detail-value mono">{formatCurrency(trade.riskAmount)} ({trade.riskPercentage.toFixed(2)}%)</span>
+                <span className="detail-value mono">{formatCurrency(trade.plannedRiskAmount || trade.riskAmount)} ({trade.riskPercentage.toFixed(2)}%)</span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Account Capital</span>
                 <span className="detail-value mono">{formatCurrency(trade.accountBalance)}</span>
               </div>
             </div>
+
+            {trade.closed && (trade.fees !== undefined || trade.grossPnl !== undefined) && (
+              <div className="detail-card-row">
+                <div className="detail-item">
+                  <span className="detail-label">Gross P&amp;L</span>
+                  <span className="detail-value mono">{formatCurrency(trade.grossPnl ?? trade.pnl ?? 0)}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Fees &amp; Commission</span>
+                  <span className="detail-value mono" style={{ color: 'var(--color-danger)' }}>{formatCurrency(trade.fees || 0)}</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Dates */}

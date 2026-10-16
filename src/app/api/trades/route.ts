@@ -35,6 +35,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    // Verify account ownership
+    if (body.accountId) {
+      const { validateAccountOwnership } = await import('@/lib/accountsDb');
+      const isOwner = await validateAccountOwnership(body.accountId, sessionUser.userId);
+      if (!isOwner) {
+        return NextResponse.json({ error: 'Selected account does not exist or unauthorized' }, { status: 403 });
+      }
+    }
+
     const tradeData = {
       pair: body.pair,
       direction: body.direction,
@@ -53,6 +62,9 @@ export async function POST(request: Request) {
       stopLossPrice: Number(body.stopLossPrice) || 0,
       takeProfitPrice: Number(body.takeProfitPrice) || 0,
       exitPrice: body.exitPrice !== undefined && body.exitPrice !== null ? Number(body.exitPrice) : undefined,
+      fees: Number(body.fees) >= 0 ? Number(body.fees) : 0,
+      currency: typeof body.currency === 'string' && body.currency.trim() ? body.currency.trim().toUpperCase() : 'USD',
+      conversionRate: body.conversionRate !== undefined && Number(body.conversionRate) > 0 ? Number(body.conversionRate) : undefined,
       entryReason: body.entryReason || '',
       lessonsLearned: body.lessonsLearned || '',
       riskAmount: Number(body.riskAmount) || 0,

@@ -48,8 +48,12 @@ export interface GoogleUserClaims {
 }
 
 export async function verifyGoogleToken(idToken: string): Promise<GoogleUserClaims | null> {
-  // Demo Mode check: if GOOGLE_CLIENT_ID is not configured, support mock logins
+  // Demo Mode check: mock logins only permitted in non-production
   if (!GOOGLE_CLIENT_ID) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Google Client ID is not configured in production. Mock login is strictly disabled.');
+      return null;
+    }
     if (idToken.startsWith('mock_token_')) {
       const username = idToken.replace('mock_token_', '');
       const capitalized = username.charAt(0).toUpperCase() + username.slice(1);

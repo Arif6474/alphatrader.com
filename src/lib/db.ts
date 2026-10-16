@@ -1,5 +1,6 @@
 import { connectToDatabase } from './mongodb';
 import TradeModel from '@/models/Trade';
+import { evaluateSingleTrade } from './calculations';
 import fs from 'fs';
 import path from 'path';
 
@@ -31,13 +32,21 @@ export interface Trade {
   riskPercentage: number;
   accountBalance: number;
   pnl?: number;
-  status: 'Win' | 'Loss' | 'Active';
+  grossPnl?: number;
+  netPnl?: number;
+  fees?: number;
+  currency?: string;
+  conversionRate?: number;
+  status: 'Win' | 'Loss' | 'Breakeven' | 'Active' | 'Cancelled';
+  plannedRiskAmount?: number;
+  plannedRR?: number;
+  realizedRR?: number;
   psychologyBefore: string[];
   psychologyDuring: string[];
   psychologyAfter: string[];
   psychologyFactors: string[];
-  chartBefore?: string; // base64
-  chartAfter?: string;  // base64
+  chartBefore?: string; // base64 or URL
+  chartAfter?: string;  // base64 or URL
   assetType: 'Forex' | 'Crypto' | 'Stock' | 'Futures';
   contractSize: number;
   createdAt: string;
@@ -100,6 +109,14 @@ async function checkMongoConnection(): Promise<boolean> {
     console.log('Successfully connected to MongoDB. Using MongoDB as active database.');
     useMongo = true;
   } catch (err) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error(
+        'CRITICAL: MongoDB connection failed in production. Refusing silent fallback to local JSON to prevent data loss.',
+        'Reason:', (err as Error).message
+      );
+      throw new Error(`Database connection failed: ${(err as Error).message}`);
+    }
+
     console.warn(
       'MongoDB connection failed or timed out. Falling back to local file-based database (src/data/db.json).',
       'Reason:', (err as Error).message
@@ -113,6 +130,7 @@ async function checkMongoConnection(): Promise<boolean> {
 
 // Map MongoDB Document to plain TypeScript Trade type expected by client
 function mapTradeDoc(doc: any): Trade {
+  const pnl = doc.pnl !== undefined && doc.pnl !== null ? doc.pnl : (doc.netPnl !== undefined ? doc.netPnl : undefined);
   return {
     id: doc._id.toString(),
     userId: doc.userId ? doc.userId.toString() : '',
@@ -140,8 +158,16 @@ function mapTradeDoc(doc: any): Trade {
     riskAmount: doc.riskAmount,
     riskPercentage: doc.riskPercentage,
     accountBalance: doc.accountBalance,
-    pnl: doc.pnl !== undefined && doc.pnl !== null ? doc.pnl : undefined,
-    status: doc.status,
+    pnl,
+    grossPnl: doc.grossPnl !== undefined ? doc.grossPnl : pnl,
+    netPnl: doc.netPnl !== undefined ? doc.netPnl : pnl,
+    fees: doc.fees || 0,
+    currency: doc.currency || 'USD',
+    conversionRate: doc.conversionRate !== undefined ? doc.conversionRate : undefined,
+    status: doc.status || 'Active',
+    plannedRiskAmount: doc.plannedRiskAmount,
+    plannedRR: doc.plannedRR,
+    realizedRR: doc.realizedRR,
     psychologyBefore: doc.psychologyBefore || [],
     psychologyDuring: doc.psychologyDuring || [],
     psychologyAfter: doc.psychologyAfter || [],
@@ -217,11 +243,27 @@ export async function saveTrades(trades: Trade[], userId: string): Promise<boole
 }
 
 export async function addTrade(trade: Omit<Trade, 'id' | 'createdAt' | 'userId'>, userId: string): Promise<Trade> {
+  // Authoritative server-side evaluation
+  const evaluated = evaluateSingleTrade(trade as any);
+  const validatedTrade: Omit<Trade, 'id' | 'createdAt' | 'userId'> = {
+    ...trade,
+    status: evaluated.status,
+    fees: evaluated.fees,
+    pnl: evaluated.netPnl !== null ? evaluated.netPnl : trade.pnl,
+    grossPnl: evaluated.grossPnl !== null ? evaluated.grossPnl : undefined,
+    netPnl: evaluated.netPnl !== null ? evaluated.netPnl : undefined,
+    currency: evaluated.currency,
+    plannedRiskAmount: evaluated.plannedRiskAmount !== null ? evaluated.plannedRiskAmount : undefined,
+    plannedRR: evaluated.plannedRR !== null ? evaluated.plannedRR : undefined,
+    realizedRR: evaluated.realizedRR !== null ? evaluated.realizedRR : undefined,
+    riskAmount: evaluated.plannedRiskAmount !== null ? evaluated.plannedRiskAmount : trade.riskAmount
+  };
+
   const isMongo = await checkMongoConnection();
   if (!isMongo) {
     const localTrades = getLocalTrades();
     const newTrade: Trade = {
-      ...trade,
+      ...validatedTrade,
       userId,
       id: Math.random().toString(36).substring(2, 11),
       createdAt: new Date().toISOString()
@@ -231,7 +273,7 @@ export async function addTrade(trade: Omit<Trade, 'id' | 'createdAt' | 'userId'>
     return newTrade;
   }
 
-  const doc = new TradeModel({ ...trade, userId });
+  const doc = new TradeModel({ ...validatedTrade, userId });
   await doc.save();
   return mapTradeDoc(doc);
 }
@@ -243,9 +285,20 @@ export async function updateTrade(id: string, updatedFields: Partial<Trade>, use
     const index = localTrades.findIndex(t => t.id === id && t.userId === userId);
     if (index === -1) return null;
 
-    const updatedTrade = {
-      ...localTrades[index],
-      ...updatedFields,
+    const merged = { ...localTrades[index], ...updatedFields };
+    const evaluated = evaluateSingleTrade(merged as any);
+
+    const updatedTrade: Trade = {
+      ...merged,
+      status: evaluated.status,
+      fees: evaluated.fees,
+      pnl: evaluated.netPnl !== null ? evaluated.netPnl : merged.pnl,
+      grossPnl: evaluated.grossPnl !== null ? evaluated.grossPnl : merged.grossPnl,
+      netPnl: evaluated.netPnl !== null ? evaluated.netPnl : merged.netPnl,
+      currency: evaluated.currency,
+      plannedRiskAmount: evaluated.plannedRiskAmount !== null ? evaluated.plannedRiskAmount : merged.plannedRiskAmount,
+      plannedRR: evaluated.plannedRR !== null ? evaluated.plannedRR : merged.plannedRR,
+      realizedRR: evaluated.realizedRR !== null ? evaluated.realizedRR : merged.realizedRR,
       userId // enforce original ownership
     };
     localTrades[index] = updatedTrade;
@@ -253,8 +306,29 @@ export async function updateTrade(id: string, updatedFields: Partial<Trade>, use
     return updatedTrade;
   }
 
-  const { id: _, userId: __, ...fields } = updatedFields;
-  const doc = await TradeModel.findOneAndUpdate({ _id: id, userId }, fields, { new: true });
+  // Fetch current doc to merge and evaluate
+  const currentDoc = await TradeModel.findOne({ _id: id, userId });
+  if (!currentDoc) return null;
+
+  const currentObj = mapTradeDoc(currentDoc);
+  const merged = { ...currentObj, ...updatedFields };
+  const evaluated = evaluateSingleTrade(merged as any);
+
+  const fieldsToSet = {
+    ...updatedFields,
+    status: evaluated.status,
+    fees: evaluated.fees,
+    pnl: evaluated.netPnl !== null ? evaluated.netPnl : merged.pnl,
+    grossPnl: evaluated.grossPnl !== null ? evaluated.grossPnl : merged.grossPnl,
+    netPnl: evaluated.netPnl !== null ? evaluated.netPnl : merged.netPnl,
+    currency: evaluated.currency,
+    plannedRiskAmount: evaluated.plannedRiskAmount !== null ? evaluated.plannedRiskAmount : merged.plannedRiskAmount,
+    plannedRR: evaluated.plannedRR !== null ? evaluated.plannedRR : merged.plannedRR,
+    realizedRR: evaluated.realizedRR !== null ? evaluated.realizedRR : merged.realizedRR
+  };
+
+  const { id: _, userId: __, ...cleanFields } = fieldsToSet as any;
+  const doc = await TradeModel.findOneAndUpdate({ _id: id, userId }, cleanFields, { new: true });
   if (!doc) return null;
   return mapTradeDoc(doc);
 }

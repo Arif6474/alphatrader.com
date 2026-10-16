@@ -1,6 +1,7 @@
 import React from 'react';
 import { Trade } from '@/lib/db';
 import { AnalyticsIcon } from './Icons';
+import { calculateFinancialMetrics } from '@/lib/calculations';
 
 interface AnalyticsViewProps {
   trades: Trade[];
@@ -45,71 +46,43 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
     maxWinStreak,
     maxLossStreak,
     maxSingleWin,
-    maxSingleLoss
+    maxSingleLoss,
+    metrics
   } = React.useMemo(() => {
-    const closedTrades = trades.filter(t => t.closed);
+    const metrics = calculateFinancialMetrics(trades, 0, 'USD');
+    const closedTrades = trades.filter(t => t.closed && t.status !== 'Cancelled');
     const winTrades = closedTrades.filter(t => t.status === 'Win');
     const lossTrades = closedTrades.filter(t => t.status === 'Loss');
+    const breakevenTrades = closedTrades.filter(t => t.status === 'Breakeven');
     
-    // Basic Stats
-    const totalTradesCount = closedTrades.length;
-    const winRate = totalTradesCount > 0 ? Math.round((winTrades.length / totalTradesCount) * 100) : 0;
+    // Authoritative Stats from engine
+    const totalTradesCount = metrics.closedTradesCount;
+    const winRate = Math.round(metrics.winRate);
+    const winRateExcludingBE = Math.round(metrics.winRateExcludingBE);
     
-    const totalProfit = winTrades.reduce((sum, t) => sum + (t.pnl || 0), 0);
-    const totalLoss = Math.abs(lossTrades.reduce((sum, t) => sum + (t.pnl || 0), 0));
-    const profitFactor = totalLoss > 0 ? (totalProfit / totalLoss).toFixed(2) : totalProfit > 0 ? '∞' : '0.00';
+    const totalProfit = metrics.grossProfit;
+    const totalLoss = metrics.grossLoss;
+    const profitFactor = metrics.profitFactor.display;
     
-    const avgWin = winTrades.length > 0 ? totalProfit / winTrades.length : 0;
-    const avgLoss = lossTrades.length > 0 ? totalLoss / lossTrades.length : 0;
-    const expectancyRatio = avgLoss > 0 ? (avgWin / avgLoss).toFixed(2) : '0.00';
+    const avgWin = metrics.avgWin;
+    const avgLoss = metrics.avgLoss;
+    const expectancyRatio = metrics.payoffRatio !== null ? metrics.payoffRatio.toFixed(2) : '0.00';
 
-    // 1. Calculate Realized R:R (using riskAmount if populated, fallback to avgWin / avgLoss)
-    const tradesWithRR = closedTrades.filter(t => t.riskAmount && t.riskAmount > 0);
-    const avgRealizedRR = tradesWithRR.length > 0 
-      ? tradesWithRR.reduce((sum, t) => sum + ((t.pnl || 0) / t.riskAmount!), 0) / tradesWithRR.length 
-      : (avgLoss > 0 ? (avgWin / avgLoss) : 0);
+    const avgRealizedRR = metrics.avgRealizedR ?? 0;
+    const expectancyVal = metrics.netExpectancyPerTrade;
 
-    // 2. Expected Value per Trade ($)
-    const expectancyVal = totalTradesCount > 0 
-      ? closedTrades.reduce((sum, t) => sum + (t.pnl || 0), 0) / totalTradesCount 
-      : 0;
-
-    // 3. Kelly Criterion allocation (%)
     let kellyPercentage = 0;
-    if (avgLoss > 0 && avgWin > 0) {
+    if (avgLoss > 0 && avgWin > 0 && totalTradesCount > 0) {
       const p = winTrades.length / totalTradesCount;
       const b = avgWin / avgLoss;
       const f = p - (1 - p) / b;
       kellyPercentage = Math.max(0, Math.round(f * 100));
     }
 
-    // 4. Streaks (chronological order)
-    const sortedTrades = [...closedTrades].sort((a, b) => {
-      const dateA = a.exitDate || a.entryDate;
-      const dateB = b.exitDate || b.entryDate;
-      return new Date(dateA).getTime() - new Date(dateB).getTime();
-    });
-    
-    let currentWinStreak = 0;
-    let maxWinStreak = 0;
-    let currentLossStreak = 0;
-    let maxLossStreak = 0;
-    
-    sortedTrades.forEach(t => {
-      if (t.status === 'Win') {
-        currentWinStreak++;
-        if (currentWinStreak > maxWinStreak) maxWinStreak = currentWinStreak;
-        currentLossStreak = 0;
-      } else if (t.status === 'Loss') {
-        currentLossStreak++;
-        if (currentLossStreak > maxLossStreak) maxLossStreak = currentLossStreak;
-        currentWinStreak = 0;
-      }
-    });
-
-    // 5. Extreme Trades
-    const maxSingleWin = winTrades.length > 0 ? Math.max(...winTrades.map(t => t.pnl || 0)) : 0;
-    const maxSingleLoss = lossTrades.length > 0 ? Math.max(...lossTrades.map(t => Math.abs(t.pnl || 0))) : 0;
+    const maxWinStreak = metrics.maxWinStreak;
+    const maxLossStreak = metrics.maxLossStreak;
+    const maxSingleWin = metrics.maxSingleWin;
+    const maxSingleLoss = metrics.maxSingleLoss;
 
     // 6. Calculate Strategy Performance
     const strategyStats: { [key: string]: { pnl: number; count: number; wins: number; grossProfit: number; grossLoss: number } } = {};
@@ -129,13 +102,19 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
     });
 
     const strategyList = Object.entries(strategyStats).map(([name, stats]) => {
-      const pfVal = stats.grossLoss > 0 ? (stats.grossProfit / stats.grossLoss) : (stats.grossProfit > 0 ? 99 : 0);
+      const pfVal = stats.grossLoss > 0 ? (stats.grossProfit / stats.grossLoss) : null;
+      const isZeroLoss = stats.grossLoss === 0 && stats.grossProfit > 0;
+      const profitFactorDisplay = isZeroLoss
+        ? 'Undefined (Zero Loss)'
+        : (pfVal !== null ? pfVal.toFixed(2) : '0.00');
       return {
         name,
         pnl: stats.pnl,
         winRate: stats.count > 0 ? Math.round((stats.wins / stats.count) * 100) : 0,
         count: stats.count,
-        profitFactor: pfVal
+        profitFactorVal: pfVal,
+        profitFactorDisplay,
+        isZeroLoss
       };
     }).sort((a, b) => b.pnl - a.pnl);
 
@@ -205,7 +184,7 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
     const maxPairPnl = Math.max(...pairList.map(p => Math.abs(p.pnl)), 1);
     const maxFactorPnl = Math.max(...factorList.map(f => Math.abs(f.pnl)), 1);
     const maxSessionPnl = Math.max(...sessionList.map(s => Math.abs(s.pnl)), 1);
-    const maxStrategyPF = Math.max(...strategyList.map(s => s.profitFactor), 3);
+    const maxStrategyPF = Math.max(...strategyList.map(s => s.profitFactorVal || 0), 3);
 
     return {
       closedTrades,
@@ -234,7 +213,8 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
       maxWinStreak,
       maxLossStreak,
       maxSingleWin,
-      maxSingleLoss
+      maxSingleLoss,
+      metrics
     };
   }, [trades]);
 
@@ -502,8 +482,12 @@ function AnalyticsView({ trades }: AnalyticsViewProps) {
                         </div>
                         <div>
                           <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Profit Factor</div>
-                          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: s.profitFactor >= 1.0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
-                            {s.profitFactor >= 99 ? '∞' : s.profitFactor.toFixed(2)}
+                          <div style={{ 
+                            fontSize: s.isZeroLoss ? '0.82rem' : '1.1rem', 
+                            fontWeight: 800, 
+                            color: s.isZeroLoss || (s.profitFactorVal !== null && s.profitFactorVal >= 1.0) ? 'var(--color-success)' : 'var(--color-danger)' 
+                          }}>
+                            {s.profitFactorDisplay}
                           </div>
                         </div>
                       </div>

@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { Trade } from '@/lib/db';
+import { calculateFinancialMetrics } from '@/lib/calculations';
 
 interface DashboardViewProps {
   trades: Trade[];
@@ -136,53 +137,29 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
   const [tooltip, setTooltip] = useState<{ x: number; y: number; val: number; label: string } | null>(null);
 
   const stats = React.useMemo(() => {
-    const closedTrades = trades.filter(t => t.closed);
-    const activeTrades = trades.filter(t => !t.closed);
-    const netPnl = closedTrades.reduce((s, t) => s + (t.pnl || 0), 0);
-
-    const grossProfit = closedTrades.filter(t => (t.pnl || 0) > 0).reduce((s, t) => s + (t.pnl || 0), 0);
-    const grossLoss = Math.abs(closedTrades.filter(t => (t.pnl || 0) < 0).reduce((s, t) => s + (t.pnl || 0), 0));
-    const profitFactor = grossLoss > 0 ? (grossProfit / grossLoss).toFixed(2) : grossProfit > 0 ? '∞' : '—';
-
-    const winTrades = closedTrades.filter(t => t.status === 'Win');
-    const lossTrades = closedTrades.filter(t => t.status === 'Loss');
-    const winRate = closedTrades.length > 0 ? (winTrades.length / closedTrades.length) * 100 : 0;
-
-    const avgWin = winTrades.length > 0 ? grossProfit / winTrades.length : 0;
-    const avgLoss = lossTrades.length > 0 ? grossLoss / lossTrades.length : 0;
-    const expectancy = (winRate / 100) * avgWin - ((1 - winRate / 100) * avgLoss);
-
-    const rMultiples = closedTrades.map(t => (t.pnl || 0) / (t.riskAmount || 1));
-    const avgRR = rMultiples.length > 0
-      ? (rMultiples.reduce((s, r) => s + r, 0) / rMultiples.length).toFixed(2) : '0.00';
-
-    const startBalance = trades.length > 0 ? trades[trades.length - 1].accountBalance : 0;
-    const balanceHistory = [{ balance: startBalance, date: 'Start' }];
-    const chrono = [...closedTrades].sort((a, b) => new Date(a.entryDate).getTime() - new Date(b.entryDate).getTime());
-
-    let cur = startBalance, peak = startBalance, maxDrawdown = 0;
-    chrono.forEach(t => {
-      cur += (t.pnl || 0);
-      if (cur > peak) peak = cur;
-      const dd = peak > 0 ? ((peak - cur) / peak) * 100 : 0;
-      if (dd > maxDrawdown) maxDrawdown = dd;
-      balanceHistory.push({ balance: cur, date: formatDate(t.entryDate) });
-    });
+    const metrics = calculateFinancialMetrics(trades, 0, 'USD');
+    const closedTrades = trades.filter(t => t.closed && t.status !== 'Cancelled');
+    const activeTrades = trades.filter(t => !t.closed && t.status !== 'Cancelled');
 
     // SVG path (smooth bezier)
     const W = 520, H = 170, px = 32, py = 16;
+    const balanceHistory = metrics.equityCurve.map(pt => ({
+      balance: pt.balance,
+      date: pt.index === 0 ? 'Start' : formatDate(pt.date)
+    }));
+
     const minB = Math.min(...balanceHistory.map(h => h.balance)) * 0.998;
     const maxB = Math.max(...balanceHistory.map(h => h.balance)) * 1.002;
     const range = maxB - minB === 0 ? 1 : maxB - minB;
     const points = balanceHistory.map((h, i) => ({
       x: px + (i / Math.max(balanceHistory.length - 1, 1)) * (W - px * 2),
       y: H - py - ((h.balance - minB) / range) * (H - py * 2),
-      balance: h.balance, label: h.date,
+      balance: h.balance,
+      label: h.date,
     }));
 
     let linePath = '', areaPath = '';
     if (points.length > 1) {
-      // Smooth bezier
       const seg = points.map((p, i) => {
         if (i === 0) return `M ${p.x} ${p.y}`;
         const prev = points[i - 1];
@@ -193,52 +170,77 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
       areaPath = `${seg} L ${points[points.length - 1].x} ${H - py} L ${points[0].x} ${H - py} Z`;
     }
 
-    const isUp = netPnl >= 0;
+    const isUp = metrics.netPnl >= 0;
 
-    return { closedTrades, activeTrades, netPnl, winRate, avgRR, profitFactor, expectancy, maxDrawdown, balanceHistory, points, linePath, areaPath, recentTrades: trades.slice(0, 5), W, H, isUp };
+    return {
+      metrics,
+      closedTrades,
+      activeTrades,
+      balanceHistory,
+      points,
+      linePath,
+      areaPath,
+      recentTrades: trades.slice(0, 5),
+      W,
+      H,
+      isUp
+    };
   }, [trades]);
 
-  const { closedTrades, activeTrades, netPnl, winRate, avgRR, profitFactor, expectancy, maxDrawdown, balanceHistory, points, linePath, areaPath, recentTrades, W, H, isUp } = stats;
+  const { metrics, closedTrades, activeTrades, balanceHistory, points, linePath, areaPath, recentTrades, W, H, isUp } = stats;
 
-  const pfNum = parseFloat(profitFactor as string);
-  const pfColor = isNaN(pfNum) ? '#6366f1' : pfNum >= 1.5 ? '#10b981' : pfNum >= 1.0 ? '#f59e0b' : '#ff3366';
+  const pfValue = metrics.profitFactor.value;
+  const pfColor = metrics.profitFactor.isZeroLoss
+    ? (metrics.profitFactor.isInfinite ? '#10b981' : 'var(--text-muted)')
+    : (pfValue !== null && pfValue >= 1.5 ? '#10b981' : pfValue !== null && pfValue >= 1.0 ? '#f59e0b' : '#ff3366');
 
   return (
     <div style={{ animation: 'fadeIn 0.35s ease-out' }}>
-      {/* ── Header ── */}
-      <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '1.9rem', fontWeight: 900, margin: 0, color: '#fff', letterSpacing: '-0.5px' }}>
-          Dashboard
-        </h1>
-        <p style={{ margin: '6px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-          Your trading performance at a glance.
-        </p>
-      </div>
+   
+
+      {metrics.hasMixedCurrencies && (
+        <div style={{
+          padding: '12px 16px',
+          background: 'rgba(245, 158, 11, 0.1)',
+          border: '1px solid rgba(245, 158, 11, 0.25)',
+          borderRadius: '10px',
+          marginBottom: '20px',
+          color: '#fbbf24',
+          fontSize: '0.8rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px'
+        }}>
+          <span>⚠️ <strong>Currency Notice:</strong> Multiple currencies detected ({metrics.unsupportedCurrencies.join(', ')}). Totals are displayed without foreign exchange conversion.</span>
+        </div>
+      )}
 
       {/* ── KPI Grid: 4 top + 4 bottom ── */}
       <div className="metrics-grid">
-        <StatCard label="Net P&L" value={`${netPnl >= 0 ? '+' : ''}${formatCurrency(netPnl)}`}
-          sub={`${closedTrades.length} closed trades`} icon={<IconPnl />}
+        <StatCard label="Net P&L" value={`${metrics.netPnl >= 0 ? '+' : ''}${formatCurrency(metrics.netPnl)}`}
+          sub={`${metrics.closedTradesCount} closed trades (fees: ${formatCurrency(metrics.totalFees)})`} icon={<IconPnl />}
           accent={isUp ? '#10b981' : '#ff3366'} />
-        <StatCard label="Win Rate" value={`${Math.round(winRate)}%`}
-          sub={`${closedTrades.filter(t => t.status === 'Win').length} wins · ${closedTrades.filter(t => t.status === 'Loss').length} losses`}
+        <StatCard label="Win Rate" value={`${Math.round(metrics.winRate)}%`}
+          sub={`${metrics.winCount}W · ${metrics.lossCount}L · ${metrics.breakevenCount}BE`}
           icon={<IconTarget />} accent="#6366f1"
-          ring={winRate} ringMax={100} />
-        <StatCard label="Profit Factor" value={String(profitFactor)}
-          sub="Gross wins ÷ gross losses" icon={<IconScale />} accent={pfColor} />
-        <StatCard label="Expectancy" value={`${expectancy >= 0 ? '+' : ''}${formatCurrency(expectancy)}`}
-          sub="Expected $ per trade" icon={<IconStar />} accent={expectancy >= 0 ? '#10b981' : '#ff3366'} />
+          ring={metrics.winRate} ringMax={100} />
+        <StatCard label="Profit Factor" value={metrics.profitFactor.display}
+          sub={metrics.profitFactor.isZeroLoss ? (metrics.profitFactor.isInfinite ? "Zero gross loss" : "No closed trades") : "Gross profit ÷ gross loss"}
+          icon={<IconScale />} accent={pfColor} />
+        <StatCard label="Expectancy" value={`${metrics.netExpectancyPerTrade >= 0 ? '+' : ''}${formatCurrency(metrics.netExpectancyPerTrade)}`}
+          sub="Average net return per trade" icon={<IconStar />} accent={metrics.netExpectancyPerTrade >= 0 ? '#10b981' : '#ff3366'} />
       </div>
 
       <div className="metrics-grid">
-        <StatCard label="Max Drawdown" value={`${maxDrawdown.toFixed(2)}%`}
-          sub="Peak-to-valley decline" icon={<IconAlert />} accent="#ff3366" />
-        <StatCard label="Avg R:R" value={`${avgRR}R`}
-          sub="Average realized multiple" icon={<IconActivity />} accent="#f59e0b" />
-        <StatCard label="Total Trades" value={String(trades.length)}
-          sub="Closed & open positions" icon={<IconLayers />} accent="#6366f1" />
-        <StatCard label="Active Trades" value={String(activeTrades.length)}
-          sub="Currently open positions" icon={<IconZap />} accent={activeTrades.length > 0 ? '#f59e0b' : 'var(--text-muted)'} />
+        <StatCard label="Max Drawdown" value={`${metrics.maxDrawdownPercent.toFixed(2)}%`}
+          sub={`Peak-to-valley (${formatCurrency(metrics.maxDrawdownAmount)})`} icon={<IconAlert />} accent="#ff3366" />
+        <StatCard label="Avg Realized R" value={metrics.avgRealizedR !== null ? `${metrics.avgRealizedR}R` : '—'}
+          sub={metrics.validRTradesCount > 0 ? `${metrics.validRTradesCount} trades with planned risk` : "No stop-loss recorded"}
+          icon={<IconActivity />} accent="#f59e0b" />
+        <StatCard label="Total Trades" value={String(metrics.totalTrades)}
+          sub={`${metrics.closedTradesCount} closed · ${metrics.activeTradesCount} open`} icon={<IconLayers />} accent="#6366f1" />
+        <StatCard label="Active Trades" value={String(metrics.activeTradesCount)}
+          sub="Currently open positions" icon={<IconZap />} accent={metrics.activeTradesCount > 0 ? '#f59e0b' : 'var(--text-muted)'} />
       </div>
 
       {/* ── Bottom widgets ── */}

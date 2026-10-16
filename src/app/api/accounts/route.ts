@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
         name: a.name,
         firmName: a.firmName || '',
         startingCapital: a.startingCapital,
+        currency: a.currency || 'USD',
         createdAt: a.createdAt?.toISOString(),
         updatedAt: a.updatedAt?.toISOString()
       }))
@@ -66,10 +67,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { name, firmName, startingCapital } = body;
+  const { name, firmName, startingCapital, currency } = body;
   if (!name || typeof name !== 'string' || !name.trim()) {
     return NextResponse.json({ error: 'Account name is required' }, { status: 400 });
   }
+
+  const sanitizedCurrency = (typeof currency === 'string' && currency.trim()) 
+    ? currency.trim().toUpperCase() 
+    : 'USD';
 
   const isMongo = await checkMongoConnection();
 
@@ -78,7 +83,8 @@ export async function POST(req: NextRequest) {
       userId: user.userId,
       name: name.trim(),
       firmName: (firmName || '').trim(),
-      startingCapital: Number(startingCapital) || 0
+      startingCapital: Number(startingCapital) || 0,
+      currency: sanitizedCurrency
     });
     return NextResponse.json(account, { status: 201 });
   }
@@ -88,7 +94,8 @@ export async function POST(req: NextRequest) {
       userId: user.userId,
       name: name.trim(),
       firmName: (firmName || '').trim(),
-      startingCapital: Number(startingCapital) || 0
+      startingCapital: Number(startingCapital) || 0,
+      currency: sanitizedCurrency
     });
     return NextResponse.json(
       {
@@ -97,6 +104,7 @@ export async function POST(req: NextRequest) {
         name: account.name,
         firmName: account.firmName || '',
         startingCapital: account.startingCapital,
+        currency: account.currency || 'USD',
         createdAt: account.createdAt?.toISOString(),
         updatedAt: account.updatedAt?.toISOString()
       },

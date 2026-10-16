@@ -9,7 +9,7 @@ interface TradesViewProps {
 }
 
 type DirectionFilter = 'All' | 'Long' | 'Short';
-type StatusFilter = 'All' | 'Win' | 'Loss' | 'Active';
+type StatusFilter = 'All' | 'Win' | 'Loss' | 'Breakeven' | 'Active';
 type TabType = 'all' | 'active' | 'closed' | 'gallery';
 type AssetFilterType = 'All' | 'Forex' | 'Crypto' | 'Stock' | 'Futures';
 type SortByType = 'newest' | 'oldest' | 'pnl_high' | 'pnl_low' | 'rr_high';
@@ -276,18 +276,18 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Result</span>
               <div style={{ display: 'flex', gap: '6px' }}>
-                {(['All', 'Win', 'Loss', 'Active'] as StatusFilter[]).map(s => (
+                {(['All', 'Win', 'Loss', 'Breakeven', 'Active'] as StatusFilter[]).map(s => (
                   <button key={s} type="button" onClick={() => setStatusFilter(s)}
                     style={{
                       padding: '6px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.76rem', fontWeight: 600,
                       background: statusFilter === s
-                        ? (s === 'Win' ? 'rgba(16,185,129,0.15)' : s === 'Loss' ? 'rgba(255,51,102,0.15)' : s === 'Active' ? 'rgba(245,158,11,0.15)' : 'rgba(99,102,241,0.2)')
+                        ? (s === 'Win' ? 'rgba(16,185,129,0.15)' : s === 'Loss' ? 'rgba(255,51,102,0.15)' : s === 'Breakeven' ? 'rgba(99,102,241,0.2)' : s === 'Active' ? 'rgba(245,158,11,0.15)' : 'rgba(99,102,241,0.2)')
                         : 'rgba(255,255,255,0.03)',
                       color: statusFilter === s
-                        ? (s === 'Win' ? 'var(--color-success)' : s === 'Loss' ? 'var(--color-danger)' : s === 'Active' ? 'var(--color-warning)' : 'var(--color-primary-hover)')
+                        ? (s === 'Win' ? 'var(--color-success)' : s === 'Loss' ? 'var(--color-danger)' : s === 'Breakeven' ? 'var(--color-primary-hover)' : s === 'Active' ? 'var(--color-warning)' : 'var(--color-primary-hover)')
                         : 'var(--text-muted)',
                       boxShadow: statusFilter === s
-                        ? `inset 0 0 0 1px ${s === 'Win' ? 'rgba(16,185,129,0.4)' : s === 'Loss' ? 'rgba(255,51,102,0.4)' : s === 'Active' ? 'rgba(245,158,11,0.4)' : 'rgba(99,102,241,0.4)'}`
+                        ? `inset 0 0 0 1px ${s === 'Win' ? 'rgba(16,185,129,0.4)' : s === 'Loss' ? 'rgba(255,51,102,0.4)' : s === 'Breakeven' ? 'rgba(99,102,241,0.4)' : s === 'Active' ? 'rgba(245,158,11,0.4)' : 'rgba(99,102,241,0.4)'}`
                         : 'inset 0 0 0 1px rgba(255,255,255,0.06)',
                       transition: 'all 0.15s',
                     }}>{s}</button>
@@ -366,9 +366,20 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {filteredTrades.length > 0 ? filteredTrades.map(t => {
             const pnl = t.pnl || 0;
-            const rr = t.riskAmount > 0 ? pnl / t.riskAmount : 0;
+            const rr = t.realizedRR !== undefined && t.realizedRR !== null 
+              ? t.realizedRR 
+              : (t.riskAmount > 0 ? (pnl / t.riskAmount) : null);
             const isWin = t.status === 'Win';
             const isLoss = t.status === 'Loss';
+            const isBreakeven = t.status === 'Breakeven';
+
+            const borderColor = isWin 
+              ? 'var(--color-success)' 
+              : isLoss 
+                ? 'var(--color-danger)' 
+                : isBreakeven 
+                  ? 'var(--color-primary-hover)' 
+                  : 'var(--color-warning)';
 
             return (
               <div key={t.id} onClick={() => onViewTrade(t)}
@@ -377,12 +388,12 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
                   padding: '14px 18px', borderRadius: '12px', cursor: 'pointer',
                   background: 'rgba(10,12,22,0.6)', border: '1px solid rgba(255,255,255,0.04)',
                   transition: 'all 0.2s ease',
-                  borderLeft: `3px solid ${isWin ? 'var(--color-success)' : isLoss ? 'var(--color-danger)' : 'var(--color-warning)'}`,
+                  borderLeft: `3px solid ${borderColor}`,
                 }}
                 onMouseEnter={e => {
                   const el = e.currentTarget;
                   el.style.background = 'rgba(255,255,255,0.03)';
-                  el.style.borderColor = isWin ? 'rgba(16,185,129,0.35)' : isLoss ? 'rgba(255,51,102,0.35)' : 'rgba(245,158,11,0.35)';
+                  el.style.borderColor = isWin ? 'rgba(16,185,129,0.35)' : isLoss ? 'rgba(255,51,102,0.35)' : isBreakeven ? 'rgba(99,102,241,0.35)' : 'rgba(245,158,11,0.35)';
                   el.style.transform = 'translateY(-1px)';
                 }}
                 onMouseLeave={e => {
@@ -416,16 +427,23 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
                       background: 'rgba(99,102,241,0.1)', color: 'var(--color-primary-hover)',
                       border: '1px solid rgba(99,102,241,0.15)',
                     }}>{t.strategy}</span>
-                    {!t.closed && (
+                    {!t.closed ? (
                       <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: '6px', background: 'rgba(245,158,11,0.12)', color: 'var(--color-warning)', border: '1px solid rgba(245,158,11,0.2)' }}>
                         LIVE
                       </span>
-                    )}
+                    ) : isBreakeven ? (
+                      <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '2px 8px', borderRadius: '6px', background: 'rgba(99,102,241,0.12)', color: 'var(--color-primary-hover)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                        BREAKEVEN
+                      </span>
+                    ) : null}
                   </div>
                   <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{formatDate(t.entryDate)}</span>
                     <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Lot: <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>{t.lotSize}</span></span>
                     <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Entry: <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>{t.entryPrice}</span></span>
+                    {t.fees ? (
+                      <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Fees: <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>${t.fees.toFixed(2)}</span></span>
+                    ) : null}
                     {t.session && (
                       <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>📍 {t.session}</span>
                     )}
@@ -438,17 +456,17 @@ function TradesView({ trades, onViewTrade, onOpenNewTrade }: TradesViewProps) {
                     <>
                       <div style={{
                         fontSize: '1.05rem', fontWeight: 800,
-                        color: isWin ? 'var(--color-success)' : 'var(--color-danger)',
+                        color: isWin ? 'var(--color-success)' : isLoss ? 'var(--color-danger)' : 'var(--color-primary-hover)',
                         fontFamily: 'var(--font-mono)',
                       }}>
                         {pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}
                       </div>
                       <div style={{
                         fontSize: '0.72rem', fontWeight: 700, marginTop: '3px',
-                        color: rr >= 0 ? 'rgba(16,185,129,0.7)' : 'rgba(255,51,102,0.7)',
+                        color: rr !== null && rr >= 0 ? 'rgba(16,185,129,0.7)' : rr !== null ? 'rgba(255,51,102,0.7)' : 'var(--text-muted)',
                         fontFamily: 'var(--font-mono)',
                       }}>
-                        {rr >= 0 ? '+' : ''}{rr.toFixed(1)}R
+                        {rr !== null ? `${rr >= 0 ? '+' : ''}${rr.toFixed(1)}R` : '—'}
                       </div>
                     </>
                   ) : (

@@ -34,7 +34,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const { name, firmName, startingCapital } = body;
+  const { name, firmName, startingCapital, currency } = body;
   const id = (await params).id;
 
   const isMongo = await checkMongoConnection();
@@ -47,7 +47,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const updated = updateLocalAccount(id, {
       ...(name ? { name: name.trim() } : {}),
       ...(firmName !== undefined ? { firmName: firmName.trim() } : {}),
-      ...(startingCapital !== undefined ? { startingCapital: Number(startingCapital) } : {})
+      ...(startingCapital !== undefined ? { startingCapital: Number(startingCapital) } : {}),
+      ...(currency ? { currency: currency.trim().toUpperCase() } : {})
     });
     return NextResponse.json(updated);
   }
@@ -58,7 +59,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       {
         ...(name ? { name: name.trim() } : {}),
         ...(firmName !== undefined ? { firmName: firmName.trim() } : {}),
-        ...(startingCapital !== undefined ? { startingCapital: Number(startingCapital) } : {})
+        ...(startingCapital !== undefined ? { startingCapital: Number(startingCapital) } : {}),
+        ...(currency ? { currency: currency.trim().toUpperCase() } : {})
       },
       { new: true }
     );
@@ -71,6 +73,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       name: account.name,
       firmName: account.firmName || '',
       startingCapital: account.startingCapital,
+      currency: account.currency || 'USD',
       createdAt: account.createdAt?.toISOString(),
       updatedAt: account.updatedAt?.toISOString()
     });

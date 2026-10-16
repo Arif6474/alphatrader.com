@@ -15,6 +15,15 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
     
+    // Verify account ownership if changing account
+    if (body.accountId) {
+      const { validateAccountOwnership } = await import('@/lib/accountsDb');
+      const isOwner = await validateAccountOwnership(body.accountId, sessionUser.userId);
+      if (!isOwner) {
+        return NextResponse.json({ error: 'Selected account does not exist or unauthorized' }, { status: 403 });
+      }
+    }
+
     const updatedTrade = await updateTrade(id, body, sessionUser.userId);
     if (!updatedTrade) {
       return NextResponse.json({ error: 'Trade not found or unauthorized' }, { status: 404 });
