@@ -789,54 +789,7 @@ export default function PsychologyView() {
   return (
     <div style={{ paddingBottom: '40px', animation: 'fadeIn 0.35s ease-out' }}>
       {/* ── Top Header Section ── */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '20px',
-        marginBottom: '28px'
-      }}>
-        {/* Left Title and Subtitle */}
-        
 
-        {/* Right Motivational Quote Banner */}
-        <div style={{
-          position: 'relative',
-          padding: '16px 28px',
-          borderRadius: '16px',
-          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(15, 23, 42, 0.7) 100%)',
-          border: '1px solid rgba(168, 85, 247, 0.25)',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minWidth: '280px'
-        }}>
-          {/* Subtle Mountain Glow Silhouette */}
-          <div style={{
-            position: 'absolute',
-            bottom: '-10px',
-            left: 0,
-            right: 0,
-            height: '40px',
-            background: 'radial-gradient(ellipse at bottom, rgba(168, 85, 247, 0.25) 0%, transparent 70%)',
-            pointerEvents: 'none'
-          }} />
-          <span style={{
-            fontSize: '0.95rem',
-            fontWeight: 600,
-            fontStyle: 'italic',
-            color: '#e2e8f0',
-            textAlign: 'center',
-            letterSpacing: '0.3px',
-            zIndex: 1
-          }}>
-            &ldquo;Discipline today builds freedom tomorrow.&rdquo;
-          </span>
-        </div>
-      </div>
 
       {/* ── Date Navigator & Past Records Toolbar ── */}
       <div style={{

@@ -145,11 +145,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <Link 
                 href="/psychology" 
                 className={`nav-link ${pathname === '/psychology' ? 'active' : ''}`}
-                style={pathname === '/psychology' ? {
-                  background: 'linear-gradient(90deg, rgba(168, 85, 247, 0.18) 0%, rgba(99, 102, 241, 0.12) 100%)',
-                  color: '#c084fc',
-                  borderLeft: '3px solid #a855f7'
-                } : undefined}
+                // style={pathname === '/psychology' ? {
+                //   background: 'linear-gradient(90deg, rgba(168, 85, 247, 0.18) 0%, rgba(99, 102, 241, 0.12) 100%)',
+                //   color: '#c084fc',
+                //   borderLeft: '3px solid #a855f7'
+                // } : undefined}
               >
                 <PsychologyIcon className="nav-icon" style={{ color: pathname === '/psychology' ? '#c084fc' : undefined }} />
                 Psychology
@@ -232,15 +232,51 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </button>
           </div>
 
-          {/* User Profile Badge */}
-          <div className="user-profile-badge" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.03)', padding: '4px 12px', borderRadius: '20px', border: '1px solid var(--border-color)' }}>
+          {/* User Profile Badge (Clickable to Settings) */}
+          <Link
+            href="/settings"
+            className="user-profile-badge"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: pathname === '/settings' ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255, 255, 255, 0.03)',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              border: `1px solid ${pathname === '/settings' ? 'rgba(99, 102, 241, 0.4)' : 'var(--border-color)'}`,
+              textDecoration: 'none',
+              cursor: 'pointer'
+            }}
+            title="Settings & Profile"
+          >
             <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: 'linear-gradient(135deg, #6366f1 0%, #7c3aed 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.7rem', fontWeight: 'bold', color: '#fff' }}>
               {user?.email ? user.email[0].toUpperCase() : 'U'}
             </div>
-            <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-secondary)' }} className="desktop-username">
+            <span style={{ fontSize: '0.72rem', fontWeight: 600, color: pathname === '/settings' ? '#818cf8' : 'var(--text-secondary)' }} className="desktop-username">
               {user?.email ? user.email.split('@')[0] : 'User'}
             </span>
-          </div>
+          </Link>
+
+          {/* Mobile Settings Icon Button */}
+          <Link
+            href="/settings"
+            className="mobile-settings-btn"
+            style={{
+              display: 'none',
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: pathname === '/settings' ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+              border: `1px solid ${pathname === '/settings' ? 'rgba(99, 102, 241, 0.4)' : 'var(--border-color)'}`,
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: pathname === '/settings' ? '#818cf8' : 'var(--text-secondary)',
+              textDecoration: 'none'
+            }}
+            title="Settings"
+          >
+            <ProfileIcon size={18} />
+          </Link>
         </div>
       </header>
 
@@ -249,7 +285,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* Bottom Nav - Mobile Navigation */}
+      {/* Mobile Bottom Navigation - Perfectly Centered 2 + FAB + 2 */}
       <nav className="bottom-nav">
         <Link 
           href="/" 
@@ -266,7 +302,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <span>Trades</span>
         </Link>
         
-        {/* Floating Action Button */}
+        {/* Floating Action Button (Dead Center) */}
         <button 
           className="fab-button"
           onClick={handleOpenAddModal}
@@ -288,13 +324,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         >
           <PsychologyIcon className="bottom-nav-icon" />
           <span>Psych</span>
-        </Link>
-        <Link 
-          href="/settings" 
-          className={`bottom-nav-item ${pathname === '/settings' ? 'active' : ''}`}
-        >
-          <ProfileIcon className="bottom-nav-icon" />
-          <span>Settings</span>
         </Link>
       </nav>
 
