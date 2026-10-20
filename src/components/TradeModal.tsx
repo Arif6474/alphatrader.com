@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Trade } from '@/lib/db';
 import { CloseIcon, UploadIcon } from './Icons';
 import type { Account } from './AccountManagerModal';
@@ -98,6 +98,114 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
   const [riskPercentage, setRiskPercentage] = useState(0);
   const [plannedRR, setPlannedRR] = useState(0);
   const [pnl, setPnl] = useState(0);
+
+  // Psychology / Readiness Rules Status
+  const [psychologyStatus, setPsychologyStatus] = useState<{
+    isLoaded: boolean;
+    isCompleted: boolean;
+    completedCount: number;
+    violations: string[];
+  }>({
+    isLoaded: false,
+    isCompleted: true,
+    completedCount: 10,
+    violations: []
+  });
+
+  const [showRuleConfirmModal, setShowRuleConfirmModal] = useState(false);
+  const [pendingTradeData, setPendingTradeData] = useState<Record<string, unknown> | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const today = new Date().toISOString().split('T')[0];
+
+    // Read localStorage first
+    try {
+      const local = localStorage.getItem(`alphatrader_psych_${today}`);
+      if (local) {
+        const parsed = JSON.parse(local);
+        const pre = parsed.preTradeChecklist;
+        if (pre) {
+          const v: string[] = [];
+          if (!pre.noRevenge) v.push('Revenge Trading active');
+          if (!pre.notChasing) v.push('Chasing market moves');
+          if (!pre.riskAcceptable) v.push('Risk not strictly defined');
+          if (!pre.respectDailyLimits) v.push('Daily stop loss ignored');
+          if (!pre.emotionallyNeutral) v.push('Emotional trading active');
+          setPsychologyStatus({
+            isLoaded: true,
+            isCompleted: Boolean(pre.completed),
+            completedCount: pre.completedCount || 0,
+            violations: v
+          });
+        }
+      }
+    } catch {}
+
+    // Async fetch from API
+    fetch(`/api/psychology?date=${today}`)
+      .then(res => res.json())
+      .then(data => {
+        const pre = data.current?.preTradeChecklist;
+        if (pre) {
+          const v: string[] = [];
+          if (!pre.noRevenge) v.push('Revenge Trading active');
+          if (!pre.notChasing) v.push('Chasing market moves');
+          if (!pre.riskAcceptable) v.push('Risk not strictly defined');
+          if (!pre.respectDailyLimits) v.push('Daily stop loss ignored');
+          if (!pre.emotionallyNeutral) v.push('Emotional trading active');
+          setPsychologyStatus({
+            isLoaded: true,
+            isCompleted: Boolean(pre.completed),
+            completedCount: pre.completedCount || 0,
+            violations: v
+          });
+        } else {
+          setPsychologyStatus({
+            isLoaded: true,
+            isCompleted: false,
+            completedCount: 0,
+            violations: ['Pre-Trade Checklist Not Started Today']
+          });
+        }
+      })
+      .catch(() => {
+        setPsychologyStatus(prev => ({ ...prev, isLoaded: true }));
+      });
+  }, [isOpen]);
+
+  // Active Rule Violations for this trade
+  const tradeRuleViolations = useMemo(() => {
+    const list: string[] = [];
+
+    // Rule 1: Today's Pre-Trade Readiness Checklist
+    if (psychologyStatus.isLoaded && !psychologyStatus.isCompleted) {
+      list.push('Pre-Trade Checklist incomplete for today');
+    }
+    if (psychologyStatus.violations.length > 0) {
+      psychologyStatus.violations.forEach(v => {
+        if (!list.includes(v)) list.push(v);
+      });
+    }
+
+    // Rule 2: Defined Stop Loss
+    if (!stopLossPrice || stopLossPrice <= 0) {
+      list.push('No Stop Loss defined (Rule: Never trade without defined risk)');
+    }
+
+    // Rule 3: Max Risk % Limit
+    if (riskPercentage > 2.5) {
+      list.push(`Excessive Risk: ${riskPercentage.toFixed(1)}% of account (Rule: Max recommended 2.0%)`);
+    }
+
+    // Rule 4: Dangerous Psychology Factors
+    const dangerousFactors = psychologyFactors.filter(f => ['FOMO', 'Revenge Trading', 'Overconfidence', 'Fear', 'Greed', 'Impatience'].includes(f));
+    if (dangerousFactors.length > 0) {
+      list.push(`High-Risk Psychological State: ${dangerousFactors.join(', ')}`);
+    }
+
+    return list;
+  }, [psychologyStatus, stopLossPrice, riskPercentage, psychologyFactors]);
 
   // Initialize/Prefill fields on open or edit change
   useEffect(() => {
@@ -334,7 +442,22 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
       accountId: accountId || ''
     };
 
+    // If there are rule violations, prompt warning confirmation dialog before saving
+    if (tradeRuleViolations.length > 0) {
+      setPendingTradeData(tradeData);
+      setShowRuleConfirmModal(true);
+      return;
+    }
+
     await onSave(tradeData);
+  };
+
+  const confirmSaveWithViolations = async () => {
+    if (!pendingTradeData) return;
+    setShowRuleConfirmModal(false);
+    toast.error(`⚠️ Trade logged with ${tradeRuleViolations.length} rule violation(s)! Exercise extreme caution.`, { duration: 5000 });
+    await onSave(pendingTradeData);
+    setPendingTradeData(null);
   };
 
   return (
@@ -347,6 +470,57 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
             <CloseIcon size={20} />
           </button>
         </div>
+
+        {/* Dynamic Rule Violation Warning Banner */}
+        {tradeRuleViolations.length > 0 && (
+          <div style={{
+            margin: '0 24px 14px 24px',
+            background: 'rgba(244, 63, 94, 0.08)',
+            border: '1px solid rgba(244, 63, 94, 0.35)',
+            borderRadius: '12px',
+            padding: '10px 14px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px',
+            boxShadow: '0 4px 12px rgba(244, 63, 94, 0.1)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1rem' }}>⚠️</span>
+                <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f43f5e' }}>
+                  Rule Alert: {tradeRuleViolations.length} Violation{tradeRuleViolations.length > 1 ? 's' : ''} Detected
+                </span>
+              </div>
+              <a
+                href="/psychology"
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  fontSize: '0.68rem',
+                  color: '#c084fc',
+                  textDecoration: 'underline',
+                  fontWeight: 600
+                }}
+              >
+                Open Psychology Checklist ➔
+              </a>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+              {tradeRuleViolations.map((v, i) => (
+                <span key={i} style={{
+                  fontSize: '0.66rem',
+                  padding: '2px 8px',
+                  borderRadius: '5px',
+                  background: 'rgba(0, 0, 0, 0.5)',
+                  border: '1px solid rgba(244, 63, 94, 0.3)',
+                  color: '#ffb4c2'
+                }}>
+                  {v}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Tab Selector */}
         <div className="modal-tabs">
@@ -965,6 +1139,123 @@ function TradeModal({ trade, isOpen, onClose, onSave, currentBalance, accounts =
           </button>
         </div>
       </form>
+
+      {/* Rule Violation Confirmation Modal */}
+      {showRuleConfirmModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(3, 5, 10, 0.88)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10001,
+            padding: '20px',
+            animation: 'fadeIn 0.2s ease-out'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowRuleConfirmModal(false);
+          }}
+        >
+          <div
+            style={{
+              background: '#0d111a',
+              border: '1px solid rgba(244, 63, 94, 0.45)',
+              boxShadow: '0 20px 60px rgba(244, 63, 94, 0.3)',
+              borderRadius: '20px',
+              maxWidth: '480px',
+              width: '100%',
+              padding: '26px 28px',
+              position: 'relative'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
+              <div style={{
+                width: '46px',
+                height: '46px',
+                borderRadius: '12px',
+                background: 'rgba(244, 63, 94, 0.2)',
+                border: '1px solid rgba(244, 63, 94, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                flexShrink: 0
+              }}>
+                ⚠️
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f43f5e', margin: 0 }}>
+                  Confirm Trade with Rule Violations
+                </h3>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                  Discipline & Risk Management Alert
+                </span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '14px' }}>
+              You are about to log or execute this trade with the following active rule violations:
+            </p>
+
+            <div style={{
+              background: 'rgba(244, 63, 94, 0.08)',
+              border: '1px solid rgba(244, 63, 94, 0.25)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              marginBottom: '20px',
+              maxHeight: '160px',
+              overflowY: 'auto'
+            }}>
+              <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {tradeRuleViolations.map((v, i) => (
+                  <li key={i} style={{ fontSize: '0.78rem', color: '#ffb4c2', lineHeight: 1.35 }}>
+                    {v}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={() => setShowRuleConfirmModal(false)}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: '10px',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#fff',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel & Fix Rules
+              </button>
+              <button
+                type="button"
+                onClick={confirmSaveWithViolations}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+                  border: 'none',
+                  color: '#fff',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(225, 29, 72, 0.4)'
+                }}
+              >
+                Acknowledge Risk & Proceed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

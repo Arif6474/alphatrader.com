@@ -342,27 +342,29 @@ export default function PsychologyView() {
     loadData();
   }, [todayStr]);
 
-  // Today's Trades & Dynamic Session Summary
-  const todayTrades = useMemo(() => {
+  // Session Trades based on selectedDate
+  const sessionTrades = useMemo(() => {
     return filteredTrades.filter(t => {
       if (!t.entryDate) return false;
-      return t.entryDate.startsWith(todayStr);
+      return t.entryDate.startsWith(selectedDate);
     });
-  }, [filteredTrades, todayStr]);
+  }, [filteredTrades, selectedDate]);
 
-  const closedTodayTrades = useMemo(() => {
-    return todayTrades.filter(t => t.closed && t.status !== 'Cancelled');
-  }, [todayTrades]);
+  const closedSessionTrades = useMemo(() => {
+    return sessionTrades.filter(t => t.closed && t.status !== 'Cancelled');
+  }, [sessionTrades]);
+
+  // Keep closedTodayTrades as alias for backwards compatibility
+  const closedTodayTrades = closedSessionTrades;
 
   const sessionSummary = useMemo(() => {
-    const count = todayTrades.length;
-    const wins = todayTrades.filter(t => t.status === 'Win').length;
-    const closedCount = todayTrades.filter(t => t.closed).length;
-    const winRate = closedCount > 0 ? Math.round((wins / closedCount) * 100) : 67; // default 67 if demo
+    const count = sessionTrades.length;
+    const wins = sessionTrades.filter(t => t.status === 'Win').length;
+    const closedCount = sessionTrades.filter(t => t.closed).length;
+    const winRate = closedCount > 0 ? Math.round((wins / closedCount) * 100) : 0;
 
-    // Net Result in R-multiples or Dollar
     let totalR = 0;
-    todayTrades.forEach(t => {
+    sessionTrades.forEach(t => {
       if (t.realizedRR !== undefined && t.realizedRR !== null) {
         totalR += t.realizedRR;
       } else if (t.pnl !== undefined && t.riskAmount && t.riskAmount > 0) {
@@ -374,14 +376,14 @@ export default function PsychologyView() {
 
     const netRDisplay = count > 0 
       ? (totalR >= 0 ? `+${totalR.toFixed(1)}R` : `${totalR.toFixed(1)}R`)
-      : '+2.4R'; // attractive default fallback if no trades logged yet today
+      : '0.0R';
 
     return {
-      totalTrades: count > 0 ? count : 3,
+      totalTrades: count,
       netResult: netRDisplay,
-      winRate: count > 0 ? winRate : 67
+      winRate: winRate
     };
-  }, [todayTrades]);
+  }, [sessionTrades]);
 
   // Pre-trade progress
   const preCompletedCount = useMemo(() => {
@@ -389,6 +391,69 @@ export default function PsychologyView() {
   }, [preChecklist]);
 
   const prePercent = Math.min(Math.round((preCompletedCount / 10) * 100), 100);
+
+  // Active Rule Violations Calculation
+  const preViolations = useMemo(() => {
+    const list: string[] = [];
+    if (!preChecklist.noRevenge) list.push('Revenge Trading (Trading out of anger or revenge)');
+    if (!preChecklist.notChasing) list.push('Chasing the Market (Entering without patience/setup)');
+    if (!preChecklist.riskAcceptable) list.push('Risk Limit Violation (Risk not strictly defined/acceptable)');
+    if (!preChecklist.respectDailyLimits) list.push('Daily Stop Limit (Ignoring max daily drawdown)');
+    if (!preChecklist.emotionallyNeutral) list.push('Emotional Trading (Fear, greed, or anger active)');
+    if (!preChecklist.followTradingPlan) list.push('Plan Deviation (Not committing to strategy rules)');
+    if (!preChecklist.acceptLoss) list.push('Loss Aversion (Refusing to accept possible loss)');
+    if (!preChecklist.readyMentallyPhysically) list.push('Fatigue / Low Focus');
+    if (!preChecklist.remainPatient) list.push('Impatience (Forcing low-probability setups)');
+    if (!preChecklist.judgeExecution) list.push('Outcome Bias (Focusing only on money, not execution)');
+    return list;
+  }, [preChecklist]);
+
+  const postViolations = useMemo(() => {
+    const list: string[] = [];
+    if (postForm.entryRules === 'No') list.push('Did NOT follow entry rules');
+    else if (postForm.entryRules === 'Partially') list.push('Only partially followed entry rules');
+
+    if (postForm.exitRules === 'No') list.push('Did NOT follow exit/take-profit plan');
+    else if (postForm.exitRules === 'Partially') list.push('Only partially followed exit plan');
+
+    if (postForm.respectRisk === 'No') list.push('Did NOT respect risk limits on position size/stop');
+    else if (postForm.respectRisk === 'Partially') list.push('Only partially respected risk');
+
+    if (postForm.impulsiveDecisions === 'Yes') list.push('Made impulsive decisions during the trade');
+    else if (postForm.impulsiveDecisions === 'A little') list.push('Influenced by impulsive urge');
+
+    if (postForm.feeling === 'Frustrated' || postForm.feeling === 'Anxious') {
+      list.push(`High emotional distress during trade (${postForm.feeling})`);
+    }
+    return list;
+  }, [postForm]);
+
+  const eodViolations = useMemo(() => {
+    const list: string[] = [];
+    if (!eodForm.respectedRiskLimits) list.push('Breached daily risk limits');
+    if (!eodForm.didNotOvertrade) list.push('Overtraded (Took unnecessary/forced trades)');
+    if (!eodForm.maintainedDiscipline) list.push('Failed to maintain discipline');
+    if (!eodForm.managedEmotionsWell) list.push('Failed to manage emotions well');
+    if (!eodForm.overallExecutionGood) list.push('Overall execution was poor');
+    return list;
+  }, [eodForm]);
+
+  // Alert Dialog Modal State
+  const [ruleAlertModal, setRuleAlertModal] = useState<{
+    isOpen: boolean;
+    title: string;
+    subtitle: string;
+    type: 'pre' | 'post' | 'eod';
+    violations: string[];
+    onConfirm: () => void;
+  }>({
+    isOpen: false,
+    title: '',
+    subtitle: '',
+    type: 'pre',
+    violations: [],
+    onConfirm: () => {}
+  });
 
   // Toggle item in pre-trade
   const togglePreItem = (key: keyof PreTradeChecklistState) => {
@@ -423,8 +488,8 @@ export default function PsychologyView() {
     }
   };
 
-  // Save Pre-Trade Readiness
-  const handleSavePreTrade = async () => {
+  // Execute Save Pre-Trade Readiness
+  const executeSavePreTrade = async () => {
     setSavingSection('pre');
     try {
       const cleanChecklist: PreTradeChecklistState = {
@@ -460,7 +525,11 @@ export default function PsychologyView() {
 
       setPreSaved(true);
       await refreshHistory();
-      showToast(`Readiness for ${selectedDate} saved (${preCompletedCount}/10 completed)!`, 'success');
+      if (preViolations.length > 0) {
+        showToast(`⚠️ Readiness saved for ${selectedDate} (${preCompletedCount}/10) · ${preViolations.length} rule violation(s) active!`, 'error');
+      } else {
+        showToast(`Readiness for ${selectedDate} confirmed (${preCompletedCount}/10) · 100% Rule Compliance!`, 'success');
+      }
     } catch {
       showToast('Saved to local storage!', 'success');
       setPreSaved(true);
@@ -469,8 +538,26 @@ export default function PsychologyView() {
     }
   };
 
-  // Save Post-Trade Review
-  const handleSavePostTrade = async () => {
+  const handleSavePreTradeClick = () => {
+    if (preViolations.length > 0) {
+      setRuleAlertModal({
+        isOpen: true,
+        title: '⚠️ Pre-Trade Rule Violation Alert',
+        subtitle: `You have ${preViolations.length} unfulfilled readiness rule(s) for ${selectedDate}. Trading under these conditions significantly elevates the risk of severe drawdown:`,
+        type: 'pre',
+        violations: preViolations,
+        onConfirm: () => {
+          setRuleAlertModal(prev => ({ ...prev, isOpen: false }));
+          executeSavePreTrade();
+        }
+      });
+    } else {
+      executeSavePreTrade();
+    }
+  };
+
+  // Execute Save Post-Trade Review
+  const executeSavePostTrade = async () => {
     setSavingSection('post');
     try {
       const reviewItem = {
@@ -494,7 +581,11 @@ export default function PsychologyView() {
 
       setPostSaved(true);
       await refreshHistory();
-      showToast(`Post-trade review for ${selectedDate} saved!`, 'success');
+      if (postViolations.length > 0) {
+        showToast(`⚠️ Post-trade review saved · ${postViolations.length} rule violation(s) recorded!`, 'error');
+      } else {
+        showToast(`Post-trade review for ${selectedDate} saved! Flawless rule execution.`, 'success');
+      }
     } catch {
       showToast('Review saved locally!', 'success');
       setPostSaved(true);
@@ -503,8 +594,26 @@ export default function PsychologyView() {
     }
   };
 
-  // Save Daily Review
-  const handleSaveDailyReview = async () => {
+  const handleSavePostTradeClick = () => {
+    if (postViolations.length > 0) {
+      setRuleAlertModal({
+        isOpen: true,
+        title: '⚠️ Rule Breakdown Detected on Trade',
+        subtitle: `You recorded ${postViolations.length} rule violation(s) for this trade review:`,
+        type: 'post',
+        violations: postViolations,
+        onConfirm: () => {
+          setRuleAlertModal(prev => ({ ...prev, isOpen: false }));
+          executeSavePostTrade();
+        }
+      });
+    } else {
+      executeSavePostTrade();
+    }
+  };
+
+  // Execute Save Daily Review
+  const executeSaveDailyReview = async () => {
     setSavingSection('eod');
     try {
       const cleanEod: EndOfDayState = {
@@ -535,12 +644,34 @@ export default function PsychologyView() {
 
       setEodSaved(true);
       await refreshHistory();
-      showToast(`Daily review for ${selectedDate} saved!`, 'success');
+      if (eodViolations.length > 0) {
+        showToast(`⚠️ Daily review saved · ${eodViolations.length} rule breach(es) recorded for today.`, 'error');
+      } else {
+        showToast(`Daily review for ${selectedDate} saved! 100% discipline maintained.`, 'success');
+      }
     } catch {
       showToast('Daily review saved locally!', 'success');
       setEodSaved(true);
     } finally {
       setSavingSection(null);
+    }
+  };
+
+  const handleSaveDailyReviewClick = () => {
+    if (eodViolations.length > 0) {
+      setRuleAlertModal({
+        isOpen: true,
+        title: '⚠️ End-of-Day Rule Breaches Alert',
+        subtitle: `Your end-of-day review indicates ${eodViolations.length} broken rule(s) for today:`,
+        type: 'eod',
+        violations: eodViolations,
+        onConfirm: () => {
+          setRuleAlertModal(prev => ({ ...prev, isOpen: false }));
+          executeSaveDailyReview();
+        }
+      });
+    } else {
+      executeSaveDailyReview();
     }
   };
 
@@ -1029,10 +1160,82 @@ export default function PsychologyView() {
             })}
           </div>
 
+          {/* Interactive Pre-Trade Rule Violation Alert Banner */}
+          {preViolations.length > 0 ? (
+            <div style={{
+              background: 'rgba(244, 63, 94, 0.08)',
+              border: '1px solid rgba(244, 63, 94, 0.3)',
+              borderRadius: '12px',
+              padding: '10px 14px',
+              marginBottom: '14px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              boxShadow: '0 4px 14px rgba(244, 63, 94, 0.08)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.95rem' }}>⚠️</span>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#f43f5e' }}>
+                    Rule Alert: {preViolations.length} Rule{preViolations.length > 1 ? 's' : ''} Not Followed
+                  </span>
+                </div>
+                <span style={{
+                  fontSize: '0.64rem',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '6px',
+                  background: 'rgba(244, 63, 94, 0.2)',
+                  color: '#f43f5e'
+                }}>
+                  High Risk
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                {preViolations.slice(0, 3).map((v, i) => (
+                  <span key={i} style={{
+                    fontSize: '0.65rem',
+                    padding: '2px 7px',
+                    borderRadius: '5px',
+                    background: 'rgba(0, 0, 0, 0.45)',
+                    border: '1px solid rgba(244, 63, 94, 0.25)',
+                    color: '#ffb4c2'
+                  }}>
+                    {v.split('(')[0].trim()}
+                  </span>
+                ))}
+                {preViolations.length > 3 && (
+                  <span style={{ fontSize: '0.66rem', color: 'var(--text-muted)', alignSelf: 'center' }}>
+                    +{preViolations.length - 3} more
+                  </span>
+                )}
+              </div>
+              <span style={{ fontSize: '0.68rem', color: '#ffb4c2', opacity: 0.85, marginTop: '2px' }}>
+                Refrain from taking entries while feeling revenge or chasing.
+              </span>
+            </div>
+          ) : (
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              borderRadius: '12px',
+              padding: '8px 12px',
+              marginBottom: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '0.85rem' }}>🛡️</span>
+              <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#10b981' }}>
+                100% Rule Compliance · Mindset Prime
+              </span>
+            </div>
+          )}
+
           {/* Action Button */}
           <button
             type="button"
-            onClick={handleSavePreTrade}
+            onClick={handleSavePreTradeClick}
             disabled={savingSection === 'pre'}
             style={{
               width: '100%',
@@ -1456,10 +1659,77 @@ export default function PsychologyView() {
             </div>
           </div>
 
+          {/* Interactive Post-Trade Rule Violation Alert Banner */}
+          {postViolations.length > 0 ? (
+            <div style={{
+              background: 'rgba(244, 63, 94, 0.08)',
+              border: '1px solid rgba(244, 63, 94, 0.3)',
+              borderRadius: '12px',
+              padding: '10px 14px',
+              marginBottom: '14px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              boxShadow: '0 4px 14px rgba(244, 63, 94, 0.08)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.95rem' }}>⚠️</span>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#f43f5e' }}>
+                    Rule Breakdown: {postViolations.length} Issue{postViolations.length > 1 ? 's' : ''} on Trade
+                  </span>
+                </div>
+                <span style={{
+                  fontSize: '0.64rem',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '6px',
+                  background: 'rgba(244, 63, 94, 0.2)',
+                  color: '#f43f5e'
+                }}>
+                  Review Required
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                {postViolations.map((v, i) => (
+                  <span key={i} style={{
+                    fontSize: '0.65rem',
+                    padding: '2px 7px',
+                    borderRadius: '5px',
+                    background: 'rgba(0, 0, 0, 0.45)',
+                    border: '1px solid rgba(244, 63, 94, 0.25)',
+                    color: '#ffb4c2'
+                  }}>
+                    {v}
+                  </span>
+                ))}
+              </div>
+              <span style={{ fontSize: '0.68rem', color: '#ffb4c2', opacity: 0.85, marginTop: '2px' }}>
+                Document this breach in the Lesson tab to avoid repeating it.
+              </span>
+            </div>
+          ) : (
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              borderRadius: '12px',
+              padding: '8px 12px',
+              marginBottom: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '0.85rem' }}>🛡️</span>
+              <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#10b981' }}>
+                Clean Execution · All Trading Rules Followed
+              </span>
+            </div>
+          )}
+
           {/* Action Button */}
           <button
             type="button"
-            onClick={handleSavePostTrade}
+            onClick={handleSavePostTradeClick}
             disabled={savingSection === 'post'}
             style={{
               width: '100%',
@@ -1712,10 +1982,77 @@ export default function PsychologyView() {
             />
           </div>
 
+          {/* Interactive End-of-Day Rule Violation Alert Banner */}
+          {eodViolations.length > 0 ? (
+            <div style={{
+              background: 'rgba(244, 63, 94, 0.08)',
+              border: '1px solid rgba(244, 63, 94, 0.3)',
+              borderRadius: '12px',
+              padding: '10px 14px',
+              marginBottom: '14px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              boxShadow: '0 4px 14px rgba(244, 63, 94, 0.08)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.95rem' }}>⚠️</span>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#f43f5e' }}>
+                    Session Discipline Alert: {eodViolations.length} Broken Rule{eodViolations.length > 1 ? 's' : ''}
+                  </span>
+                </div>
+                <span style={{
+                  fontSize: '0.64rem',
+                  fontWeight: 700,
+                  padding: '2px 8px',
+                  borderRadius: '6px',
+                  background: 'rgba(244, 63, 94, 0.2)',
+                  color: '#f43f5e'
+                }}>
+                  Discipline Loss
+                </span>
+              </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                {eodViolations.map((v, i) => (
+                  <span key={i} style={{
+                    fontSize: '0.65rem',
+                    padding: '2px 7px',
+                    borderRadius: '5px',
+                    background: 'rgba(0, 0, 0, 0.45)',
+                    border: '1px solid rgba(244, 63, 94, 0.25)',
+                    color: '#ffb4c2'
+                  }}>
+                    {v}
+                  </span>
+                ))}
+              </div>
+              <span style={{ fontSize: '0.68rem', color: '#ffb4c2', opacity: 0.85, marginTop: '2px' }}>
+                Review rules tonight and commit to 100% discipline for next session.
+              </span>
+            </div>
+          ) : (
+            <div style={{
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              borderRadius: '12px',
+              padding: '8px 12px',
+              marginBottom: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '0.85rem' }}>🏆</span>
+              <span style={{ fontSize: '0.74rem', fontWeight: 700, color: '#10b981' }}>
+                Flawless Session Discipline · 0 Rules Broken
+              </span>
+            </div>
+          )}
+
           {/* Action Button */}
           <button
             type="button"
-            onClick={handleSaveDailyReview}
+            onClick={handleSaveDailyReviewClick}
             disabled={savingSection === 'eod'}
             style={{
               width: '100%',
@@ -2302,6 +2639,139 @@ export default function PsychologyView() {
                   );
                 })
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Rule Violation Alert Modal Dialog ── */}
+      {ruleAlertModal.isOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(3, 5, 10, 0.85)',
+            backdropFilter: 'blur(8px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10000,
+            padding: '20px',
+            animation: 'fadeIn 0.2s ease-out'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setRuleAlertModal(prev => ({ ...prev, isOpen: false }));
+            }
+          }}
+        >
+          <div
+            style={{
+              background: '#0d111a',
+              border: '1px solid rgba(244, 63, 94, 0.45)',
+              boxShadow: '0 20px 60px rgba(244, 63, 94, 0.25), 0 0 0 1px rgba(244, 63, 94, 0.15)',
+              borderRadius: '20px',
+              maxWidth: '520px',
+              width: '100%',
+              padding: '26px 28px',
+              position: 'relative'
+            }}
+          >
+            {/* Alert Header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                borderRadius: '14px',
+                background: 'rgba(244, 63, 94, 0.18)',
+                border: '1px solid rgba(244, 63, 94, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '1.5rem',
+                flexShrink: 0
+              }}>
+                ⚠️
+              </div>
+              <div>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f43f5e', margin: 0 }}>
+                  {ruleAlertModal.title}
+                </h3>
+                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                  Trading Discipline & Rules Enforcement
+                </span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '16px' }}>
+              {ruleAlertModal.subtitle}
+            </p>
+
+            {/* List of active violations */}
+            <div style={{
+              background: 'rgba(244, 63, 94, 0.06)',
+              border: '1px solid rgba(244, 63, 94, 0.2)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              marginBottom: '20px',
+              maxHeight: '180px',
+              overflowY: 'auto'
+            }}>
+              <span style={{
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                color: '#f43f5e',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                display: 'block',
+                marginBottom: '8px'
+              }}>
+                Breached Rules ({ruleAlertModal.violations.length}):
+              </span>
+              <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                {ruleAlertModal.violations.map((v, i) => (
+                  <li key={i} style={{ fontSize: '0.78rem', color: '#ffb4c2', lineHeight: 1.35 }}>
+                    {v}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Action Buttons */}
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button
+                type="button"
+                onClick={() => setRuleAlertModal(prev => ({ ...prev, isOpen: false }))}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: '10px',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  color: '#fff',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                Go Back & Fix Rules
+              </button>
+              <button
+                type="button"
+                onClick={ruleAlertModal.onConfirm}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+                  border: 'none',
+                  color: '#fff',
+                  fontSize: '0.82rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(225, 29, 72, 0.4)'
+                }}
+              >
+                Acknowledge & Proceed
+              </button>
             </div>
           </div>
         </div>
