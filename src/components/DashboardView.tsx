@@ -196,7 +196,84 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
 
   return (
     <div style={{ animation: 'fadeIn 0.35s ease-out' }}>
-   
+      {/* ── Trading Psychology & Mindset Readiness Banner ── */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px',
+        background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.45) 0%, rgba(15, 23, 42, 0.6) 100%)',
+        border: '1px solid rgba(168, 85, 247, 0.25)',
+        borderRadius: '16px',
+        padding: '16px 20px',
+        marginBottom: '20px',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          <div style={{
+            width: '42px',
+            height: '42px',
+            borderRadius: '12px',
+            background: 'rgba(168, 85, 247, 0.15)',
+            border: '1px solid rgba(168, 85, 247, 0.35)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.25rem',
+            color: '#c084fc',
+            flexShrink: 0
+          }}>
+            🧠
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+              <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#fff' }}>
+                Trading Psychology & Daily Readiness
+              </span>
+              <span style={{
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: '12px',
+                background: 'rgba(168, 85, 247, 0.15)',
+                color: '#c084fc',
+                border: '1px solid rgba(168, 85, 247, 0.3)'
+              }}>
+                Pre-Trade Checklist Active
+              </span>
+            </div>
+            <span style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+              &ldquo;Discipline today builds freedom tomorrow.&rdquo; — Prepare your mindset before execution.
+            </span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => onNavigate('psychology')}
+          style={{
+            padding: '9px 18px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 100%)',
+            color: '#fff',
+            border: 'none',
+            fontWeight: 700,
+            fontSize: '0.8rem',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 4px 14px rgba(124, 58, 237, 0.35)',
+            transition: 'transform 0.15s ease'
+          }}
+          onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+          onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+        >
+          <span>Open Psychology Center</span>
+          <span>&rarr;</span>
+        </button>
+      </div>
 
       {metrics.hasMixedCurrencies && (
         <div style={{

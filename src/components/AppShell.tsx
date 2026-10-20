@@ -13,7 +13,8 @@ import {
   TradesIcon, 
   AnalyticsIcon, 
   ProfileIcon, 
-  PlusIcon
+  PlusIcon,
+  PsychologyIcon
 } from './Icons';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -52,6 +53,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         return 'Trades Directory';
       case '/analytics':
         return 'Analytics';
+      case '/psychology':
+        return 'Trading Psychology';
       case '/settings':
         return 'Settings';
       default:
@@ -136,6 +139,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               >
                 <AnalyticsIcon className="nav-icon" />
                 Analytics
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link 
+                href="/psychology" 
+                className={`nav-link ${pathname === '/psychology' ? 'active' : ''}`}
+                style={pathname === '/psychology' ? {
+                  background: 'linear-gradient(90deg, rgba(168, 85, 247, 0.18) 0%, rgba(99, 102, 241, 0.12) 100%)',
+                  color: '#c084fc',
+                  borderLeft: '3px solid #a855f7'
+                } : undefined}
+              >
+                <PsychologyIcon className="nav-icon" style={{ color: pathname === '/psychology' ? '#c084fc' : undefined }} />
+                Psychology
               </Link>
             </li>
             <li className="nav-item">
@@ -264,6 +281,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         >
           <AnalyticsIcon className="bottom-nav-icon" />
           <span>Analytics</span>
+        </Link>
+        <Link 
+          href="/psychology" 
+          className={`bottom-nav-item ${pathname === '/psychology' ? 'active' : ''}`}
+        >
+          <PsychologyIcon className="bottom-nav-icon" />
+          <span>Psych</span>
         </Link>
         <Link 
           href="/settings" 
