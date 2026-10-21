@@ -68,6 +68,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     ? 'All Accounts' 
     : (activeAccount?.name || 'All Accounts');
 
+  const isAnyModalOpen = Boolean(isAddOpen || isEditOpen || isDetailOpen || isAccountModalOpen);
+
   // Helper to get active page title
   const getPageTitle = () => {
     switch (pathname) {
@@ -423,47 +425,49 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* Mobile Bottom Navigation - Perfectly Centered 2 + FAB + 2 */}
-      <nav className="bottom-nav">
-        <Link 
-          href="/" 
-          className={`bottom-nav-item ${pathname === '/' ? 'active' : ''}`}
-        >
-          <DashboardIcon className="bottom-nav-icon" />
-          <span>Dashboard</span>
-        </Link>
-        <Link 
-          href="/trades" 
-          className={`bottom-nav-item ${pathname === '/trades' ? 'active' : ''}`}
-        >
-          <TradesIcon className="bottom-nav-icon" />
-          <span>Trades</span>
-        </Link>
-        
-        {/* Floating Action Button (Dead Center) */}
-        <button 
-          className="fab-button"
-          onClick={handleOpenAddModal}
-          title="Log New Trade"
-        >
-          <PlusIcon size={24} />
-        </button>
+      {/* Mobile Bottom Navigation - Perfectly Centered 2 + FAB + 2 (Hidden when modal is open) */}
+      {!isAnyModalOpen && (
+        <nav className="bottom-nav">
+          <Link 
+            href="/" 
+            className={`bottom-nav-item ${pathname === '/' ? 'active' : ''}`}
+          >
+            <DashboardIcon className="bottom-nav-icon" />
+            <span>Dashboard</span>
+          </Link>
+          <Link 
+            href="/trades" 
+            className={`bottom-nav-item ${pathname === '/trades' ? 'active' : ''}`}
+          >
+            <TradesIcon className="bottom-nav-icon" />
+            <span>Trades</span>
+          </Link>
+          
+          {/* Floating Action Button (Dead Center) */}
+          <button 
+            className="fab-button"
+            onClick={handleOpenAddModal}
+            title="Log New Trade"
+          >
+            <PlusIcon size={24} />
+          </button>
 
-        <Link 
-          href="/analytics" 
-          className={`bottom-nav-item ${pathname === '/analytics' ? 'active' : ''}`}
-        >
-          <AnalyticsIcon className="bottom-nav-icon" />
-          <span>Analytics</span>
-        </Link>
-        <Link 
-          href="/psychology" 
-          className={`bottom-nav-item ${pathname === '/psychology' ? 'active' : ''}`}
-        >
-          <PsychologyIcon className="bottom-nav-icon" />
-          <span>Psych</span>
-        </Link>
-      </nav>
+          <Link 
+            href="/analytics" 
+            className={`bottom-nav-item ${pathname === '/analytics' ? 'active' : ''}`}
+          >
+            <AnalyticsIcon className="bottom-nav-icon" />
+            <span>Analytics</span>
+          </Link>
+          <Link 
+            href="/psychology" 
+            className={`bottom-nav-item ${pathname === '/psychology' ? 'active' : ''}`}
+          >
+            <PsychologyIcon className="bottom-nav-icon" />
+            <span>Psych</span>
+          </Link>
+        </nav>
+      )}
 
       {/* Global Modals */}
       {isAddOpen && (

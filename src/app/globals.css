@@ -794,13 +794,13 @@ nextjs-portal,
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  z-index: 200;
+  z-index: 10000;
   animation: fadeInOverlay 0.2s ease-out;
 }
 
@@ -823,7 +823,8 @@ nextjs-portal,
 
 .modal-content {
   width: 100%;
-  max-height: 90vh;
+  max-height: 92vh;
+  max-height: 92dvh;
   border-top-left-radius: var(--radius-lg);
   border-top-right-radius: var(--radius-lg);
   border-bottom-left-radius: 0;
@@ -839,7 +840,8 @@ nextjs-portal,
   .modal-content {
     max-width: 650px;
     border-radius: var(--radius-md);
-    max-height: 85vh;
+    max-height: 88vh;
+    max-height: 88dvh;
   }
 }
 
@@ -1187,11 +1189,12 @@ input:checked+.switch-slider:before {
 /* Modal Footer Actions */
 .modal-footer {
   padding: 16px 20px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom, 16px));
   border-top: 1px solid var(--border-color);
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  background: rgba(17, 26, 46, 0.95);
+  background: rgba(17, 26, 46, 0.98);
   flex-shrink: 0;
 }
 

@@ -52,7 +52,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body>
-        <Toaster position="bottom-center" />
+        <Toaster position="bottom-center" containerStyle={{ zIndex: 99999 }} />
         <AppProvider>
           <AppShell>
             {children}
