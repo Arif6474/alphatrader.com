@@ -26,159 +26,202 @@ const getLocalDateKey = (dateStr: string) => {
 /* ── Inline SVG Icons ── */
 const IconPnl = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+    <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" /><polyline points="16 7 22 7 22 13" />
   </svg>
 );
 const IconTarget = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+    <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
   </svg>
 );
 const IconScale = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    <line x1="12" y1="1" x2="12" y2="23" /><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
   </svg>
 );
 const IconStar = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
   </svg>
 );
 const IconAlert = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
   </svg>
 );
 const IconActivity = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
   </svg>
 );
 const IconZap = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
   </svg>
 );
 const IconLayers = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+    <polygon points="12 2 2 7 12 12 22 7 12 2" /><polyline points="2 17 12 22 22 17" /><polyline points="2 12 12 17 22 12" />
   </svg>
 );
 const IconArrow = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
   </svg>
 );
 const IconCalendar = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
   </svg>
 );
 const IconChevronLeft = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="15 18 9 12 15 6"/>
+    <polyline points="15 18 9 12 15 6" />
   </svg>
 );
 const IconChevronRight = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="9 18 15 12 9 6"/>
-  </svg>
-);
-const IconBarChart = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>
-  </svg>
-);
-const IconPie = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/>
+    <polyline points="9 18 15 12 9 6" />
   </svg>
 );
 const IconCompass = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+    <circle cx="12" cy="12" r="10" /><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
   </svg>
 );
 const IconOrangeCalendar = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="4" width="18" height="18" rx="3" ry="3"/>
-    <line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="8" y1="2" x2="8" y2="6"/>
-    <line x1="3" y1="10" x2="21" y2="10"/>
-    <line x1="8" y1="14" x2="8" y2="14.01"/>
+    <rect x="3" y="4" width="18" height="18" rx="3" ry="3" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+    <line x1="8" y1="14" x2="8" y2="14.01" />
   </svg>
 );
 const IconRefresh = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="1 4 1 10 7 10"/>
-    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+    <polyline points="1 4 1 10 7 10" />
+    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
   </svg>
 );
 
 /* ── Circular Progress Ring ── */
-function Ring({ pct, color, size = 52, stroke = 5 }: { pct: number; color: string; size?: number; stroke?: number }) {
+function Ring({ pct, strokeColor, size = 48, stroke = 4 }: { pct: number; strokeColor: string; size?: number; stroke?: number }) {
   const r = (size - stroke * 2) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (Math.min(pct, 100) / 100) * circ;
   return (
-    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={stroke} />
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={color} strokeWidth={stroke}
-        strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
-        style={{ transition: 'stroke-dashoffset 0.8s ease' }} />
+    <svg width={size} height={size} className="transform -rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} />
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={r}
+        fill="none"
+        stroke={strokeColor}
+        className="transition-[stroke-dashoffset] duration-700 ease-out"
+        strokeWidth={stroke}
+        strokeDasharray={circ}
+        strokeDashoffset={offset}
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
-/* ── Stat Card ── */
+/* ── Stat Card Component ── */
 function StatCard({
-  label, value, sub, icon, accent, ring, ringMax
+  label,
+  value,
+  sub,
+  icon,
+  accentColor,
+  ring,
+  ringMax,
 }: {
-  label: string; value: string; sub: string; icon: React.ReactNode;
-  accent: string; ring?: number; ringMax?: number;
+  label: string;
+  value: string;
+  sub: string;
+  icon: React.ReactNode;
+  accentColor: 'emerald' | 'rose' | 'indigo' | 'amber' | 'gold';
+  ring?: number;
+  ringMax?: number;
 }) {
   const pct = ring !== undefined && ringMax ? Math.min((ring / ringMax) * 100, 100) : undefined;
-  return (
-    <div style={{
-      background: 'rgba(10,12,22,0.7)', border: `1px solid rgba(255,255,255,0.05)`,
-      borderRadius: '16px', padding: '20px 22px', position: 'relative', overflow: 'hidden',
-      display: 'flex', flexDirection: 'column', justifyContent: 'space-between', gap: '12px',
-      transition: 'transform 0.2s, border-color 0.2s', cursor: 'default',
-      borderTop: `2px solid ${accent}`,
-    }}
-      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.borderTopColor = accent; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
-    >
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '60px',
-        background: `linear-gradient(180deg, ${accent}18 0%, transparent 100%)`, pointerEvents: 'none' }} />
 
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', zIndex: 1 }}>
-          <span style={{ fontSize: '0.68rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-            {label}
-          </span>
-          <span style={{ fontSize: '1.6rem', fontWeight: 900, color: accent, fontFamily: 'var(--font-mono)', lineHeight: 1, letterSpacing: '-0.5px' }}>
+  const colorStyles = {
+    emerald: {
+      borderTop: 'border-t-emerald-500',
+      text: 'text-emerald-400',
+      bgGlow: 'from-emerald-500/15',
+      iconBg: 'bg-emerald-500/10 border-emerald-500/25 text-emerald-400',
+      stroke: '#10b981',
+    },
+    rose: {
+      borderTop: 'border-t-rose-500',
+      text: 'text-rose-400',
+      bgGlow: 'from-rose-500/15',
+      iconBg: 'bg-rose-500/10 border-rose-500/25 text-rose-400',
+      stroke: '#ff3366',
+    },
+    indigo: {
+      borderTop: 'border-t-indigo-500',
+      text: 'text-indigo-400',
+      bgGlow: 'from-indigo-500/15',
+      iconBg: 'bg-indigo-500/10 border-indigo-500/25 text-indigo-400',
+      stroke: '#6366f1',
+    },
+    amber: {
+      borderTop: 'border-t-amber-500',
+      text: 'text-amber-400',
+      bgGlow: 'from-amber-500/15',
+      iconBg: 'bg-amber-500/10 border-amber-500/25 text-amber-400',
+      stroke: '#f59e0b',
+    },
+    gold: {
+      borderTop: 'border-t-amber-400',
+      text: 'text-amber-300',
+      bgGlow: 'from-amber-400/15',
+      iconBg: 'bg-amber-400/10 border-amber-400/25 text-amber-300',
+      stroke: '#d4af37',
+    },
+  }[accentColor];
+
+  return (
+    <div
+      className={`relative flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-[#0a0c16]/80 border border-white/5 border-t-2 ${colorStyles.borderTop} backdrop-blur-md min-h-[135px] overflow-hidden transition-all duration-300 ease-out hover:-translate-y-1 hover:border-white/15 hover:shadow-2xl hover:shadow-black/60 group cursor-default`}
+    >
+      {/* Top Ambient Glow */}
+      <div
+        className={`absolute top-0 left-0 right-0 h-16 bg-gradient-to-b ${colorStyles.bgGlow} to-transparent pointer-events-none opacity-40 group-hover:opacity-80 transition-opacity duration-300`}
+      />
+
+      {/* Card Header */}
+      <div className="flex items-start justify-between relative z-10 gap-2">
+        <div className="flex flex-col gap-1.5 min-w-0">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{label}</span>
+          <span className={`text-2xl sm:text-[1.75rem] font-black font-mono leading-none tracking-tight ${colorStyles.text} transition-transform duration-200 group-hover:scale-[1.02] truncate`}>
             {value}
           </span>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', zIndex: 1 }}>
+        <div className="flex flex-col items-center justify-center flex-shrink-0">
           {pct !== undefined ? (
-            <div style={{ position: 'relative' }}>
-              <Ring pct={pct} color={accent} size={48} stroke={4} />
-              <span style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', fontSize: '0.55rem', fontWeight: 800, color: accent }}>
+            <div className="relative">
+              <Ring pct={pct} strokeColor={colorStyles.stroke} size={48} stroke={4} />
+              <span className={`absolute inset-0 flex items-center justify-center text-[10px] font-black font-mono ${colorStyles.text}`}>
                 {Math.round(pct)}%
               </span>
             </div>
           ) : (
-            <div style={{ width: 40, height: 40, borderRadius: '10px', background: `${accent}18`, border: `1px solid ${accent}30`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', color: accent }}>
+            <div className={`w-10 h-10 rounded-xl border flex items-center justify-center transition-all duration-200 group-hover:scale-110 ${colorStyles.iconBg}`}>
               {icon}
             </div>
           )}
         </div>
       </div>
 
-      <span style={{ fontSize: '0.71rem', color: 'var(--text-muted)', fontWeight: 500 }}>{sub}</span>
+      {/* Card Subtitle */}
+      <span className="text-xs font-medium text-slate-400 relative z-10 truncate mt-3">{sub}</span>
     </div>
   );
 }
@@ -267,7 +310,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
     const W = 520, H = 170, px = 32, py = 16;
     const balanceHistory = metrics.equityCurve.map(pt => ({
       balance: pt.balance,
-      date: pt.index === 0 ? 'Start' : formatDate(pt.date)
+      date: pt.index === 0 ? 'Start' : formatDate(pt.date),
     }));
 
     const minB = Math.min(...balanceHistory.map(h => h.balance)) * 0.998;
@@ -282,12 +325,14 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
 
     let linePath = '', areaPath = '';
     if (points.length > 1) {
-      const seg = points.map((p, i) => {
-        if (i === 0) return `M ${p.x} ${p.y}`;
-        const prev = points[i - 1];
-        const cx = (prev.x + p.x) / 2;
-        return `C ${cx} ${prev.y} ${cx} ${p.y} ${p.x} ${p.y}`;
-      }).join(' ');
+      const seg = points
+        .map((p, i) => {
+          if (i === 0) return `M ${p.x} ${p.y}`;
+          const prev = points[i - 1];
+          const cx = (prev.x + p.x) / 2;
+          return `C ${cx} ${prev.y} ${cx} ${p.y} ${p.x} ${p.y}`;
+        })
+        .join(' ');
       linePath = seg;
       areaPath = `${seg} L ${points[points.length - 1].x} ${H - py} L ${points[0].x} ${H - py} Z`;
     }
@@ -311,7 +356,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
         winRate,
         wins,
       };
-    }).filter(d => d.count > 0 || (d.name !== 'Sun' && d.name !== 'Sat')); // Always show Mon-Fri
+    }).filter(d => d.count > 0 || (d.name !== 'Sun' && d.name !== 'Sat'));
 
     // Long vs Short breakdown
     const longTrades = closedTrades.filter(t => t.direction === 'Long');
@@ -338,17 +383,17 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
       weekdayStats,
       directionStats: {
         long: { count: longTrades.length, pnl: longPnl, winRate: longWinRate },
-        short: { count: shortTrades.length, pnl: shortPnl, winRate: shortWinRate }
-      }
+        short: { count: shortTrades.length, pnl: shortPnl, winRate: shortWinRate },
+      },
     };
   }, [trades]);
 
-  const { metrics, closedTrades, balanceHistory, points, linePath, areaPath, recentTrades, W, H, isUp, weekdayStats, directionStats } = stats;
+  const { metrics, balanceHistory, points, linePath, areaPath, recentTrades, W, H, isUp, weekdayStats, directionStats } = stats;
 
   const pfValue = metrics.profitFactor.value;
-  const pfColor = metrics.profitFactor.isZeroLoss
-    ? (metrics.profitFactor.isInfinite ? '#10b981' : 'var(--text-muted)')
-    : (pfValue !== null && pfValue >= 1.5 ? '#10b981' : pfValue !== null && pfValue >= 1.0 ? '#f59e0b' : '#ff3366');
+  const pfAccent: 'emerald' | 'amber' | 'rose' = metrics.profitFactor.isZeroLoss
+    ? (metrics.profitFactor.isInfinite ? 'emerald' : 'amber')
+    : (pfValue !== null && pfValue >= 1.5 ? 'emerald' : pfValue !== null && pfValue >= 1.0 ? 'amber' : 'rose');
 
   // Daily P&L Bar Chart series
   const dailyBarData = useMemo(() => {
@@ -479,156 +524,176 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
   }, [selectedDateKey, tradesByDate]);
 
   return (
-    <div style={{ animation: 'fadeIn 0.35s ease-out' }}>
+    <div className="w-full pb-8">
+      {/* ── Currency Notice ── */}
       {metrics.hasMixedCurrencies && (
-        <div style={{
-          padding: '12px 16px',
-          background: 'rgba(245, 158, 11, 0.1)',
-          border: '1px solid rgba(245, 158, 11, 0.25)',
-          borderRadius: '10px',
-          marginBottom: '20px',
-          color: '#fbbf24',
-          fontSize: '0.8rem',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px'
-        }}>
-          <span>⚠️ <strong>Currency Notice:</strong> Multiple currencies detected ({metrics.unsupportedCurrencies.join(', ')}). Totals are displayed without foreign exchange conversion.</span>
+        <div className="flex items-center gap-3 p-4 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs shadow-md backdrop-blur-sm mb-6">
+          <span>
+            ⚠️ <strong>Currency Notice:</strong> Multiple currencies detected ({metrics.unsupportedCurrencies.join(', ')}). Totals are displayed without foreign exchange conversion.
+          </span>
         </div>
       )}
 
       {/* ── KPI Grid: 8 Stat Cards ── */}
-      <div className="metrics-grid">
-        <StatCard label="Net P&L" value={`${metrics.netPnl >= 0 ? '+' : ''}${formatCurrency(metrics.netPnl)}`}
-          sub={`${metrics.closedTradesCount} closed trades (fees: ${formatCurrency(metrics.totalFees)})`} icon={<IconPnl />}
-          accent={isUp ? '#10b981' : '#ff3366'} />
-        <StatCard label="Win Rate" value={`${Math.round(metrics.winRate)}%`}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+        <StatCard
+          label="Net P&L"
+          value={`${metrics.netPnl >= 0 ? '+' : ''}${formatCurrency(metrics.netPnl)}`}
+          sub={`${metrics.closedTradesCount} closed trades (fees: ${formatCurrency(metrics.totalFees)})`}
+          icon={<IconPnl />}
+          accentColor={isUp ? 'emerald' : 'rose'}
+        />
+        <StatCard
+          label="Win Rate"
+          value={`${Math.round(metrics.winRate)}%`}
           sub={`${metrics.winCount}W · ${metrics.lossCount}L · ${metrics.breakevenCount}BE`}
-          icon={<IconTarget />} accent="#6366f1"
-          ring={metrics.winRate} ringMax={100} />
-        <StatCard label="Profit Factor" value={metrics.profitFactor.display}
-          sub={metrics.profitFactor.isZeroLoss ? (metrics.profitFactor.isInfinite ? "Zero gross loss" : "No closed trades") : "Gross profit ÷ gross loss"}
-          icon={<IconScale />} accent={pfColor} />
-        <StatCard label="Expectancy" value={`${metrics.netExpectancyPerTrade >= 0 ? '+' : ''}${formatCurrency(metrics.netExpectancyPerTrade)}`}
-          sub="Average net return per trade" icon={<IconStar />} accent={metrics.netExpectancyPerTrade >= 0 ? '#10b981' : '#ff3366'} />
-      </div>
-
-      <div className="metrics-grid">
-        <StatCard label="Max Drawdown" value={`${metrics.maxDrawdownPercent.toFixed(2)}%`}
-          sub={`Peak-to-valley (${formatCurrency(metrics.maxDrawdownAmount)})`} icon={<IconAlert />} accent="#ff3366" />
-        <StatCard label="Avg Realized R" value={metrics.avgRealizedR !== null ? `${metrics.avgRealizedR}R` : '—'}
-          sub={metrics.validRTradesCount > 0 ? `${metrics.validRTradesCount} trades with planned risk` : "No stop-loss recorded"}
-          icon={<IconActivity />} accent="#6366f1" />
-        <StatCard label="Total Trades" value={String(metrics.totalTrades)}
-          sub={`${metrics.closedTradesCount} closed · ${metrics.activeTradesCount} open`} icon={<IconLayers />} accent="#d4af37" />
-        <StatCard label="Active Trades" value={String(metrics.activeTradesCount)}
-          sub="Currently open positions" icon={<IconZap />} accent={metrics.activeTradesCount > 0 ? '#f59e0b' : 'var(--text-muted)'} />
+          icon={<IconTarget />}
+          accentColor="indigo"
+          ring={metrics.winRate}
+          ringMax={100}
+        />
+        <StatCard
+          label="Profit Factor"
+          value={metrics.profitFactor.display}
+          sub={metrics.profitFactor.isZeroLoss ? (metrics.profitFactor.isInfinite ? 'Zero gross loss' : 'No closed trades') : 'Gross profit ÷ gross loss'}
+          icon={<IconScale />}
+          accentColor={pfAccent}
+        />
+        <StatCard
+          label="Expectancy"
+          value={`${metrics.netExpectancyPerTrade >= 0 ? '+' : ''}${formatCurrency(metrics.netExpectancyPerTrade)}`}
+          sub="Average net return per trade"
+          icon={<IconStar />}
+          accentColor={metrics.netExpectancyPerTrade >= 0 ? 'emerald' : 'rose'}
+        />
+        <StatCard
+          label="Max Drawdown"
+          value={`${metrics.maxDrawdownPercent.toFixed(2)}%`}
+          sub={`Peak-to-valley (${formatCurrency(metrics.maxDrawdownAmount)})`}
+          icon={<IconAlert />}
+          accentColor="rose"
+        />
+        <StatCard
+          label="Avg Realized R"
+          value={metrics.avgRealizedR !== null ? `${metrics.avgRealizedR}R` : '—'}
+          sub={metrics.validRTradesCount > 0 ? `${metrics.validRTradesCount} trades with planned risk` : 'No stop-loss recorded'}
+          icon={<IconActivity />}
+          accentColor="indigo"
+        />
+        <StatCard
+          label="Total Trades"
+          value={String(metrics.totalTrades)}
+          sub={`${metrics.closedTradesCount} closed · ${metrics.activeTradesCount} open`}
+          icon={<IconLayers />}
+          accentColor="gold"
+        />
+        <StatCard
+          label="Active Trades"
+          value={String(metrics.activeTradesCount)}
+          sub="Currently open positions"
+          icon={<IconZap />}
+          accentColor={metrics.activeTradesCount > 0 ? 'amber' : 'indigo'}
+        />
       </div>
 
       {/* ── Section 1: Equity Curve & Outcome Donut ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px', marginBottom: '24px' }}>
-        
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-8">
         {/* Equity Curve (Performance Curve) */}
-        <div style={{
-          background: 'rgba(10,12,22,0.7)', border: '1px solid rgba(255,255,255,0.05)',
-          borderRadius: '16px', padding: '20px 22px', overflow: 'hidden',
-          display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '16px' }}>
+        <div className="lg:col-span-7 flex flex-col justify-between p-6 rounded-2xl bg-[#0a0c16]/80 border border-white/5 backdrop-blur-md overflow-hidden shadow-xl shadow-black/40 transition-all duration-300 hover:border-white/10 group min-h-[290px]">
+          <div className="flex items-start justify-between mb-4">
             <div>
-              <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                Performance Curve
-              </p>
-              <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Cumulative account equity over time
-              </p>
+              <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Performance Curve</p>
+              <p className="text-xs text-slate-400 mt-1">Cumulative account equity over time</p>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <p style={{ margin: 0, fontSize: '0.62rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Current Balance</p>
-              <p style={{ margin: '3px 0 0', fontSize: '1.25rem', fontWeight: 800, color: isUp ? '#10b981' : '#ff3366', fontFamily: 'var(--font-mono)' }}>
+            <div className="text-right">
+              <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Current Balance</p>
+              <p className={`text-xl sm:text-2xl font-black font-mono tracking-tight mt-0.5 ${isUp ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {formatCurrency(balanceHistory[balanceHistory.length - 1].balance)}
               </p>
             </div>
           </div>
 
           {points.length > 1 ? (
-            <div style={{ position: 'relative' }}>
-              <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: '100%', height: '185px', display: 'block' }}>
+            <div className="relative w-full">
+              <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="w-full h-48 block">
                 <defs>
                   <linearGradient id="dg-stroke" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#6366f1" />
                     <stop offset="100%" stopColor={isUp ? '#10b981' : '#ff3366'} />
                   </linearGradient>
                   <linearGradient id="dg-fill" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stopColor={isUp ? '#10b981' : '#ff3366'} stopOpacity="0.20" />
+                    <stop offset="0%" stopColor={isUp ? '#10b981' : '#ff3366'} stopOpacity="0.22" />
                     <stop offset="100%" stopColor={isUp ? '#10b981' : '#ff3366'} stopOpacity="0" />
                   </linearGradient>
                 </defs>
+                {/* Horizontal grid lines */}
                 {[0.25, 0.5, 0.75].map(r => (
-                  <line key={r} x1={32} y1={16 + r * (H - 32)} x2={W - 32} y2={16 + r * (H - 32)}
-                    stroke="rgba(255,255,255,0.04)" strokeWidth="1" strokeDasharray="4 4" />
+                  <line
+                    key={r}
+                    x1={32}
+                    y1={16 + r * (H - 32)}
+                    x2={W - 32}
+                    y2={16 + r * (H - 32)}
+                    stroke="rgba(255,255,255,0.04)"
+                    strokeWidth="1"
+                    strokeDasharray="4 4"
+                  />
                 ))}
                 <path d={areaPath} fill="url(#dg-fill)" />
                 <path d={linePath} fill="none" stroke="url(#dg-stroke)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 {points.map((p, i) => (
-                  <circle key={i} cx={p.x} cy={p.y} r={tooltip?.x === p.x ? 6 : 3.5}
-                    fill={tooltip?.x === p.x ? '#fff' : (isUp ? '#10b981' : '#ff3366')}
-                    stroke={isUp ? '#10b981' : '#ff3366'} strokeWidth="1.5"
-                    style={{ cursor: 'crosshair', transition: 'r 0.15s' }}
+                  <circle
+                    key={i}
+                    cx={p.x}
+                    cy={p.y}
+                    r={tooltip?.x === p.x ? 6 : 3.5}
+                    fill={tooltip?.x === p.x ? '#ffffff' : isUp ? '#10b981' : '#ff3366'}
+                    stroke={isUp ? '#10b981' : '#ff3366'}
+                    strokeWidth="1.5"
+                    className="cursor-crosshair transition-all duration-150"
                     onMouseEnter={() => setTooltip({ x: p.x, y: p.y, val: p.balance, label: p.label })}
                     onMouseLeave={() => setTooltip(null)}
                   />
                 ))}
               </svg>
               {tooltip && (
-                <div style={{
-                  position: 'absolute', pointerEvents: 'none',
-                  left: `${(tooltip.x / W) * 100}%`, top: `${(tooltip.y / H) * 100}%`,
-                  transform: 'translate(-50%, -120%)',
-                  background: 'rgba(7,9,14,0.95)', border: '1px solid rgba(229,184,105,0.4)',
-                  borderRadius: '8px', padding: '8px 12px', whiteSpace: 'nowrap',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.6)', zIndex: 10
-                }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginBottom: '3px' }}>{tooltip.label}</div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: 800, color: isUp ? '#10b981' : '#ff3366', fontFamily: 'var(--font-mono)' }}>
+                <div
+                  className="absolute pointer-events-none -translate-x-1/2 -translate-y-[120%] z-20 px-3 py-2 rounded-xl bg-[#07090e]/95 border border-indigo-500/40 shadow-2xl shadow-black/80 backdrop-blur-md whitespace-nowrap transition-all duration-100"
+                  style={{ left: `${(tooltip.x / W) * 100}%`, top: `${(tooltip.y / H) * 100}%` }}
+                >
+                  <div className="text-[10px] font-bold text-slate-400 mb-0.5">{tooltip.label}</div>
+                  <div className={`text-sm font-black font-mono ${isUp ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {formatCurrency(tooltip.val)}
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <div style={{ height: '185px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', gap: '8px' }}>
+            <div className="h-48 flex flex-col items-center justify-center text-slate-400 gap-2">
               <IconActivity />
-              <span style={{ fontSize: '0.8rem' }}>No equity data yet — close a trade to begin.</span>
+              <span className="text-xs">No equity data yet — close a trade to begin.</span>
             </div>
           )}
         </div>
 
-        {/* Trade Outcome Distribution (Donut Chart) */}
-        <div style={{
-          background: 'rgba(10,12,22,0.7)', border: '1px solid rgba(255,255,255,0.05)',
-          borderRadius: '16px', padding: '20px 22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+        {/* Trade Outcome Breakdown (Donut Chart) */}
+        <div className="lg:col-span-5 flex flex-col justify-between p-6 rounded-2xl bg-[#0a0c16]/80 border border-white/5 backdrop-blur-md shadow-xl shadow-black/40 transition-all duration-300 hover:border-white/10 group min-h-[290px]">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                Outcome Breakdown
-              </p>
-              <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Win vs Loss proportion & payoff
-              </p>
+              <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Outcome Breakdown</p>
+              <p className="text-xs text-slate-400 mt-1">Win vs Loss proportion & payoff</p>
             </div>
-            <div style={{ padding: '6px 10px', borderRadius: '8px', background: 'rgba(229,184,105,0.1)', color: '#6366f1', fontSize: '0.72rem', fontWeight: 700 }}>
+            <div className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold tracking-tight">
               PF {metrics.profitFactor.display}
             </div>
           </div>
 
           {metrics.closedTradesCount > 0 ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px', flexWrap: 'wrap' }}>
-              {/* Donut graphic */}
-              <div style={{ position: 'relative', width: '130px', height: '130px', flexShrink: 0, margin: '0 auto' }}>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 my-auto">
+              {/* Donut Graphic */}
+              <div className="relative w-32 h-32 flex-shrink-0 mx-auto sm:mx-0">
                 {(() => {
-                  const size = 130;
+                  const size = 128;
                   const stroke = 14;
                   const r = (size - stroke) / 2;
                   const circ = 2 * Math.PI * r;
@@ -638,71 +703,99 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                   const beLen = (metrics.breakevenCount / total) * circ;
 
                   return (
-                    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
-                      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={stroke} />
+                    <svg width={size} height={size} className="transform -rotate-90">
+                      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={stroke} />
                       {/* Win Arc */}
                       {winLen > 0 && (
-                        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#10b981" strokeWidth={stroke}
-                          strokeDasharray={`${winLen} ${circ - winLen}`} strokeDashoffset={0} />
+                        <circle
+                          cx={size / 2}
+                          cy={size / 2}
+                          r={r}
+                          fill="none"
+                          stroke="#10b981"
+                          strokeWidth={stroke}
+                          strokeDasharray={`${winLen} ${circ - winLen}`}
+                          strokeDashoffset={0}
+                          className="transition-all duration-500"
+                        />
                       )}
                       {/* Loss Arc */}
                       {lossLen > 0 && (
-                        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#ff3366" strokeWidth={stroke}
-                          strokeDasharray={`${lossLen} ${circ - lossLen}`} strokeDashoffset={-winLen} />
+                        <circle
+                          cx={size / 2}
+                          cy={size / 2}
+                          r={r}
+                          fill="none"
+                          stroke="#ff3366"
+                          strokeWidth={stroke}
+                          strokeDasharray={`${lossLen} ${circ - lossLen}`}
+                          strokeDashoffset={-winLen}
+                          className="transition-all duration-500"
+                        />
                       )}
                       {/* Breakeven Arc */}
                       {beLen > 0 && (
-                        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="#6366f1" strokeWidth={stroke}
-                          strokeDasharray={`${beLen} ${circ - beLen}`} strokeDashoffset={-(winLen + lossLen)} />
+                        <circle
+                          cx={size / 2}
+                          cy={size / 2}
+                          r={r}
+                          fill="none"
+                          stroke="#6366f1"
+                          strokeWidth={stroke}
+                          strokeDasharray={`${beLen} ${circ - beLen}`}
+                          strokeDashoffset={-(winLen + lossLen)}
+                          className="transition-all duration-500"
+                        />
                       )}
                     </svg>
                   );
                 })()}
-                <div style={{
-                  position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                  textAlign: 'center', pointerEvents: 'none'
-                }}>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 900, color: '#fff', fontFamily: 'var(--font-mono)' }}>
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+                  <span className="text-xl font-black font-mono text-white leading-tight">
                     {Math.round(metrics.winRate)}%
-                  </div>
-                  <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                    Win Rate
-                  </div>
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Win Rate</span>
                 </div>
               </div>
 
               {/* Breakdown Legend */}
-              <div style={{ flex: 1, minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'rgba(16,185,129,0.08)', borderRadius: '8px', borderLeft: '3px solid #10b981' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#10b981' }}>Wins</span>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{metrics.winCount} trades ({((metrics.winCount / metrics.closedTradesCount) * 100).toFixed(0)}%)</span>
+              <div className="flex-1 w-full flex flex-col gap-2.5">
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-emerald-500/10 border-l-4 border-emerald-500 transition-all duration-200 hover:bg-emerald-500/15">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-emerald-400">Wins</span>
+                    <span className="text-[11px] text-slate-400">
+                      {metrics.winCount} trades ({((metrics.winCount / metrics.closedTradesCount) * 100).toFixed(0)}%)
+                    </span>
                   </div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#10b981', fontFamily: 'var(--font-mono)' }}>
+                  <span className="text-sm font-black font-mono text-emerald-400">
                     +{formatCurrency(metrics.grossProfit)}
                   </span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'rgba(255,51,102,0.08)', borderRadius: '8px', borderLeft: '3px solid #ff3366' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#ff3366' }}>Losses</span>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{metrics.lossCount} trades ({((metrics.lossCount / metrics.closedTradesCount) * 100).toFixed(0)}%)</span>
+                <div className="flex items-center justify-between p-2.5 rounded-xl bg-rose-500/10 border-l-4 border-rose-500 transition-all duration-200 hover:bg-rose-500/15">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-bold text-rose-400">Losses</span>
+                    <span className="text-[11px] text-slate-400">
+                      {metrics.lossCount} trades ({((metrics.lossCount / metrics.closedTradesCount) * 100).toFixed(0)}%)
+                    </span>
                   </div>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#ff3366', fontFamily: 'var(--font-mono)' }}>
+                  <span className="text-sm font-black font-mono text-rose-400">
                     -{formatCurrency(metrics.grossLoss)}
                   </span>
                 </div>
 
                 {metrics.breakevenCount > 0 && (
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '6px 10px', background: 'rgba(229,184,105,0.08)', borderRadius: '8px', borderLeft: '3px solid #6366f1' }}>
-                    <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#6366f1' }}>Breakeven</span>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#6366f1', fontFamily: 'var(--font-mono)' }}>{metrics.breakevenCount} trades</span>
+                  <div className="flex items-center justify-between p-2.5 rounded-xl bg-indigo-500/10 border-l-4 border-indigo-500 transition-all duration-200 hover:bg-indigo-500/15">
+                    <span className="text-xs font-bold text-indigo-400">Breakeven</span>
+                    <span className="text-xs font-extrabold font-mono text-indigo-300">
+                      {metrics.breakevenCount} trades
+                    </span>
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div style={{ height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+            <div className="h-48 flex items-center justify-center text-slate-400 text-xs">
               No closed trades recorded yet.
             </div>
           )}
@@ -710,64 +803,45 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
       </div>
 
       {/* ── Section 2: Trading Daily Profit / Loss Calendar ── */}
-      <div style={{
-        background: 'rgba(10,12,22,0.7)', border: '1px solid rgba(255,255,255,0.05)',
-        borderRadius: '16px', padding: '22px 24px', marginBottom: '24px',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
-      }}>
-        {/* Calendar Header with Navigation & Title */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px', marginBottom: '18px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <div style={{ width: 40, height: 40, borderRadius: '10px', background: 'rgba(229,184,105,0.12)', border: '1px solid rgba(229,184,105,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1' }}>
+      <div className="p-6 sm:p-7 rounded-2xl bg-[#0a0c16]/80 border border-white/5 backdrop-blur-md shadow-xl shadow-black/40 mb-8 transition-all duration-300 hover:border-white/10">
+        {/* Calendar Header with Navigation Pill & Title */}
+        <div className="flex items-center justify-between flex-wrap gap-4 mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center text-indigo-400 transition-transform duration-200 hover:scale-105">
               <IconCalendar />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.3px' }}>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-extrabold text-white tracking-tight">
                   Daily Profit & Loss Calendar
                 </h2>
-                <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '2px 8px', borderRadius: '6px', background: 'rgba(229,184,105,0.15)', color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-400 uppercase tracking-wider">
                   Interactive
                 </span>
               </div>
-              <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              <p className="text-xs text-slate-400 mt-1">
                 Day-by-day trading performance, win/loss color maps, and trade volume
               </p>
             </div>
           </div>
 
-          {/* Month Navigator Controls — Matching user screenshot */}
-          <div ref={datePickerRef} style={{ position: 'relative' }}>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              background: '#0c1322',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              borderRadius: '9999px',
-              padding: '3px 8px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-            }}>
-              {/* Prev Month Chevron */}
+          {/* Month Navigator Controls — Matching Screenshot Pill */}
+          <div ref={datePickerRef} className="relative">
+            <div className="inline-flex items-center bg-[#0c1322] border border-white/10 rounded-full p-1 shadow-lg shadow-black/50 backdrop-blur-md transition-all duration-200 hover:border-white/20">
+              {/* Prev Month Button */}
               <button
                 type="button"
                 onClick={() => {
                   setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() - 1, 1));
                   setSelectedDateKey(null);
                 }}
-                style={{
-                  width: 26, height: 26, borderRadius: '50%', border: 'none',
-                  background: 'transparent', color: 'rgba(255,255,255,0.7)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                  transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; e.currentTarget.style.background = 'transparent'; }}
+                className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                 title="Previous Month"
               >
                 <IconChevronLeft />
               </button>
 
-              {/* Month Trigger Button */}
+              {/* Center Month Trigger Button */}
               <button
                 type="button"
                 onClick={() => {
@@ -775,35 +849,20 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                   setIsDatePickerOpen(prev => !prev);
                   setIsYearDropdownOpen(false);
                 }}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '8px',
-                  background: 'transparent', border: 'none',
-                  color: '#fff', fontSize: '0.88rem', fontWeight: 800,
-                  cursor: 'pointer', padding: '4px 10px', borderRadius: '6px',
-                  transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
-                onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                className="flex items-center gap-2 px-3 py-1 text-sm font-extrabold text-white hover:opacity-85 transition-opacity cursor-pointer"
               >
                 <IconOrangeCalendar />
                 <span>{calendarData.monthName}</span>
               </button>
 
-              {/* Next Month Chevron */}
+              {/* Next Month Button */}
               <button
                 type="button"
                 onClick={() => {
                   setCalendarMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1, 1));
                   setSelectedDateKey(null);
                 }}
-                style={{
-                  width: 26, height: 26, borderRadius: '50%', border: 'none',
-                  background: 'transparent', color: 'rgba(255,255,255,0.7)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                  transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-                onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.7)'; e.currentTarget.style.background = 'transparent'; }}
+                className="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                 title="Next Month"
               >
                 <IconChevronRight />
@@ -812,37 +871,15 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
 
             {/* Month & Year Picker Popover Modal */}
             {isDatePickerOpen && (
-              <div style={{
-                position: 'absolute',
-                top: 'calc(100% + 10px)',
-                right: 0,
-                width: '320px',
-                background: '#0c1322',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                borderRadius: '20px',
-                padding: '18px 20px',
-                boxShadow: '0 24px 50px rgba(0, 0, 0, 0.85), 0 0 1px 1px rgba(255, 255, 255, 0.08)',
-                zIndex: 60,
-                backdropFilter: 'blur(20px)',
-                animation: 'fadeIn 0.18s ease-out',
-              }}>
+              <div className="absolute top-full right-0 mt-2.5 w-80 p-5 rounded-2xl bg-[#0c1322] border border-white/10 shadow-2xl shadow-black/90 backdrop-blur-2xl z-50 animate-in fade-in zoom-in-95 duration-150">
                 {/* Popover Header: Year Selector + Nav Arrows */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                <div className="flex items-center justify-between mb-3.5">
                   {/* Year Dropdown Trigger */}
-                  <div style={{ position: 'relative' }}>
+                  <div className="relative">
                     <button
                       type="button"
                       onClick={() => setIsYearDropdownOpen(prev => !prev)}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: '8px',
-                        background: 'rgba(255, 255, 255, 0.04)',
-                        border: '1px solid rgba(255, 255, 255, 0.12)',
-                        borderRadius: '10px', padding: '6px 14px',
-                        color: '#fff', fontSize: '0.88rem', fontWeight: 800,
-                        cursor: 'pointer', transition: 'all 0.15s',
-                      }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'}
-                      onMouseLeave={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)'}
+                      className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 text-sm font-extrabold text-white hover:bg-white/10 transition-colors cursor-pointer"
                     >
                       <span>{pickerYear}</span>
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -852,13 +889,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
 
                     {/* Year Options Dropdown */}
                     {isYearDropdownOpen && (
-                      <div style={{
-                        position: 'absolute', top: 'calc(100% + 6px)', left: 0,
-                        background: '#090e1a', border: '1px solid rgba(255, 255, 255, 0.15)',
-                        borderRadius: '10px', padding: '4px', zIndex: 70,
-                        minWidth: '95px', maxHeight: '180px', overflowY: 'auto',
-                        boxShadow: '0 12px 28px rgba(0, 0, 0, 0.9)',
-                      }}>
+                      <div className="absolute top-full left-0 mt-1.5 w-24 max-h-44 overflow-y-auto p-1 rounded-xl bg-[#090e1a] border border-white/15 shadow-2xl shadow-black z-60">
                         {availableYears.map(yr => (
                           <button
                             key={yr}
@@ -867,18 +898,9 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                               setPickerYear(yr);
                               setIsYearDropdownOpen(false);
                             }}
-                            style={{
-                              width: '100%', padding: '6px 10px', borderRadius: '6px', border: 'none',
-                              background: yr === pickerYear ? '#2563eb' : 'transparent',
-                              color: '#fff', fontSize: '0.82rem', fontWeight: 700, textAlign: 'left',
-                              cursor: 'pointer', transition: 'background 0.12s',
-                            }}
-                            onMouseEnter={e => {
-                              if (yr !== pickerYear) e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                            }}
-                            onMouseLeave={e => {
-                              if (yr !== pickerYear) e.currentTarget.style.background = 'transparent';
-                            }}
+                            className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer ${
+                              yr === pickerYear ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-white/10'
+                            }`}
                           >
                             {yr}
                           </button>
@@ -888,18 +910,11 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                   </div>
 
                   {/* Year Jump Arrows */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div className="flex items-center gap-1.5">
                     <button
                       type="button"
                       onClick={() => setPickerYear(prev => prev - 1)}
-                      style={{
-                        width: 28, height: 28, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)',
-                        background: 'transparent', color: 'rgba(255, 255, 255, 0.7)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                        transition: 'all 0.15s',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)'; e.currentTarget.style.background = 'transparent'; }}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                       title="Previous Year"
                     >
                       <IconChevronLeft />
@@ -907,14 +922,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                     <button
                       type="button"
                       onClick={() => setPickerYear(prev => prev + 1)}
-                      style={{
-                        width: 28, height: 28, borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)',
-                        background: 'transparent', color: 'rgba(255, 255, 255, 0.7)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                        transition: 'all 0.15s',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255, 255, 255, 0.7)'; e.currentTarget.style.background = 'transparent'; }}
+                      className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
                       title="Next Year"
                     >
                       <IconChevronRight />
@@ -923,7 +931,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                 </div>
 
                 {/* 12 Months Grid (3 columns x 4 rows) */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '16px' }}>
+                <div className="grid grid-cols-3 gap-2.5 my-4">
                   {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((mName, mIdx) => {
                     const isSelected = calendarMonth.getFullYear() === pickerYear && calendarMonth.getMonth() === mIdx;
                     return (
@@ -936,30 +944,11 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                           setIsDatePickerOpen(false);
                           setIsYearDropdownOpen(false);
                         }}
-                        style={{
-                          height: '44px',
-                          borderRadius: '12px',
-                          border: isSelected ? '1px solid rgba(255, 255, 255, 0.25)' : '1px solid rgba(255, 255, 255, 0.06)',
-                          background: isSelected ? '#2563eb' : 'rgba(255, 255, 255, 0.03)',
-                          boxShadow: isSelected ? '0 0 18px rgba(37, 99, 235, 0.55)' : 'none',
-                          color: '#fff',
-                          fontSize: '0.86rem',
-                          fontWeight: isSelected ? 800 : 700,
-                          cursor: 'pointer',
-                          transition: 'all 0.15s',
-                        }}
-                        onMouseEnter={e => {
-                          if (!isSelected) {
-                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
-                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-                          }
-                        }}
-                        onMouseLeave={e => {
-                          if (!isSelected) {
-                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
-                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.06)';
-                          }
-                        }}
+                        className={`h-11 rounded-xl text-sm transition-all duration-150 cursor-pointer ${
+                          isSelected
+                            ? 'bg-blue-600 border border-blue-400/40 text-white font-extrabold shadow-lg shadow-blue-600/50 scale-[1.02]'
+                            : 'bg-white/[0.03] border border-white/5 text-slate-200 font-bold hover:bg-white/10 hover:border-white/15 hover:text-white active:scale-95'
+                        }`}
                       >
                         {mName}
                       </button>
@@ -968,11 +957,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                 </div>
 
                 {/* Popover Footer */}
-                <div style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-                }}>
-                  {/* Current Month Shortcut */}
+                <div className="flex items-center justify-between pt-3 border-t border-white/10 text-xs font-bold">
                   <button
                     type="button"
                     onClick={() => {
@@ -983,33 +968,19 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                       setIsDatePickerOpen(false);
                       setIsYearDropdownOpen(false);
                     }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '6px',
-                      background: 'none', border: 'none',
-                      color: '#38bdf8', fontSize: '0.82rem', fontWeight: 700,
-                      cursor: 'pointer', padding: '4px 0', transition: 'opacity 0.15s',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.opacity = '0.75'}
-                    onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+                    className="flex items-center gap-1.5 text-sky-400 hover:text-sky-300 transition-colors active:scale-95 cursor-pointer"
                   >
                     <IconRefresh />
                     <span>Current Month</span>
                   </button>
 
-                  {/* Close button */}
                   <button
                     type="button"
                     onClick={() => {
                       setIsDatePickerOpen(false);
                       setIsYearDropdownOpen(false);
                     }}
-                    style={{
-                      background: 'none', border: 'none',
-                      color: 'var(--text-secondary)', fontSize: '0.82rem', fontWeight: 700,
-                      cursor: 'pointer', padding: '4px 6px', transition: 'color 0.15s',
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-                    onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}
+                    className="text-slate-400 hover:text-white transition-colors cursor-pointer"
                   >
                     Close
                   </button>
@@ -1020,98 +991,82 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
         </div>
 
         {/* Monthly Summary Statistics Strip */}
-        <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '10px',
-          padding: '14px 16px', background: 'rgba(0,0,0,0.25)', borderRadius: '12px',
-          border: '1px solid rgba(255,255,255,0.04)', marginBottom: '20px'
-        }}>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 p-4 mb-5 rounded-xl bg-black/40 border border-white/5">
           <div>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Month Net P&L</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, color: calendarData.monthPnl >= 0 ? '#10b981' : '#ff3366', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Month Net P&L</div>
+            <div className={`text-base sm:text-lg font-black font-mono mt-0.5 ${calendarData.monthPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
               {calendarData.monthPnl >= 0 ? '+' : ''}{formatCurrency(calendarData.monthPnl)}
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Trading Days</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#fff', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-              {calendarData.activeDays} <span style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--text-muted)' }}>({calendarData.monthTradesCount} trades)</span>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Trading Days</div>
+            <div className="text-base sm:text-lg font-black font-mono text-white mt-0.5">
+              {calendarData.activeDays} <span className="text-xs font-normal text-slate-400">({calendarData.monthTradesCount} trades)</span>
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Win / Loss Days</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#6366f1', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-              <span style={{ color: '#10b981' }}>{calendarData.winningDays}W</span> · <span style={{ color: '#ff3366' }}>{calendarData.losingDays}L</span>
-              <span style={{ fontSize: '0.72rem', fontWeight: 600, color: 'var(--text-muted)', marginLeft: '6px' }}>({Math.round(calendarData.dailyWinRate)}%)</span>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Win / Loss Days</div>
+            <div className="text-base sm:text-lg font-black font-mono text-indigo-400 mt-0.5">
+              <span className="text-emerald-400">{calendarData.winningDays}W</span> · <span className="text-rose-400">{calendarData.losingDays}L</span>
+              <span className="text-xs font-semibold text-slate-400 ml-1.5">({Math.round(calendarData.dailyWinRate)}%)</span>
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Best Day</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#10b981', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Best Day</div>
+            <div className="text-base sm:text-lg font-black font-mono text-emerald-400 mt-0.5">
               {calendarData.bestDay ? `+${formatCurrency(calendarData.bestDay.pnl)}` : '—'}
             </div>
           </div>
 
           <div>
-            <div style={{ fontSize: '0.62rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px' }}>Worst Day</div>
-            <div style={{ fontSize: '1.15rem', fontWeight: 900, color: '#ff3366', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Worst Day</div>
+            <div className="text-base sm:text-lg font-black font-mono text-rose-400 mt-0.5">
               {calendarData.worstDay ? `${formatCurrency(calendarData.worstDay.pnl)}` : '—'}
             </div>
           </div>
         </div>
 
         {/* 7-Column Calendar Grid */}
-        <div style={{ overflowX: 'auto', paddingBottom: '4px' }}>
-          <div style={{ minWidth: '680px' }}>
+        <div className="overflow-x-auto pb-1">
+          <div className="min-w-[660px]">
             {/* Weekday Column Headers */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px', marginBottom: '8px' }}>
-              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, idx) => {
-                const isWeekend = idx >= 5;
-                return (
-                  <div key={day} style={{
-                    textAlign: 'center', fontSize: '0.72rem', fontWeight: 700,
-                    color: isWeekend ? 'rgba(255,255,255,0.3)' : 'var(--text-secondary)',
-                    textTransform: 'uppercase', letterSpacing: '0.8px', padding: '4px 0'
-                  }}>
-                    {day}
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-7 gap-2 mb-2 text-center text-xs font-bold uppercase tracking-wider text-slate-400">
+              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, idx) => (
+                <div key={day} className={`py-1 ${idx >= 5 ? 'text-slate-500' : 'text-slate-300'}`}>
+                  {day}
+                </div>
+              ))}
             </div>
 
             {/* Calendar Days Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '8px' }}>
+            <div className="grid grid-cols-7 gap-2">
               {calendarData.days.map((item, idx) => {
                 const hasTrades = item.count > 0;
                 const isWinDay = item.netPnl > 0.005;
                 const isLossDay = item.netPnl < -0.005;
-                const isBeDay = hasTrades && !isWinDay && !isLossDay;
                 const isSelected = selectedDateKey === item.dateKey;
 
-                let bg = 'rgba(255,255,255,0.015)';
-                let border = '1px solid rgba(255,255,255,0.04)';
-                let pnlColor = 'var(--text-muted)';
+                let cellClasses = 'bg-white/[0.02] border-white/5 text-slate-500';
+                let pnlClasses = 'text-slate-400';
 
                 if (item.isCurrentMonth && hasTrades) {
                   if (isWinDay) {
-                    bg = 'rgba(16, 185, 129, 0.12)';
-                    border = '1px solid rgba(16, 185, 129, 0.35)';
-                    pnlColor = '#10b981';
+                    cellClasses = 'bg-emerald-500/10 border-emerald-500/35 hover:border-emerald-500/60 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-emerald-950/40 cursor-pointer';
+                    pnlClasses = 'text-emerald-400';
                   } else if (isLossDay) {
-                    bg = 'rgba(255, 51, 102, 0.12)';
-                    border = '1px solid rgba(255, 51, 102, 0.35)';
-                    pnlColor = '#ff3366';
+                    cellClasses = 'bg-rose-500/10 border-rose-500/35 hover:border-rose-500/60 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-rose-950/40 cursor-pointer';
+                    pnlClasses = 'text-rose-400';
                   } else {
-                    bg = 'rgba(245, 158, 11, 0.10)';
-                    border = '1px solid rgba(245, 158, 11, 0.3)';
-                    pnlColor = '#f59e0b';
+                    cellClasses = 'bg-amber-500/10 border-amber-500/35 hover:border-amber-500/60 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber-950/40 cursor-pointer';
+                    pnlClasses = 'text-amber-400';
                   }
                 }
 
                 if (isSelected) {
-                  border = '2px solid #6366f1';
+                  cellClasses += ' ring-2 ring-indigo-500 border-indigo-400 scale-[1.02] shadow-xl';
                 }
 
                 return (
@@ -1122,70 +1077,35 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                         setSelectedDateKey(prev => prev === item.dateKey ? null : item.dateKey);
                       }
                     }}
-                    style={{
-                      background: bg,
-                      border,
-                      borderRadius: '10px',
-                      padding: '8px 10px',
-                      minHeight: '74px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      opacity: item.isCurrentMonth ? 1 : 0.28,
-                      cursor: hasTrades ? 'pointer' : 'default',
-                      transition: 'all 0.18s ease',
-                      position: 'relative',
-                    }}
-                    onMouseEnter={e => {
-                      if (hasTrades) {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 16px rgba(0,0,0,0.5)';
-                      }
-                    }}
-                    onMouseLeave={e => {
-                      if (hasTrades) {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = 'none';
-                      }
-                    }}
+                    className={`min-h-[78px] p-2.5 rounded-xl flex flex-col justify-between border transition-all duration-200 relative ${cellClasses} ${
+                      item.isCurrentMonth ? 'opacity-100' : 'opacity-25'
+                    }`}
                   >
-                    {/* Top Row: Day Number & Today indicator */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{
-                        fontSize: '0.75rem', fontWeight: item.isToday ? 900 : 700,
-                        color: item.isToday ? '#6366f1' : item.isCurrentMonth ? 'var(--text-secondary)' : 'var(--text-muted)'
-                      }}>
+                    {/* Top Row: Day Number & Today Pill */}
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-extrabold ${item.isToday ? 'text-indigo-400' : item.isCurrentMonth ? 'text-slate-300' : 'text-slate-600'}`}>
                         {item.dayNum}
                       </span>
                       {item.isToday && (
-                        <span style={{
-                          fontSize: '0.55rem', fontWeight: 800, padding: '1px 4px', borderRadius: '4px',
-                          background: 'rgba(229,184,105,0.25)', color: '#6366f1', textTransform: 'uppercase'
-                        }}>
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-indigo-500/25 text-indigo-300 uppercase tracking-tight">
                           Today
                         </span>
                       )}
                     </div>
 
-                    {/* Middle & Bottom: Daily Net P&L & Trade Count */}
+                    {/* Middle: Net P&L & Trades count */}
                     {hasTrades ? (
-                      <div style={{ marginTop: '4px' }}>
-                        <div style={{
-                          fontSize: '0.86rem', fontWeight: 900, color: pnlColor, fontFamily: 'var(--font-mono)',
-                          whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
-                        }}>
+                      <div className="mt-1">
+                        <div className={`text-xs sm:text-sm font-black font-mono truncate ${pnlClasses}`}>
                           {item.netPnl >= 0 ? '+' : ''}{formatCurrency(item.netPnl)}
                         </div>
-                        <div style={{
-                          fontSize: '0.62rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, marginTop: '2px',
-                          display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-                        }}>
+                        <div className="text-[10px] text-white/50 font-semibold flex items-center justify-between mt-0.5">
                           <span>{item.count} {item.count === 1 ? 'trade' : 'trades'}</span>
-                          {isSelected && <span style={{ color: '#6366f1' }}>●</span>}
+                          {isSelected && <span className="text-indigo-400 font-bold">●</span>}
                         </div>
                       </div>
                     ) : (
-                      <div style={{ height: '24px' }} />
+                      <div className="h-5" />
                     )}
                   </div>
                 );
@@ -1196,73 +1116,57 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
 
         {/* Selected Date Trades Breakdown Tray */}
         {selectedDateKey && selectedTrades.length > 0 && (
-          <div style={{
-            marginTop: '20px', padding: '16px 18px', background: 'rgba(0,0,0,0.4)',
-            borderRadius: '12px', border: '1px solid rgba(229,184,105,0.3)',
-            animation: 'fadeIn 0.25s ease'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#6366f1' }}>
+          <div className="mt-5 p-5 rounded-xl bg-black/50 border border-indigo-500/30 shadow-2xl shadow-black animate-in fade-in duration-200">
+            <div className="flex items-center justify-between flex-wrap gap-2 mb-3.5">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-extrabold text-indigo-400">
                   Trades on {new Date(selectedDateKey + 'T00:00:00').toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
                 </span>
-                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                <span className="text-xs text-slate-400">
                   ({selectedTrades.length} closed trades)
                 </span>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedDateKey(null)}
-                style={{
-                  padding: '4px 10px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)',
-                  background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', fontSize: '0.7rem',
-                  cursor: 'pointer', transition: 'all 0.15s'
-                }}
-                onMouseEnter={e => e.currentTarget.style.color = '#fff'}
-                onMouseLeave={e => e.currentTarget.style.color = 'var(--text-muted)'}
+                className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-slate-400 hover:text-white text-xs font-bold transition-colors cursor-pointer"
               >
                 ✕ Close
               </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '10px' }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {selectedTrades.map(t => {
                 const pnl = t.pnl || 0;
                 const isWin = t.status === 'Win';
                 const isLoss = t.status === 'Loss';
-                const accent = isWin ? '#10b981' : isLoss ? '#ff3366' : '#f59e0b';
+                const borderAccent = isWin ? 'border-l-emerald-500' : isLoss ? 'border-l-rose-500' : 'border-l-amber-500';
+                const textAccent = isWin ? 'text-emerald-400' : isLoss ? 'text-rose-400' : 'text-amber-400';
+
                 return (
                   <div
                     key={t.id}
                     onClick={() => onViewTrade(t)}
-                    style={{
-                      background: 'rgba(255,255,255,0.02)', border: `1px solid rgba(255,255,255,0.06)`,
-                      borderLeft: `3px solid ${accent}`, borderRadius: '8px', padding: '10px 12px',
-                      display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px',
-                      cursor: 'pointer', transition: 'all 0.15s'
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                    className={`flex items-center justify-between p-3.5 rounded-lg bg-white/[0.02] border border-white/5 border-l-4 ${borderAccent} hover:bg-white/[0.06] hover:-translate-y-0.5 transition-all duration-150 cursor-pointer`}
                   >
                     <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span style={{
-                          fontSize: '0.62rem', fontWeight: 800, padding: '2px 5px', borderRadius: '4px',
-                          background: t.direction === 'Long' ? 'rgba(16,185,129,0.15)' : 'rgba(255,51,102,0.15)',
-                          color: t.direction === 'Long' ? '#10b981' : '#ff3366'
-                        }}>
+                      <div className="flex items-center gap-1.5">
+                        <span className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
+                          t.direction === 'Long' ? 'bg-emerald-500/15 text-emerald-400' : 'bg-rose-500/15 text-rose-400'
+                        }`}>
                           {t.direction}
                         </span>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#fff' }}>{t.pair}</span>
+                        <span className="text-sm font-black text-white">{t.pair}</span>
                       </div>
-                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '3px' }}>
+                      <div className="text-[11px] text-slate-400 mt-1">
                         {t.strategy || 'Standard Setup'}
                       </div>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '0.88rem', fontWeight: 800, color: accent, fontFamily: 'var(--font-mono)' }}>
+                    <div className="text-right">
+                      <div className={`text-sm font-black font-mono ${textAccent}`}>
                         {pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}
                       </div>
-                      <span style={{ fontSize: '0.65rem', color: '#6366f1', textDecoration: 'underline' }}>View Details</span>
+                      <span className="text-[11px] text-indigo-400 underline">View Details</span>
                     </div>
                   </div>
                 );
@@ -1272,36 +1176,26 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
         )}
       </div>
 
-      {/* ── Section 3: Daily P&L Bar Chart & Day of Week / Directional Analysis ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px', marginBottom: '24px' }}>
-        
+      {/* ── Section 3: Daily P&L Bars & Weekday / Directional Edge ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-8">
         {/* Daily P&L Bar Chart */}
-        <div style={{
-          background: 'rgba(10,12,22,0.7)', border: '1px solid rgba(255,255,255,0.05)',
-          borderRadius: '16px', padding: '20px 22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+        <div className="lg:col-span-6 flex flex-col justify-between p-6 rounded-2xl bg-[#0a0c16]/80 border border-white/5 backdrop-blur-md shadow-xl shadow-black/40 transition-all duration-300 hover:border-white/10 group min-h-[290px]">
+          <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
             <div>
-              <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                Daily Net P&L Bars
-              </p>
-              <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                Profits (above 0) vs Losses (below 0)
-              </p>
+              <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Daily Net P&L Bars</p>
+              <p className="text-xs text-slate-400 mt-1">Profits (above 0) vs Losses (below 0)</p>
             </div>
-            
+
             {/* Range Toggle */}
-            <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.03)', borderRadius: '8px', padding: '3px' }}>
+            <div className="flex gap-1 p-1 bg-white/5 rounded-lg border border-white/5">
               {(['14d', '30d', 'all'] as const).map(rng => (
                 <button
                   key={rng}
+                  type="button"
                   onClick={() => setBarRange(rng)}
-                  style={{
-                    padding: '4px 8px', borderRadius: '6px', border: 'none',
-                    background: barRange === rng ? 'rgba(229,184,105,0.2)' : 'transparent',
-                    color: barRange === rng ? '#6366f1' : 'var(--text-muted)',
-                    fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s'
-                  }}
+                  className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                    barRange === rng ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/40' : 'text-slate-400 hover:text-white'
+                  }`}
                 >
                   {rng === '14d' ? '14D' : rng === '30d' ? '30D' : 'All'}
                 </button>
@@ -1310,7 +1204,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
           </div>
 
           {dailyBarData.length > 0 ? (
-            <div style={{ position: 'relative' }}>
+            <div className="relative w-full my-auto">
               {(() => {
                 const bW = 500;
                 const bH = 175;
@@ -1319,7 +1213,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                 const barWidth = Math.max(8, Math.min(22, (bW - 40) / dailyBarData.length - 4));
 
                 return (
-                  <svg viewBox={`0 0 ${bW} ${bH}`} preserveAspectRatio="none" style={{ width: '100%', height: '180px', display: 'block' }}>
+                  <svg viewBox={`0 0 ${bW} ${bH}`} preserveAspectRatio="none" className="w-full h-44 block">
                     <defs>
                       <linearGradient id="bar-win" x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor="#10b981" />
@@ -1332,7 +1226,7 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                     </defs>
 
                     {/* Zero baseline */}
-                    <line x1={20} y1={yBase} x2={bW - 20} y2={yBase} stroke="rgba(255,255,255,0.15)" strokeWidth="1.2" strokeDasharray="3 3" />
+                    <line x1={20} y1={yBase} x2={bW - 20} y2={yBase} stroke="rgba(255,255,255,0.12)" strokeWidth="1.2" strokeDasharray="3 3" />
 
                     {/* Bars */}
                     {dailyBarData.map((d, i) => {
@@ -1350,8 +1244,18 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
                             height={barH}
                             rx={3}
                             fill={isWin ? 'url(#bar-win)' : 'url(#bar-loss)'}
-                            style={{ cursor: 'pointer', transition: 'opacity 0.15s' }}
-                            onMouseEnter={() => setBarTooltip({ x, y: isWin ? y : y + barH, date: d.label, pnl: d.pnl, count: d.count, wins: d.wins, losses: d.losses })}
+                            className="cursor-pointer hover:opacity-85 transition-opacity"
+                            onMouseEnter={() =>
+                              setBarTooltip({
+                                x,
+                                y: isWin ? y : y + barH,
+                                date: d.label,
+                                pnl: d.pnl,
+                                count: d.count,
+                                wins: d.wins,
+                                losses: d.losses,
+                              })
+                            }
                             onMouseLeave={() => setBarTooltip(null)}
                           />
                         </g>
@@ -1362,68 +1266,58 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
               })()}
 
               {barTooltip && (
-                <div style={{
-                  position: 'absolute', pointerEvents: 'none',
-                  left: `${(barTooltip.x / 500) * 100}%`, top: `${(barTooltip.y / 175) * 100}%`,
-                  transform: 'translate(-50%, -125%)',
-                  background: 'rgba(7,9,14,0.96)', border: '1px solid rgba(229,184,105,0.4)',
-                  borderRadius: '8px', padding: '8px 12px', whiteSpace: 'nowrap',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.6)', zIndex: 10
-                }}>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginBottom: '3px' }}>{barTooltip.date}</div>
-                  <div style={{ fontSize: '0.88rem', fontWeight: 800, color: barTooltip.pnl >= 0 ? '#10b981' : '#ff3366', fontFamily: 'var(--font-mono)' }}>
+                <div
+                  className="absolute pointer-events-none -translate-x-1/2 -translate-y-[125%] z-20 px-3 py-2 rounded-xl bg-[#07090e]/95 border border-indigo-500/40 shadow-2xl shadow-black/80 backdrop-blur-md whitespace-nowrap transition-all duration-100"
+                  style={{ left: `${(barTooltip.x / 500) * 100}%`, top: `${(barTooltip.y / 175) * 100}%` }}
+                >
+                  <div className="text-[10px] font-bold text-slate-400 mb-0.5">{barTooltip.date}</div>
+                  <div className={`text-sm font-black font-mono ${barTooltip.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {barTooltip.pnl >= 0 ? '+' : ''}{formatCurrency(barTooltip.pnl)}
                   </div>
-                  <div style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                  <div className="text-[11px] text-slate-400 mt-0.5">
                     {barTooltip.count} trades ({barTooltip.wins}W · {barTooltip.losses}L)
                   </div>
                 </div>
               )}
             </div>
           ) : (
-            <div style={{ height: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+            <div className="h-44 flex items-center justify-center text-slate-400 text-xs">
               No trading days recorded yet.
             </div>
           )}
         </div>
 
         {/* Day of Week Edge & Directional Long/Short Analysis */}
-        <div style={{
-          background: 'rgba(10,12,22,0.7)', border: '1px solid rgba(255,255,255,0.05)',
-          borderRadius: '16px', padding: '20px 22px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
-        }}>
+        <div className="lg:col-span-6 flex flex-col justify-between p-6 rounded-2xl bg-[#0a0c16]/80 border border-white/5 backdrop-blur-md shadow-xl shadow-black/40 transition-all duration-300 hover:border-white/10 group min-h-[290px]">
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+            <div className="flex items-center justify-between mb-4">
               <div>
-                <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
-                  Weekday & Directional Edge
-                </p>
-                <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                  Performance by day of week & market bias
-                </p>
+                <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Weekday & Directional Edge</p>
+                <p className="text-xs text-slate-400 mt-1">Performance by day of week & market bias</p>
               </div>
-              <div style={{ color: '#6366f1' }}>
+              <div className="text-indigo-400">
                 <IconCompass />
               </div>
             </div>
 
             {/* Weekday bars */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '18px' }}>
+            <div className="flex flex-col gap-2.5 mb-5">
               {weekdayStats.map(wd => {
                 const isPositive = wd.pnl >= 0;
                 return (
-                  <div key={wd.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
-                    <span style={{ width: '35px', fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
-                      {wd.name}
-                    </span>
-                    <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
-                      <div style={{
-                        width: `${Math.min(wd.winRate, 100)}%`, height: '100%',
-                        background: wd.count > 0 ? (isPositive ? '#10b981' : '#ff3366') : 'transparent',
-                        borderRadius: '3px'
-                      }} />
+                  <div key={wd.name} className="flex items-center justify-between gap-3 text-xs">
+                    <span className="w-8 font-bold text-slate-400">{wd.name}</span>
+                    <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          wd.count > 0 ? (isPositive ? 'bg-emerald-500' : 'bg-rose-500') : 'transparent'
+                        }`}
+                        style={{ width: `${Math.min(wd.winRate, 100)}%` }}
+                      />
                     </div>
-                    <div style={{ minWidth: '90px', textAlign: 'right', fontSize: '0.75rem', fontWeight: 800, color: wd.count > 0 ? (isPositive ? '#10b981' : '#ff3366') : 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                    <div className={`min-w-24 text-right font-black font-mono ${
+                      wd.count > 0 ? (isPositive ? 'text-emerald-400' : 'text-rose-400') : 'text-slate-600'
+                    }`}>
                       {wd.count > 0 ? `${isPositive ? '+' : ''}${formatCurrency(wd.pnl)}` : 'No trades'}
                     </div>
                   </div>
@@ -1433,127 +1327,118 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
           </div>
 
           {/* Long vs Short Ratio */}
-          <div style={{
-            padding: '12px 14px', background: 'rgba(0,0,0,0.25)', borderRadius: '10px',
-            border: '1px solid rgba(255,255,255,0.04)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px'
-          }}>
+          <div className="grid grid-cols-2 gap-3 p-4 rounded-xl bg-black/40 border border-white/5 mt-auto">
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#10b981' }}>LONG</span>
-                <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{directionStats.long.count} trades</span>
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-emerald-400">LONG</span>
+                <span className="text-[11px] text-slate-400">{directionStats.long.count} trades</span>
               </div>
-              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: directionStats.long.pnl >= 0 ? '#10b981' : '#ff3366', fontFamily: 'var(--font-mono)' }}>
+              <div className={`text-base font-black font-mono ${directionStats.long.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {directionStats.long.pnl >= 0 ? '+' : ''}{formatCurrency(directionStats.long.pnl)}
               </div>
-              <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+              <div className="text-[11px] text-slate-400 mt-0.5 font-medium">
                 {Math.round(directionStats.long.winRate)}% Win Rate
               </div>
             </div>
 
-            <div style={{ borderLeft: '1px solid rgba(255,255,255,0.06)', paddingLeft: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <span style={{ fontSize: '0.68rem', fontWeight: 800, color: '#ff3366' }}>SHORT</span>
-                <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{directionStats.short.count} trades</span>
+            <div className="border-l border-white/10 pl-3">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-black text-rose-400">SHORT</span>
+                <span className="text-[11px] text-slate-400">{directionStats.short.count} trades</span>
               </div>
-              <div style={{ fontSize: '0.92rem', fontWeight: 800, color: directionStats.short.pnl >= 0 ? '#10b981' : '#ff3366', fontFamily: 'var(--font-mono)' }}>
+              <div className={`text-base font-black font-mono ${directionStats.short.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                 {directionStats.short.pnl >= 0 ? '+' : ''}{formatCurrency(directionStats.short.pnl)}
               </div>
-              <div style={{ fontSize: '0.62rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+              <div className="text-[11px] text-slate-400 mt-0.5 font-medium">
                 {Math.round(directionStats.short.winRate)}% Win Rate
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       {/* ── Section 4: Recent Trades List ── */}
-      <div style={{
-        background: 'rgba(10,12,22,0.7)', border: '1px solid rgba(255,255,255,0.05)',
-        borderRadius: '16px', padding: '20px 22px',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+      <div className="p-6 rounded-2xl bg-[#0a0c16]/80 border border-white/5 backdrop-blur-md shadow-xl shadow-black/40 transition-all duration-300 hover:border-white/10">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <p style={{ margin: 0, fontSize: '0.68rem', fontWeight: 700, color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.8px' }}>Recent Trades</p>
-            <p style={{ margin: '3px 0 0', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Last {recentTrades.length} entries</p>
+            <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Recent Trades</p>
+            <p className="text-xs text-slate-400 mt-1">Last {recentTrades.length} entries</p>
           </div>
-          <button onClick={() => onNavigate('trades')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '5px', padding: '6px 12px', borderRadius: '8px', border: 'none',
-              background: 'rgba(229,184,105,0.12)', color: '#6366f1', fontSize: '0.72rem', fontWeight: 700,
-              cursor: 'pointer', transition: 'all 0.15s',
-            }}
-            onMouseEnter={e => e.currentTarget.style.background = 'rgba(229,184,105,0.22)'}
-            onMouseLeave={e => e.currentTarget.style.background = 'rgba(229,184,105,0.12)'}
+          <button
+            type="button"
+            onClick={() => onNavigate('trades')}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 hover:bg-indigo-500/20 text-xs font-bold transition-all duration-200 hover:gap-2 cursor-pointer"
           >
-            View All <IconArrow />
+            <span>View All</span>
+            <IconArrow />
           </button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {recentTrades.length > 0 ? recentTrades.map(t => {
-            const pnl = t.pnl || 0;
-            const rr = t.riskAmount > 0 ? pnl / t.riskAmount : 0;
-            const isWin = t.status === 'Win';
-            const isLoss = t.status === 'Loss';
-            const accent = isWin ? '#10b981' : isLoss ? '#ff3366' : '#f59e0b';
-            return (
-              <div key={t.id} onClick={() => onViewTrade(t)}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 12px',
-                  borderRadius: '10px', cursor: 'pointer',
-                  background: 'rgba(255,255,255,0.02)', border: `1px solid rgba(255,255,255,0.04)`,
-                  transition: 'all 0.15s', borderLeft: `3px solid ${accent}`,
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.transform = 'translateX(2px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.transform = 'translateX(0)'; }}
-              >
-                {/* Direction badge */}
-                <div style={{
-                  width: '38px', height: '38px', borderRadius: '8px', flexShrink: 0,
-                  background: t.direction === 'Long' ? 'rgba(16,185,129,0.1)' : 'rgba(255,51,102,0.1)',
-                  border: `1px solid ${t.direction === 'Long' ? 'rgba(16,185,129,0.2)' : 'rgba(255,51,102,0.2)'}`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.65rem', fontWeight: 900,
-                  color: t.direction === 'Long' ? '#10b981' : '#ff3366',
-                  letterSpacing: '0.3px',
-                }}>
-                  {t.direction.slice(0, 1)}
-                </div>
+        <div className="flex flex-col gap-2.5">
+          {recentTrades.length > 0 ? (
+            recentTrades.map(t => {
+              const pnl = t.pnl || 0;
+              const rr = t.riskAmount > 0 ? pnl / t.riskAmount : 0;
+              const isWin = t.status === 'Win';
+              const isLoss = t.status === 'Loss';
+              const borderLeft = isWin ? 'border-l-emerald-500' : isLoss ? 'border-l-rose-500' : 'border-l-amber-500';
+              const pnlColor = isWin ? 'text-emerald-400' : isLoss ? 'text-rose-400' : 'text-amber-400';
 
-                {/* Trade info */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#fff', letterSpacing: '0.2px' }}>{t.pair}</span>
-                    {!t.closed && (
-                      <span style={{ fontSize: '0.6rem', fontWeight: 700, padding: '1px 5px', borderRadius: '4px', background: 'rgba(245,158,11,0.12)', color: '#f59e0b' }}>LIVE</span>
+              return (
+                <div
+                  key={t.id}
+                  onClick={() => onViewTrade(t)}
+                  className={`flex items-center gap-3 p-3.5 rounded-xl bg-white/[0.02] border border-white/5 border-l-4 ${borderLeft} hover:bg-white/[0.05] hover:translate-x-1 transition-all duration-200 cursor-pointer`}
+                >
+                  {/* Direction badge */}
+                  <div
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center font-black text-xs flex-shrink-0 ${
+                      t.direction === 'Long'
+                        ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400'
+                        : 'bg-rose-500/15 border border-rose-500/30 text-rose-400'
+                    }`}
+                  >
+                    {t.direction.slice(0, 1)}
+                  </div>
+
+                  {/* Trade info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-extrabold text-white tracking-tight">{t.pair}</span>
+                      {!t.closed && (
+                        <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-400 animate-pulse">
+                          LIVE
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-slate-400 mt-0.5 truncate">
+                      {formatDate(t.entryDate)} · {t.strategy}
+                    </div>
+                  </div>
+
+                  {/* PnL */}
+                  <div className="text-right flex-shrink-0">
+                    {t.closed ? (
+                      <>
+                        <div className={`text-sm font-black font-mono ${pnlColor}`}>
+                          {pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}
+                        </div>
+                        <div className={`text-[11px] font-mono font-medium ${rr >= 0 ? 'text-emerald-400/80' : 'text-rose-400/80'}`}>
+                          {rr >= 0 ? '+' : ''}{rr.toFixed(1)}R
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">
+                        OPEN
+                      </span>
                     )}
                   </div>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                    {formatDate(t.entryDate)} · {t.strategy}
-                  </div>
                 </div>
-
-                {/* PnL */}
-                <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                  {t.closed ? (
-                    <>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 800, color: accent, fontFamily: 'var(--font-mono)' }}>
-                        {pnl >= 0 ? '+' : ''}{formatCurrency(pnl)}
-                      </div>
-                      <div style={{ fontSize: '0.65rem', color: rr >= 0 ? 'rgba(16,185,129,0.7)' : 'rgba(255,51,102,0.7)', fontFamily: 'var(--font-mono)' }}>
-                        {rr >= 0 ? '+' : ''}{rr.toFixed(1)}R
-                      </div>
-                    </>
-                  ) : (
-                    <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '3px 7px', borderRadius: '5px' }}>OPEN</span>
-                  )}
-                </div>
-              </div>
-            );
-          }) : (
-            <div style={{ padding: '30px 0', textAlign: 'center', color: 'var(--text-muted)' }}>
-              <p style={{ margin: 0, fontSize: '0.8rem' }}>No trades yet. Add your first trade to get started.</p>
+              );
+            })
+          ) : (
+            <div className="py-8 text-center text-slate-400 text-xs">
+              No trades yet. Add your first trade to get started.
             </div>
           )}
         </div>
