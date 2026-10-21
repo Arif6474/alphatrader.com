@@ -802,6 +802,94 @@ function DashboardView({ trades, onViewTrade, onNavigate }: DashboardViewProps) 
         </div>
       </div>
 
+      {/* ── Trading Rules Discipline Hub: The 10 Non-Negotiable Rules ── */}
+      <div className="relative overflow-hidden p-6 sm:p-7 rounded-2xl bg-[#090d18]/90 border border-white/5 backdrop-blur-md shadow-xl shadow-black/40 mb-8 transition-all duration-300 hover:border-white/10 group">
+        {/* Ambient Top Glow */}
+        <div className="absolute top-0 right-0 w-80 h-32 bg-gradient-to-l from-indigo-500/10 via-amber-500/5 to-transparent pointer-events-none" />
+
+        {/* Section Header */}
+        <div className="relative z-10 flex items-center justify-between flex-wrap gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shadow-lg shadow-amber-500/10">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <polyline points="9 12 11 14 15 10" />
+              </svg>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black tracking-[0.25em] uppercase text-indigo-400">
+                  The 10 Non-Negotiable
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-black tracking-tight uppercase text-white mt-0.5">
+                Trading <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-amber-400">Rules</span>
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Same rules. Better decisions. A more consistent you.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onNavigate('rules')}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-xs font-black shadow-lg shadow-indigo-950/40 transition-all duration-200 hover:scale-102 cursor-pointer"
+            >
+              <span>View Full Rules Poster</span>
+              <span className="text-amber-300">→</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 10 Rules Quick Grid (5 columns x 2 rows on large screens) */}
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-5">
+          {[
+            { num: '01', title: 'Protect Capital First', color: 'border-emerald-500/25 text-emerald-400 bg-emerald-500/10' },
+            { num: '02', title: 'Always Set Stop Loss', color: 'border-rose-500/25 text-rose-400 bg-rose-500/10' },
+            { num: '03', title: 'Never Overleverage', color: 'border-amber-500/25 text-amber-400 bg-amber-500/10' },
+            { num: '04', title: 'Max Daily Risk Limit', color: 'border-blue-500/25 text-blue-400 bg-blue-500/10' },
+            { num: '05', title: 'Follow Trading Plan', color: 'border-purple-500/25 text-purple-400 bg-purple-500/10' },
+            { num: '06', title: 'Never Revenge Trade', color: 'border-rose-600/25 text-rose-500 bg-rose-600/10' },
+            { num: '07', title: 'Never Trade on FOMO', color: 'border-sky-500/25 text-sky-400 bg-sky-500/10' },
+            { num: '08', title: 'Avoid Overtrading', color: 'border-emerald-400/25 text-emerald-300 bg-emerald-400/10' },
+            { num: '09', title: 'Accept Your Losses', color: 'border-amber-500/25 text-amber-300 bg-amber-500/10' },
+            { num: '10', title: 'Review Every Trade', color: 'border-violet-500/25 text-violet-400 bg-violet-500/10' },
+          ].map(r => (
+            <div
+              key={r.num}
+              onClick={() => onNavigate('rules')}
+              className="flex items-center gap-2.5 p-2.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/15 hover:bg-white/[0.05] transition-all cursor-pointer group/item"
+            >
+              <div className={`w-7 h-7 rounded-lg border flex items-center justify-center text-[10px] font-black font-mono flex-shrink-0 ${r.color}`}>
+                {r.num}
+              </div>
+              <div className="text-xs font-bold text-slate-300 group-hover/item:text-white truncate">
+                {r.title}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Motivational Quote Ribbon with Mountain Backdrop */}
+        <div
+          onClick={() => onNavigate('rules')}
+          className="relative overflow-hidden rounded-xl bg-[#070b14] border border-white/10 p-3.5 sm:p-4 flex items-center justify-between flex-wrap gap-3 cursor-pointer group/banner"
+        >
+          <div className="flex items-center gap-3">
+            <span className="w-1.5 h-6 rounded-full bg-indigo-500" />
+            <p className="text-xs sm:text-sm font-semibold text-slate-300">
+              <span className="text-white font-black">Discipline today</span> builds the trader{' '}
+              <span className="italic font-serif text-amber-300 font-bold">you want tomorrow.</span>
+            </p>
+          </div>
+          <span className="text-xs font-bold text-indigo-400 group-hover/banner:translate-x-1 transition-transform">
+            Open Interactive Rules Hub →
+          </span>
+        </div>
+      </div>
+
       {/* ── Section 2: Trading Daily Profit / Loss Calendar ── */}
       <div className="p-6 sm:p-7 rounded-2xl bg-[#0a0c16]/80 border border-white/5 backdrop-blur-md shadow-xl shadow-black/40 mb-8 transition-all duration-300 hover:border-white/10">
         {/* Calendar Header with Navigation Pill & Title */}

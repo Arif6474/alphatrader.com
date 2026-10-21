@@ -14,7 +14,8 @@ import {
   AnalyticsIcon, 
   ProfileIcon, 
   PlusIcon,
-  PsychologyIcon
+  PsychologyIcon,
+  RulesIcon
 } from './Icons';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -53,6 +54,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         return 'Trades Directory';
       case '/analytics':
         return 'Analytics';
+      case '/rules':
+        return 'Trading Rules';
       case '/psychology':
         return 'Trading Psychology';
       case '/settings':
@@ -139,6 +142,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               >
                 <AnalyticsIcon className="nav-icon" />
                 Analytics
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link 
+                href="/rules" 
+                className={`nav-link ${pathname === '/rules' ? 'active' : ''}`}
+              >
+                <RulesIcon className="nav-icon" style={{ color: pathname === '/rules' ? '#f59e0b' : undefined }} />
+                Trading Rules
               </Link>
             </li>
             <li className="nav-item">

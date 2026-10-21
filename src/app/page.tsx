@@ -16,6 +16,8 @@ export default function Home() {
       router.push('/analytics');
     } else if (view === 'profile') {
       router.push('/settings');
+    } else if (view === 'rules') {
+      router.push('/rules');
     } else if (view === 'psychology') {
       router.push('/psychology');
     }
